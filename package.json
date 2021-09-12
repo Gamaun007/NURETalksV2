@@ -3,11 +3,19 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve -c local",
+    "start-prod": "ng serve -c localprod",
     "build": "ng build",
     "test": "ng test",
+    "test-single-run": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "prettier-format": "prettier --write src/**/*.ts src/**/*.scss",
+    "prettier-check": "prettier --check src/**/*.ts src/**/*.scss",
+    "pre-push": "npm run lint && npm run prettier-format && npm run test",
+    "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
+    "storybook": "npm run docs:json && start-storybook -p 6006",
+    "build-storybook": "npm run docs:json && build-storybook"
   },
   "private": true,
   "dependencies": {
