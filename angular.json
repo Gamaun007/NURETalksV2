@@ -87,6 +87,9 @@
           "configurations": {
             "production": {
               "browserTarget": "NURETalksV2:build:production"
+            },
+            "local": {
+              "browserTarget": "NURETalksV2:build:local"
             }
           }
         },
