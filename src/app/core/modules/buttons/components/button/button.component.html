@@ -1,0 +1,10 @@
+<ng-container *ngIf="!loading; else loadingTemplate">
+  <svg-icon *ngIf="svgIconPath" [src]="svgIconPath" preserveAspectRatio="none" [stretch]="true"></svg-icon>
+  <span>
+    <ng-content></ng-content>
+  </span>
+</ng-container>
+
+<ng-template #loadingTemplate>
+  <!-- <app-circle-loader></app-circle-loader> -->
+</ng-template>

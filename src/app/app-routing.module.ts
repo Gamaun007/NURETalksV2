@@ -5,7 +5,7 @@ import { TranslateResolverService } from 'core/services';
 const routes = [
   {
     path: '',
-    canActivate: [TranslateResolverService],
+    canActivate: [],
     children: [],
   },
 ];

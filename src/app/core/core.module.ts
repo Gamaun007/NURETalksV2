@@ -1,3 +1,5 @@
+import { FormControlsModule } from './modules/form-controls/form-controls.module';
+import { DynamicFormModule } from 'core/modules/dynamic-form';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
@@ -8,6 +10,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AppConfigService, LoaderManagerService, MessageBusService, TranslateResolverService } from './services';
+import { ButtonsModule } from 'core/modules/buttons';
 
 export const WINDOW = new InjectionToken<Window>('window');
 
@@ -23,8 +26,17 @@ export const WINDOW = new InjectionToken<Window>('window');
     ReactiveFormsModule,
     TranslateModule.forChild(),
     VirtualScrollerModule,
+    DynamicFormModule,
+    FormControlsModule,
   ],
-  exports: [CommonModule, PerfectScrollbarModule, FormsModule, ReactiveFormsModule, AngularSvgIconModule],
+  exports: [
+    CommonModule,
+    PerfectScrollbarModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AngularSvgIconModule,
+    FormControlsModule,
+  ],
 })
 export class CoreModule {
   static forRoot(): ModuleWithProviders<CoreModule> {
@@ -34,7 +46,6 @@ export class CoreModule {
         MessageBusService,
         AppConfigService,
         LoaderManagerService,
-        TranslateResolverService,
         {
           provide: WINDOW,
           useFactory: () => window,

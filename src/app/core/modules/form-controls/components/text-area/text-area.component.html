@@ -1,0 +1,63 @@
+<app-control-header
+  *ngIf="label"
+  [label]="label"
+  [labelParamsObj]="labelParamsObj"
+  [index]="index"
+  [required]="required"
+></app-control-header>
+<div class="wrapper" [class.is-disabled]="isDisabled$ | async">
+  <span (click)="placeholderClick()" #placeholderElement class="placeholder">
+    <ng-container *ngIf="placeholderObj">
+      <span
+        *ngIf="isTextPlaceholderType(); else placeholderTemplate"
+        class="text"
+        translate
+        [translateParams]="placeholderParamsObj"
+        >{{ placeholderObj.value }}</span
+      >
+    </ng-container>
+    <ng-template #placeholderTemplate>
+      <ng-container *ngTemplateOutlet="placeholderObj.value"></ng-container>
+    </ng-template>
+  </span>
+  <textarea
+    #textfield
+    id="{{ fieldName }}-textfield"
+    [(ngModel)]="value"
+    [class.rows-specified]="rows > 1"
+    [disabled]="isDisabled$ | async"
+    [attr.maxLength]="maxLength ? maxLength : -1"
+    [attr.readOnly]="readonly"
+    [rows]="rows"
+    (blur)="inputBlur()"
+    (ngModelChange)="valueChangesEventEmitHandler($event)"
+    (input)="input.emit($event)"
+    (focusin)="inputFocusIn()"
+    (focusout)="inputFocusOut()"
+  >
+  </textarea>
+
+  <div class="buttons">
+    <ng-content select="app-button"></ng-content>
+    <ng-container *ngIf="removable">   
+      <button (click)="removeControl.emit(fieldName)" class="remove-contol-button">
+        <svg-icon src='close'>
+        </svg-icon>
+      </button>      
+    </ng-container>
+  </div>
+</div>
+<div *ngIf="displayCharactersCounter && maxLength" class="characters-counter">
+  <span>{{ value ? value.length : 0 }}</span>
+  <span>/</span>
+  <span>{{ maxLength }}</span>
+</div>
+<app-control-errors *ngIf="dirty || !validateOnDirty" [errorTexts]="errorTexts"></app-control-errors>
+
+<ng-template #requiredPopover>
+  <div class="popover-container">
+    <span translate>
+      core.formControls.textfield.requiredTooltip
+    </span>
+  </div>
+</ng-template>

@@ -1,0 +1,50 @@
+// // @import 'index.scss';
+
+// :host {
+//   display: block;
+//   @include MulishFontStyle();
+//   color: $mc-dark-blue;
+//   margin-bottom: 5px;
+
+//   & .text::after {
+//     content: ':';
+//   }
+
+//   .help-icon {
+//     padding-right: 10px;
+//   }
+
+//   .help-icon,
+//   .help-icon > svg {
+//     path:first-child {
+//       stroke: $mc-blue-gray;
+//     }
+//     path:last-child {
+//       fill: $mc-blue-gray;
+//     }
+
+//     &:hover {
+//       path:first-child {
+//         stroke: $mc-dark-blue;
+//       }
+//       path:last-child {
+//         fill: $mc-dark-blue;
+//       }
+//     }
+//   }
+// }
+
+// app-index-icon-component {
+//   margin-right: 7px;
+// }
+
+// :host[required] {
+//   .asterisk {
+//     &::after {
+//       content: '*';
+//       margin-left: 2px;
+//       color: $mc-pink;
+//       @include MulishFontStyle(21px);
+//     }
+//   }
+// }

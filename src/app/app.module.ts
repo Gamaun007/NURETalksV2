@@ -1,3 +1,5 @@
+import { AuthenticationModule } from './section-modules/authentication/authentication.module';
+import { TranslateConfigModule } from './core/modules/translate-config/translate-config.module';
 import { HttpBackend } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -16,19 +18,13 @@ import { AppComponent } from './app.component';
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     CoreModule.forRoot(),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpBackend],
-      },
-    }),
+    TranslateConfigModule,
     RouterModule,
     BrowserAnimationsModule,
     PerfectScrollbarModule,
+    AuthenticationModule,
   ],
-  providers: [
-  ],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
