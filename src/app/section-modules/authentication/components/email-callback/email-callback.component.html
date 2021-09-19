@@ -1,0 +1,15 @@
+<ng-container *ngIf="isErrorScreenDisplayed">
+  <section class="with-side-lines">
+    <div></div>
+  </section>
+  <section class="center-text">
+    <h1><b>{{ buildTranslationKey('linkExpiredText') | translate }}</b></h1>
+    <h1 class="sign-in-again-text">
+      <span>{{ buildTranslationKey('signInAgainText') | translate }}</span>
+      <span>
+        <span>{{ buildTranslationKey('signInAgainSecondPartText') | translate }}&nbsp;</span>
+        <a [routerLink]="'sign-in'">{{ buildTranslationKey('signInLink') | translate }}</a>
+      </span>
+    </h1>
+  </section>
+</ng-container>

@@ -1,3 +1,4 @@
+import { AppRoutes, AuthRoutes } from './../app/core/constants/routes';
 import { ConfigurationFile } from 'src/app/core/models';
 
 const config: ConfigurationFile = {
@@ -13,8 +14,9 @@ const config: ConfigurationFile = {
     messagingSenderId: '668504499478',
     appId: '1:668504499478:web:e770c809d58d1f4b839c37',
     measurementId: 'G-Y1D15N9FJE',
-    fireStoreEndpoints: [],
   },
+  signInRedirectUrl: `http://localhost:4200/${AppRoutes.Auth}/${AuthRoutes.EmailCallback}`,
+  fireStoreEndpoints: [],
 };
 
 export const environment = {

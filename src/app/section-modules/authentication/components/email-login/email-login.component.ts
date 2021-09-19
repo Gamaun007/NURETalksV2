@@ -1,9 +1,9 @@
+import { AuthService } from 'core/modules/auth-core/services/auth/auth.service';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   HostListener,
-  Input,
   OnDestroy,
   OnInit,
   Output,
@@ -47,13 +47,13 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
     }),
   });
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(private activatedRoute: ActivatedRoute, private authenticationService: AuthService) {}
 
   ngOnDestroy(): void {
     this.subscriptionDetacher.detach();
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     if (this.activatedRoute.snapshot.queryParams.email) {
       this.dynamicFormGroup.items.email.setValue(this.activatedRoute.snapshot.queryParams.email);
     }
@@ -65,24 +65,17 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown.enter', ['event$'])
   async sendSignInLink(): Promise<void> {
-    debugger;
-    // if (this.dynamicFormGroup.valid && !this.isProcessing) {
-    //   this.isProcessing$.next(true);
+    if (this.dynamicFormGroup.valid && !this.isProcessing) {
+      this.isProcessing$.next(true);
 
-    //   try {
-    //     const encoded_email = encodeURIComponent(this.dynamicFormGroup.items.email.value);
-    //     await this.tenantFacade.sendSignInEmailAsync(
-    //       encoded_email,
-    //       this.tenantSubDomainExtractorService.getTenantSubDomain()
-    //     );
-    //     this.signInEmailSent.emit(this.dynamicFormGroup.items.email.value);
-    //   } catch (err) {
-    //     this.dynamicFormGroup.items.email.setErrors({ emailNotFound: true });
-    //     this.logger.error(err);
-    //   } finally {
-    //     this.isProcessing$.next(false);
-    //   }
-    // }
+      try {
+        await this.authenticationService.sendSignInToEmail(this.dynamicFormGroup.items.email.value);
+      } catch (err) {
+        this.dynamicFormGroup.items.email.setErrors({ emailNotFound: true });
+      } finally {
+        this.isProcessing$.next(false);
+      }
+    }
   }
 
   buildTranslationKey(relativeKey: string): string {

@@ -81,6 +81,7 @@ describe('EmailLoginComponent', () => {
   });
 
   describe('sign-in-button', () => {
+    const  disableClass ='disabled';
     it('should have disabled class when formGroup is invalid', async () => {
       // Arrange
       spyOnProperty(componentUnderTest.dynamicFormGroup, 'invalid').and.returnValue(true);
@@ -89,7 +90,8 @@ describe('EmailLoginComponent', () => {
       await detectChanges();
 
       // Assert
-      expect(getSignInButton().classes['disabled']).toBeTrue();
+
+      expect(getSignInButton().classes[disableClass]).toBeTrue();
     });
 
     it('should not have disabled class when formGroup is valid', async () => {
@@ -100,7 +102,7 @@ describe('EmailLoginComponent', () => {
       await detectChanges();
 
       // Assert
-      expect(getSignInButton().classes['disabled']).toBeUndefined();
+      expect(getSignInButton().classes[disableClass]).toBeUndefined();
     });
   });
 

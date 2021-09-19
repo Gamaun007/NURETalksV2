@@ -11,10 +11,11 @@ export interface FirebaseConfig {
   messagingSenderId: string;
   appId: string;
   measurementId: string;
-  fireStoreEndpoints: string[];
 }
 
 export interface ConfigurationFile {
   firebase?: FirebaseConfig;
   internationalization: InternationalizationConfiguration;
+  fireStoreEndpoints: string[];
+  signInRedirectUrl: string;
 }
