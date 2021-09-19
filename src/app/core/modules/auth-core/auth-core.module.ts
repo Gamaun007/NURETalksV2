@@ -7,7 +7,6 @@ import { FirebaseWrapperService } from './services';
 import { StoreModule } from '@ngrx/store';
 import * as storeFeature from './store';
 import { EffectsModule } from '@ngrx/effects';
-import { PluginOauthHandlerService, PluginRedirectionGuardService } from './services';
 
 @NgModule({
   imports: [
@@ -22,15 +21,7 @@ export class AuthCoreModule {
   static forRoot(): ModuleWithProviders<AuthCoreRootModule> {
     return {
       ngModule: AuthCoreModule,
-      providers: [
-        AuthService,
-        RoleService,
-        AuthGuardService,
-        FirebaseWrapperService,
-        UserFacadeService,
-        PluginOauthHandlerService,
-        PluginRedirectionGuardService,
-      ],
+      providers: [AuthService, RoleService, AuthGuardService, FirebaseWrapperService, UserFacadeService],
     };
   }
 }

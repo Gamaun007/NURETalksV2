@@ -1,0 +1,20 @@
+// @import 'index';
+
+.wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+:host::ng-deep {
+  app-loading-animation {
+    height: auto;
+  }
+}
+
+.long-loading-text {
+  // @include MulishFontStyle(16px, 24px);
+  // color: $mc-navy-90;
+}

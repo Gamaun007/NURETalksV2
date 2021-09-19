@@ -11,11 +11,19 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
+import { RootComponent, WildCardComponent } from 'src/app/components';
+import { LottieModule } from 'ngx-lottie';
+import player, { LottiePlayer } from 'lottie-web';
+
+export function playerFactory(): LottiePlayer {
+  return player;
+}
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, WildCardComponent, RootComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    LottieModule.forRoot({ player: playerFactory }),
     AppRoutingModule,
     CoreModule.forRoot(),
     SvgIconsModule.forRoot(),

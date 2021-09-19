@@ -1,142 +1,142 @@
-// // @import 'index';
+@import 'index';
 
-// $padding: 0 11px 0 14px;
-// $min-height: 40px;
-// $border: 1px solid rgba($color: $mc-blue-gray, $alpha: 0.3);
-// $border-radius: 6px;
+$padding: 0 11px 0 14px;
+$min-height: 40px;
+$border-radius: 6px;
 
-// :host {
-//   display: inline-block;
-//   position: relative;
+:host {
+  display: inline-block;
+  position: relative;
 
-//   &.active,
-//   &.has-value {
-//     .placeholder {
-//       display: none;
-//     }
-//   }
+  &.active,
+  &.has-value {
+    .placeholder {
+      display: none;
+    }
+  }
 
-//   button{
-//     justify-content: center;
-//     align-items: center;
-//     border-radius: 6px;
-//     padding: 10px 0;
-//     cursor: pointer;
-//   }
+  button {
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    padding: 10px 0;
+    cursor: pointer;
+  }
 
-//   .remove-contol-button {
-//     display: none;
-//     background: $mc-dark-blue-10;
-//     width: 30px;
-//     height: 30px;
-//   }
+  .remove-contol-button {
+    display: none;
+    @apply bg-navy-10;
+    background: gray;
+    width: 30px;
+    height: 30px;
+  }
 
-//   .main {
-//     color: $mc-white;
-//     background: $mc-dark-blue;
-//   }
+  .main {
+    @apply text-white bg-navy-90;
+  }
 
-//   .gray {
-//     color: $mc-white;
-//     background: $mc-blue-gray;
-//   }
+  .gray {
+    @apply text-white bg-navy-70;
+  }
 
-//   .white {
-//     background: $mc-white;
-//   }
+  .white {
+    background: white;
+  }
 
-//   .mulish {
-//     @include MulishFontStyle();
-//   }
+  //   .mulish {
+  //     @include MulishFontStyle();
+  //   }
 
-//   .toggle-show-hide-password {
-//     display: none;
-//     padding: 0 5px;
-//   }
+  .toggle-show-hide-password {
+    display: none;
+    padding: 0 5px;
+  }
 
-//   &:hover {
-//     .remove-contol-button {
-//       display: flex;
-//     }
-//   }
+  &:hover {
+    .remove-contol-button {
+      display: flex;
+    }
+  }
 
-//   .wrapper {
-//     &:hover {
-//       ::ng-deep.buttons app-button {
-//         display: flex !important;
-//       }
+  .wrapper {
+    &:hover {
+      ::ng-deep.buttons app-button {
+        display: flex !important;
+      }
 
-//       .toggle-show-hide-password {
-//         display: flex;
-//       }
-//     }
+      .toggle-show-hide-password {
+        display: flex;
+      }
+    }
 
-//     position: relative;
+    position: relative;
 
-//     ::ng-deep.buttons {
-//       position: absolute;
-//       right: 5px;
-//       top: 11%;
-//       height: 30px;
-//       display: flex;
-//       flex-direction: row;
+    ::ng-deep.buttons {
+      position: absolute;
+      right: 5px;
+      top: 11%;
+      height: 30px;
+      display: flex;
+      flex-direction: row;
 
-//       > :not(:first-child) {
-//         margin-left: 20px;
-//       }
-//     }
-//   }
+      > :not(:first-child) {
+        margin-left: 20px;
+      }
+    }
+  }
 
-//   .addon-text {
-//     display: flex;
-//     align-items: center;
-//     background-color: $mc-navy-30;
-//     padding-left: 11px;
-//     padding-right: 16px;
-//     border-left: $border;
-//   }
-// }
+  .addon-text {
+    display: flex;
+    align-items: center;
 
-// .placeholder {
-//   position: absolute;
-//   width: 100%;
-//   height: 100%;
-//   display: flex;
-//   align-items: center;
-//   padding: $padding;
-//   cursor: text;
-//   @include basicLight();
-// }
+    @apply bg-navy-30;
+    padding-left: 11px;
+    padding-right: 16px;
+    @apply border-navy-70 border-solid border-opacity-30 border-l-2 rounded-md;
+  }
+}
 
-// input {
-//   outline: none;
-//   background-color: $mc-white;
-//   border: $border;
-//   border-radius: $border-radius;
-//   box-sizing: border-box;
-//   padding: $padding;
-//   min-height: $min-height;
-//   width: 100%;
-//   height: 100%;
-//   @include basicDark();
-// }
+.placeholder {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: $padding;
+  cursor: text;
+  //   @include basicLight();
+}
 
-// :host.dirty.invalid {
-//   input {
-//     border: 1px solid $mc-text-error;
-//   }
-// }
+input {
+  outline: none;
+  // Background styles
+  @apply bg-white;
 
-// .characters-counter {
-//   display: flex;
-//   justify-content: flex-end;
-//   @include MulishFontStyle(11px);
-//   color: $mc-blue-gray;
-// }
+  // Border styles
+  @apply border-navy-70 border-solid border-opacity-30 border-2 rounded-md;
+  box-sizing: border-box;
+  padding: $padding;
+  min-height: $min-height;
+  width: 100%;
+  height: 100%;
+  //   @include basicDark();
+}
 
-// .is-with-addon {
-//   display: flex;
-//   border-radius: $border-radius;
-//   border: $border;
-//   overflow: hidden;
-// }
+:host.dirty.invalid {
+  input {
+    @apply border-pink-90 border-solid border-2 rounded-md;
+  }
+}
+
+.characters-counter {
+  display: flex;
+  justify-content: flex-end;
+  //   @include MulishFontStyle(11px);
+  @apply text-navy-70;
+}
+
+.is-with-addon {
+  display: flex;
+  @apply border-navy-70 border-solid border-opacity-30 border-2 rounded-md;
+  overflow: hidden;
+}

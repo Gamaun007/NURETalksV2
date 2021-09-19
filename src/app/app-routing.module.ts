@@ -1,4 +1,5 @@
-import { WildCardComponent } from './core/components/wild-card/wild-card.component';
+import { RootComponent } from 'src/app/components';
+import { WildCardComponent } from './components/wild-card/wild-card.component';
 import { AuthGuardService } from './core/modules/auth-core/services';
 import { AppRoutes } from './core/constants/routes';
 import { NgModule } from '@angular/core';
@@ -11,7 +12,19 @@ const routes = [
       {
         path: '',
         canActivate: [AuthGuardService],
-        children: [],
+        children: [
+          {
+            path: '',
+            component: RootComponent,
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('./section-modules/messanger/messanger.module').then((m) => m.MessangerModule),
+              },
+            ],
+          },
+        ],
       },
     ],
   },

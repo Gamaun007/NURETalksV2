@@ -1,0 +1,6 @@
+<div class="wrapper" [class.hidden]="!(isLoaderDisplayed$ | async)">
+  <app-loading-animation width="270px" height="270px"></app-loading-animation>
+  <div class="long-loading-text" [class.invisible]="!(isLongLoading$ | async)">
+    {{ buildTranslationKey('longLoadingText') | translate }}
+  </div>
+</div>

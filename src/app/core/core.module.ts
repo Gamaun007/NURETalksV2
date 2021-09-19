@@ -1,3 +1,4 @@
+import { LoadersModule } from './modules/loaders';
 import { FormControlsModule } from './modules/form-controls/form-controls.module';
 import { DynamicFormModule } from 'core/modules/dynamic-form';
 import { CommonModule } from '@angular/common';
@@ -10,12 +11,13 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AppConfigService, LoaderManagerService, MessageBusService } from './services';
-import { WildCardComponent } from './components/wild-card/wild-card.component';
+import { LoggerService } from 'core/services';
+import { GlobalLoaderComponent } from 'core/components';
 
 export const WINDOW = new InjectionToken<Window>('window');
 
 @NgModule({
-  declarations: [WildCardComponent],
+  declarations: [GlobalLoaderComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -28,14 +30,20 @@ export const WINDOW = new InjectionToken<Window>('window');
     VirtualScrollerModule,
     DynamicFormModule,
     FormControlsModule,
+    LoadersModule,
   ],
   exports: [
+    // Modules
     CommonModule,
     PerfectScrollbarModule,
     FormsModule,
     ReactiveFormsModule,
     AngularSvgIconModule,
     FormControlsModule,
+    LoadersModule,
+
+    // Component
+    GlobalLoaderComponent,
   ],
 })
 export class CoreModule {
@@ -46,6 +54,7 @@ export class CoreModule {
         MessageBusService,
         AppConfigService,
         LoaderManagerService,
+        LoggerService,
         {
           provide: WINDOW,
           useFactory: () => window,
