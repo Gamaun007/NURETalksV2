@@ -1,1 +1,1 @@
-// export { UserEffects } from './user.effects';
+export { UserEffects } from './user.effects';

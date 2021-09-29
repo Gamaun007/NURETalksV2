@@ -13,7 +13,7 @@ import { EffectsModule } from '@ngrx/effects';
     CommonModule,
     AngularFireModule.initializeApp(environment.config.firebase),
     StoreModule.forFeature(storeFeature.featureKey, storeFeature.reducers),
-    // EffectsModule.forFeature([storeFeature.UserEffects])
+    EffectsModule.forFeature([storeFeature.UserEffects])
   ],
   declarations: [],
 })

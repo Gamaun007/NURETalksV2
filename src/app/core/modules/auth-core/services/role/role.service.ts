@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { RoleEnum, User } from '../../models/domain';
-import { from, Observable, of } from 'rxjs';
-import { map, shareReplay, take } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
@@ -18,17 +17,13 @@ export class RoleService {
     return this.roleCache;
   }
 
-  mapRole(role: string): RoleEnum {
-    return (role.split(':')[1] as RoleEnum) || null;
-  }
-
   private async buildCache(): Promise<void> {
-    const user = await this.authService.getUserAsync();
+    const user = await this.authService.getCurrentUserAsync();
 
     if (user) {
       this.roleCache = of(user).pipe(
         map((_user) => ({
-          role: _user?.role.split(':')[1] || null,
+          role: _user?.role || null,
         })),
         shareReplay()
       );

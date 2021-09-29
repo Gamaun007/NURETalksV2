@@ -1,4 +1,4 @@
-import { AuthRoutes } from './../../../../constants/routes';
+import { AuthRoutes } from 'core/constants/routes';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AppRoutes } from 'core/constants';

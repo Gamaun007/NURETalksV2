@@ -1,3 +1,4 @@
+import { AppRoutes, AuthRoutes } from './../app/core/constants/routes';
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -17,8 +18,9 @@ const config: ConfigurationFile = {
     messagingSenderId: '668504499478',
     appId: '1:668504499478:web:e770c809d58d1f4b839c37',
     measurementId: 'G-Y1D15N9FJE',
-    fireStoreEndpoints: [],
   },
+  signInRedirectUrl: `http://localhost:4200/${AppRoutes.Auth}/${AuthRoutes.EmailCallback}`,
+  fireStoreEndpoints: [],
 };
 
 export const environment = {

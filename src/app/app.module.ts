@@ -1,3 +1,4 @@
+import { DataModule } from './core/modules/data/data.module';
 import { SvgIconsModule } from './core/modules/svg-icons/svg-icons.module';
 import { AuthCoreModule } from './core/modules/auth-core/auth-core.module';
 import { AuthenticationModule } from './section-modules/authentication/authentication.module';
@@ -32,6 +33,7 @@ export function playerFactory(): LottiePlayer {
     BrowserAnimationsModule,
     PerfectScrollbarModule,
     AuthenticationModule,
+    DataModule.forRoot(),
     AuthCoreModule.forRoot(),
     StoreModule.forRoot({}),
   ],

@@ -1,36 +1,65 @@
-// import { Injectable } from '@angular/core';
-// import { Observable } from 'rxjs';
-// import { HttpClient } from '@angular/common/http';
-// import { AppConfigService } from 'core/services/config/app.config.service';
-// import { User } from '../../../models/domain';
+import { MORE_THAN_ONE_USER_ERROR, NO_USERS_ERROR } from './../errors.constants';
+import { AuthService } from 'core/modules/auth-core/services';
+import { RoleEnum } from 'core/models/domain/roles.model';
+import { Injectable } from '@angular/core';
+import { Observable, of, from, throwError } from 'rxjs';
+import { User } from 'core/models/domain';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { map, take, switchMap } from 'rxjs/operators';
+import { getNameByNureEmail } from 'core';
 
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class UserService extends AbstractService {
-//   constructor(http: HttpClient, configService: AppConfigService) {
-//     super(http, configService);
-//   }
+@Injectable({
+  providedIn: 'root',
+})
+export class UserHttpService {
+  constructor(private afs: AngularFirestore, private authService: AuthService) {}
 
-//   getAllUsers(): Observable<User[]> {
-//     return this.http.get<User[]>(this.buildUrl((a) => a.getUser));
-//   }
+  getSpecificUser(email: string): Observable<User> {
+    return this.afs
+      .collection<User>('users', (collection) => collection.where('email', '==', email))
+      .valueChanges()
+      .pipe(
+        switchMap((users) => {
+          if (!users?.length) {
+            return throwError(new Error(NO_USERS_ERROR(email)));
+          }
 
-//   updateUser(user_email: string): Observable<any> {
-//     return this.http.put(
-//       this.buildUrl((t) => t.updateUser, { user_email }),
-//       user_email
-//     );
-//   }
+          if (users.length > 1) {
+            return throwError(new Error(MORE_THAN_ONE_USER_ERROR(email)));
+          }
 
-//   createNewUser(user: User): Observable<User> {
-//     return this.http.post<User>(
-//       this.buildUrl((t) => t.addUser),
-//       user
-//     );
-//   }
+          return of(users[0]);
+        }),
+        take(1)
+      );
+  }
 
-//   removeSpecificUser(userEmail: string): Observable<User> {
-//     return this.http.delete<User>(this.buildUrl((a) => a.deleteUser, { user_email: userEmail }));
-//   }
-// }
+  createNewUser(email: string): Observable<User> {
+    const { firstName, lastName } = getNameByNureEmail(email);
+    const newUser: User = {
+      email: email,
+      firstName,
+      lastName,
+      // Setting student role by default
+      role: RoleEnum.Student,
+    };
+
+    return this.authService.getAuthIdentity().pipe(
+      switchMap((fUser) => {
+        newUser.uid = fUser.uid;
+        return from(this.getUsersCollectionReference().doc(fUser.uid).set(newUser)).pipe(
+          switchMap(() => {
+            return this.getUsersCollectionReference()
+              .doc(fUser.uid)
+              .get()
+              .pipe(map((snap) => snap.data()));
+          })
+        );
+      })
+    );
+  }
+
+  private getUsersCollectionReference(): AngularFirestoreCollection<User> {
+    return this.afs.collection<User>('users');
+  }
+}

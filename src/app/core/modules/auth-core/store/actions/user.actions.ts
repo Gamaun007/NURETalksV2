@@ -1,5 +1,5 @@
 import { Action, createAction, props } from '@ngrx/store';
-import { User } from '../../models/domain';
+import { User } from 'core/models/domain';
 
 export const UserActionType = {
   LoadUsers: '[Users] Load users',
@@ -10,15 +10,11 @@ export const UserActionType = {
 
   UsersLoaded: '[Users] Users loaded',
 
+  LoadSpecificUser: '[Users] Load specific user',
+
   SpecificUserLoaded: '[Users] Specific User Loaded',
 
   UserUpdated: '[User] User updated',
-
-  RemoveUser: '[User] Remove user',
-
-  UserRemoved: '[User] User removed',
-
-  ResendUserInvitation: '[User] Resend user invitation',
 };
 
 export class LoadUsersAction implements Action {
@@ -36,7 +32,7 @@ export class UserCreatedAction implements Action {
 export class CreateUserAction implements Action {
   readonly type = UserActionType.CreateUser;
 
-  constructor(public payload: { user: User }) {}
+  constructor(public email: string) {}
 }
 
 export class UsersLoadedAction implements Action {
@@ -45,10 +41,17 @@ export class UsersLoadedAction implements Action {
   constructor(public payload: User[]) {}
 }
 
-export class ResendUserInvitationAction implements Action {
-  readonly type = UserActionType.ResendUserInvitation;
+export class LoadSpecificUserAction implements Action {
+  readonly type = UserActionType.LoadSpecificUser;
 
-  constructor(public user_email: string) {}
+  constructor(public email: string) {}
+}
+
+
+export class SpecificUserLoadedAction implements Action {
+  readonly type = UserActionType.SpecificUserLoaded;
+
+  constructor(public user: User) {}
 }
 
 export class UserUpdatedAction implements Action {
@@ -63,24 +66,11 @@ export class SpecificUserUpdatedAction implements Action {
   constructor(public payload: { email: string; changes: User }) {}
 }
 
-export class RemoveUserAction implements Action {
-  readonly type = UserActionType.RemoveUser;
-
-  constructor(public payload: { email: string; user: User }) {}
-}
-
-export class UserRemovedAction implements Action {
-  readonly type = UserActionType.UserRemoved;
-
-  constructor(public payload: { email: string }) {}
-}
-
 export const UsersAdapterActions = {
-  loadUsers: createAction(UserActionType.LoadUsers),
+  specificUserLoaded: createAction(UserActionType.SpecificUserLoaded, props<{ user: User }>()),
   usersLoaded: createAction(UserActionType.UsersLoaded, props<{ payload: User[] }>()),
   userUpdated: createAction(UserActionType.UserUpdated, props<{ user: User }>()),
-  removeUser: createAction(UserActionType.RemoveUser, props<{ payload: { email: string; user: User } }>()),
-  userRemoved: createAction(UserActionType.UserRemoved, props<{ payload: { email: string } }>()),
-  createUser: createAction(UserActionType.CreateUser, props<{ payload: { user: User } }>()),
+
+  createUser: createAction(UserActionType.CreateUser, props<{ email: string }>()),
   userCreated: createAction(UserActionType.UserCreated, props<{ payload: User }>()),
 };

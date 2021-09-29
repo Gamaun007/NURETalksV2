@@ -1,2 +1,3 @@
 // export { TenantService } from './tenant/tenant.service';
-// export { UserService } from './user/user.service';
+export { UserHttpService } from './user/user.service';
+export * from './errors.constants';

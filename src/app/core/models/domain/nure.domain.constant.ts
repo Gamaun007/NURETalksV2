@@ -1,0 +1,1 @@
+export const NUREUaDomain = 'nure@nure.ua';

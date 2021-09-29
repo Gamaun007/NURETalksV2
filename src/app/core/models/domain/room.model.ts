@@ -1,11 +1,11 @@
-import { IUserId } from './user.model';
-import { IRoomDetails } from './room-detail.model';
+import { UserId } from './user.model';
+import { RoomDetails } from './room-detail.model';
 
-export interface IRoomId {
+export interface RoomId {
   id?: string;
 }
-export interface IRoom extends IRoomId {
-  roomDetails: IRoomDetails;
+export interface Room extends RoomId {
+  roomDetails: RoomDetails;
   //User ID's array
   users?: string[];
 }

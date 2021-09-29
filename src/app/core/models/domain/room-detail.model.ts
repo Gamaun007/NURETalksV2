@@ -1,17 +1,15 @@
-import { IDirection } from './university/direction';
-import { IFaculty } from './university/faculty';
-import { IGroup } from './university/group';
-import { ISpeciality } from './university/speciality';
+import { Direction, Faculty, Group, Speciality } from './university';
+import { Message } from './message.model';
 
-export interface IRoomDetails {
+export interface RoomDetails {
   roomId: string;
   roomImage: string;
   adminId: string;
   name: string;
 
-  direction: IDirection;
-  faculty: IFaculty;
-  group: IGroup;
-  recentMessage: IMessage;
-  speciality: ISpeciality;
+  direction: Direction;
+  faculty: Faculty;
+  group: Group;
+  recentMessage: Message;
+  speciality: Speciality;
 }
