@@ -2,35 +2,51 @@
 // @import 'global-loading-animation';
 
 :host {
+  @apply w-full h-full bg-navy-30;
   //min-width: 100%;
   min-height: 100%;
   max-width: 100%;
+
   display: grid;
-  grid-template-columns: min-content 1fr min-content;
-  grid-template-rows: 1fr;
+  // grid-template-rows: 1fr 10fr;
   height: inherit;
   position: relative;
   overflow: hidden;
-  min-width: 991px;
+  // min-width: 991px;
 
   > * {
     overflow: hidden;
   }
 
-  app-user-profile-menu::ng-deep .user-profile-menu-popover {
-    max-width: fit-content;
-  }
+  display: grid;
+  grid-template-columns: 6rem auto 6rem;
+  grid-template-rows: 6rem auto;
+  grid-template-areas:
+    'left-column bar right-column'
+    'left-column main right-column'
+    'left-column main right-column';
+
+  // grid-template-columns: [col-start] 100% [col-end] 100%;
+  // grid-template-rows: [row-start] 100px [row-end] 100px;
+
+  // app-user-profile-menu::ng-deep .user-profile-menu-popover {
+  //   max-width: fit-content;
+  // }
 }
 
-.navigation-sidebar {
-  min-height: 100%;
-  justify-content: space-between;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0 12px 12px 0;
-  background: #ffff;
-  margin-right: 2px;
-  // box-shadow: 0 2px 3px rgba($color: $mc-navy-90, $alpha: 0.1);
+app-user-menu-bar {
+  grid-area: bar;
+  z-index: 500;
+  @apply w-full bg-navy-30;
+  // Display
+  @apply flex justify-between;
+  // Background
+  @apply bg-navy-90;
+  // Radius
+  @apply rounded-br-2xl rounded-bl-2xl;
+  // Shadow
+  @apply shadow-lg;
+  // box-shadow: 0 2px 3px rgba($color: black, $alpha: 0.1);
 
   // @media (max-width: $XSmall) {
   //   visibility: hidden;
@@ -40,18 +56,31 @@
 }
 
 .content {
-  width: 100%;
-  background: #edf0f1;
+  grid-area: main;
+  @apply w-full bg-navy-30;
 }
 
-.navigation-sidebar,
-.content {
-  min-height: 100%;
+#left-column {
+  @apply bg-navy-10;
+  grid-area: left-column;
+  grid-row-start: 1;
+  grid-row-end: 4;
 }
 
-.navigation-sidebar {
-  z-index: 998;
+#right-column {
+  @apply bg-navy-10;
+  grid-area: right-column;
+  grid-row-start: 1;
+  grid-row-end: 4;
 }
+// .navigation-sidebar,
+// .content {
+//   min-height: 100%;
+// }
+
+// .navigation-sidebar {
+//   z-index: 998;
+// }
 
 app-navigation-bar {
   display: flex;

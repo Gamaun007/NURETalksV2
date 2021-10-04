@@ -6,12 +6,14 @@ import { AuthGuardService, RoleService, AuthService, UserFacadeService } from '.
 import { FirebaseWrapperService } from './services';
 import { StoreModule } from '@ngrx/store';
 import * as storeFeature from './store';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   imports: [
     CommonModule,
     AngularFireModule.initializeApp(environment.config.firebase),
+    AngularFireStorageModule,
     StoreModule.forFeature(storeFeature.featureKey, storeFeature.reducers),
     EffectsModule.forFeature([storeFeature.UserEffects])
   ],

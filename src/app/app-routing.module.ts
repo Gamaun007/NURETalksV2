@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 const routes = [
   {
     path: '',
+    canActivate: [AuthGuardService],
     children: [
       {
         path: '',

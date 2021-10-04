@@ -1,11 +1,13 @@
+import { AuthService } from './../../services/auth/auth.service';
+import { UploadUserProfileIconAction } from './../actions/user.actions';
 import { UserHttpService } from '../../services/http/user/user.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
 // import { State } from 'core/modules/data/store';
-import { NEVER, Observable, of, throwError } from 'rxjs';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { from, NEVER, Observable, of, throwError } from 'rxjs';
+import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { User } from 'core/models/domain';
 import {
   CreateUserAction,
@@ -17,6 +19,7 @@ import {
   UserUpdatedAction,
 } from '../actions';
 import { AuthState } from 'core/modules/auth-core/store/state';
+import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
 
 @Injectable()
 export class UserEffects {
@@ -24,7 +27,9 @@ export class UserEffects {
     private actions$: Actions,
     private store: Store<AuthState>,
     private operationsTrackerService: OperationsTrackerService,
-    private usersHttpService: UserHttpService
+    private usersHttpService: UserHttpService,
+    private fileStorageService: FileStorageService,
+    private authService: AuthService
   ) {}
 
   // @Effect()
@@ -43,6 +48,39 @@ export class UserEffects {
   //     )
   //   )
   // );
+
+  uploadUserProfileIcon = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserActionType.UploadUserProfileIcon),
+      mergeMap((action: UploadUserProfileIconAction) =>
+        this.authService.getCurrentUserObservable().pipe(
+          switchMap((user) => {
+            return this.fileStorageService
+              .uploadFileToStorage(USER_PROFILE_IMAGE_PATH, user.uid, action.file)
+              .snapshotChanges()
+              .pipe(
+                switchMap((snap) => from(snap.ref.getDownloadURL()) as Observable<string>),
+                map((response) => {
+                  const partialUser: Partial<User> = {
+                    photoUrl: response,
+                  };
+                  return partialUser;
+                }),
+                switchMap((pUser) => this.usersHttpService.updateUser(user.uid, pUser).pipe(map(() => pUser))),
+                map((pUser) => new UserUpdatedAction(pUser)),
+                tap(() =>
+                  this.operationsTrackerService.trackSuccess(TrackOperations.UPLOAD_USER_PROFILE_ICON, user.email)
+                ),
+                catchError((err: Error) => {
+                  this.operationsTrackerService.trackError(TrackOperations.UPLOAD_USER_PROFILE_ICON, err, user.email);
+                  return NEVER;
+                })
+              );
+          })
+        )
+      )
+    )
+  );
 
   loadSpecificUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -66,14 +104,19 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(UserActionType.CreateUser),
       mergeMap((action: CreateUserAction) => {
-        return this.usersHttpService.createNewUser(action.email).pipe(
-          tap((user) => this.operationsTrackerService.trackSuccess(user.email, TrackOperations.CREATE_USER)),
-          map((createdUser) => {
-            return new UserCreatedAction(createdUser);
-          }),
-          catchError((err) => {
-            this.operationsTrackerService.trackError(action.email, err, TrackOperations.CREATE_USER);
-            return NEVER;
+        return this.fileStorageService.getFileFromStorage(USER_PROFILE_IMAGE_PATH, 'default.jpg').pipe(
+          switchMap((imageUrl) => {
+            debugger;
+            return this.usersHttpService.createNewUser(action.email, { photoUrl: imageUrl }).pipe(
+              tap((user) => this.operationsTrackerService.trackSuccess(user.email, TrackOperations.CREATE_USER)),
+              map((createdUser) => {
+                return new UserCreatedAction(createdUser);
+              }),
+              catchError((err) => {
+                this.operationsTrackerService.trackError(action.email, err, TrackOperations.CREATE_USER);
+                return NEVER;
+              })
+            );
           })
         );
       })
@@ -109,8 +152,7 @@ export class UserEffects {
   //   })
   // );
 
-  // @Effect({ dispatch: false })
-  // userUpdated$: Observable<Action> = this.actions$.pipe(
+  // userUpdated$ = createEffect(() => this.actions$.pipe(
   //   ofType(UserActionType.UserUpdated),
   //   mergeMap((action: UserUpdatedAction) => {
   //     return this.usersHttpService.updateUser(action.user.email).pipe(
@@ -121,5 +163,5 @@ export class UserEffects {
   //       })
   //     );
   //   })
-  // );
+  // ), { dispatch: false})
 }

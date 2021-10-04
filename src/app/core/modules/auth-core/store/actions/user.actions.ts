@@ -15,6 +15,8 @@ export const UserActionType = {
   SpecificUserLoaded: '[Users] Specific User Loaded',
 
   UserUpdated: '[User] User updated',
+
+  UploadUserProfileIcon: '[User] Upload user profile icon'
 };
 
 export class LoadUsersAction implements Action {
@@ -47,6 +49,11 @@ export class LoadSpecificUserAction implements Action {
   constructor(public email: string) {}
 }
 
+export class UploadUserProfileIconAction implements Action {
+  readonly type = UserActionType.UploadUserProfileIcon;
+
+  constructor(public user_id: string, public file: File) {}
+}
 
 export class SpecificUserLoadedAction implements Action {
   readonly type = UserActionType.SpecificUserLoaded;
@@ -56,20 +63,20 @@ export class SpecificUserLoadedAction implements Action {
 
 export class UserUpdatedAction implements Action {
   readonly type = UserActionType.UserUpdated;
-  constructor(public user: User) {}
+  constructor(public user: Partial<User>) {}
 }
 
-// Consider to remove this action as it handles inappropriate way
-export class SpecificUserUpdatedAction implements Action {
-  readonly type = UserActionType.UserUpdated;
+// // Consider to remove this action as it handles inappropriate way
+// export class SpecificUserUpdatedAction implements Action {
+//   readonly type = UserActionType.UserUpdated;
 
-  constructor(public payload: { email: string; changes: User }) {}
-}
+//   constructor(public payload: { email: string; changes: User }) {}
+// }
 
 export const UsersAdapterActions = {
   specificUserLoaded: createAction(UserActionType.SpecificUserLoaded, props<{ user: User }>()),
   usersLoaded: createAction(UserActionType.UsersLoaded, props<{ payload: User[] }>()),
-  userUpdated: createAction(UserActionType.UserUpdated, props<{ user: User }>()),
+  userUpdated: createAction(UserActionType.UserUpdated, props<{ user: Partial<User> }>()),
 
   createUser: createAction(UserActionType.CreateUser, props<{ email: string }>()),
   userCreated: createAction(UserActionType.UserCreated, props<{ payload: User }>()),

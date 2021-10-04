@@ -1,3 +1,5 @@
+import { ButtonsModule } from './modules/buttons/buttons.module';
+import { FileStorageService } from './modules/firebase/http/file-storage.service';
 import { LoadersModule } from './modules/loaders';
 import { FormControlsModule } from './modules/form-controls/form-controls.module';
 import { DynamicFormModule } from 'core/modules/dynamic-form';
@@ -12,12 +14,12 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AppConfigService, LoaderManagerService, MessageBusService } from './services';
 import { LoggerService } from 'core/services';
-import { GlobalLoaderComponent } from 'core/components';
+import { GlobalLoaderComponent, UserMenuBarComponent } from 'core/components';
 
 export const WINDOW = new InjectionToken<Window>('window');
 
 @NgModule({
-  declarations: [GlobalLoaderComponent],
+  declarations: [GlobalLoaderComponent, UserMenuBarComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -31,6 +33,7 @@ export const WINDOW = new InjectionToken<Window>('window');
     DynamicFormModule,
     FormControlsModule,
     LoadersModule,
+    ButtonsModule
   ],
   exports: [
     // Modules
@@ -41,9 +44,11 @@ export const WINDOW = new InjectionToken<Window>('window');
     AngularSvgIconModule,
     FormControlsModule,
     LoadersModule,
+    ButtonsModule,
 
     // Component
     GlobalLoaderComponent,
+    UserMenuBarComponent
   ],
 })
 export class CoreModule {
@@ -55,6 +60,7 @@ export class CoreModule {
         AppConfigService,
         LoaderManagerService,
         LoggerService,
+        FileStorageService,
         {
           provide: WINDOW,
           useFactory: () => window,

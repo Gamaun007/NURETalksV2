@@ -2,7 +2,7 @@ import { UserFacadeService } from './../facades/user-facade/user-facade.service'
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { WindowHelperService } from 'core/services/window-helper/window-helper.service';
-import { Observable, NEVER } from 'rxjs';
+import { Observable, NEVER, of } from 'rxjs';
 import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { FirebaseWrapperService } from '../firebase-wrapper/firebase-wrapper.service';
 import firebase from 'firebase/app';
@@ -67,7 +67,7 @@ export class AuthService {
         if (authentication) {
           return this.userFacade.getUser(authentication.email);
         } else {
-          return NEVER;
+          return of(null);
         }
       }),
       shareReplay()

@@ -1,6 +1,6 @@
 import { NO_USERS_ERROR } from './../../http/errors.constants';
 import { ActionDispatcherService, TrackOperations } from 'core/modules/data/services';
-import { LoadSpecificUserAction, CreateUserAction } from './../../../store/actions/user.actions';
+import { LoadSpecificUserAction, CreateUserAction, UploadUserProfileIconAction } from './../../../store/actions/user.actions';
 import { Injectable } from '@angular/core';
 import { User } from 'core/models/domain';
 import { NEVER, Observable } from 'rxjs';
@@ -23,6 +23,19 @@ export class UserFacadeService {
       if (error.message === NO_USERS_ERROR(email)) {
         this.createUser(email);
       }
+    }
+  }
+
+  async uploadUserProfileIcon(user_id: string, file: File): Promise<void> {
+
+    try {
+      await this.actionDispatcher.dispatchActionAsync(
+        new UploadUserProfileIconAction(user_id, file),
+        TrackOperations.LOAD_SPECIFIC_USER,
+        user_id
+      );
+    } catch (error) {
+      // TODO
     }
   }
 

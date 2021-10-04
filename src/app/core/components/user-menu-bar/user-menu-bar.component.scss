@@ -1,0 +1,18 @@
+:host {
+  @apply font-main text-white flex flex-row items-center pl-5 pr-5;
+
+  #profile-icon-wrapper {
+    display: block;
+    width: 60px;
+    height: 60px;
+
+    .user-icon {
+      height: inherit;
+      width: inherit;
+      border-radius: 50%;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+    }
+  }
+}

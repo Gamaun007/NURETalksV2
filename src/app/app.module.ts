@@ -15,7 +15,6 @@ import { StoreModule } from '@ngrx/store';
 import { RootComponent, WildCardComponent } from 'src/app/components';
 import { LottieModule } from 'ngx-lottie';
 import player, { LottiePlayer } from 'lottie-web';
-
 export function playerFactory(): LottiePlayer {
   return player;
 }

@@ -10,6 +10,6 @@ export class SvgLoaderService extends SvgHttpLoader {
   }
 
   getSvg(url: string): Observable<string> {
-    return super.getSvg(`/assets/svg-icons/${url}.svg`);
+    return super.getSvg(`/assets/icons/${url}.svg`);
   }
 }

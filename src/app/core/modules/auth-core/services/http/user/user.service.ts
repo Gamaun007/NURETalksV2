@@ -34,7 +34,11 @@ export class UserHttpService {
       );
   }
 
-  createNewUser(email: string): Observable<User> {
+  updateUser(id: string, userToUpdate: Partial<User>): Observable<void> {
+    return from(this.getUsersCollectionReference().doc(id).update(userToUpdate));
+  }
+
+  createNewUser(email: string, user?: Partial<User>): Observable<User> {
     const { firstName, lastName } = getNameByNureEmail(email);
     const newUser: User = {
       email: email,
@@ -43,6 +47,12 @@ export class UserHttpService {
       // Setting student role by default
       role: RoleEnum.Student,
     };
+
+    if (user) {
+      Object.keys(user).forEach((propName) => {
+        newUser[propName] = user[propName];
+      });
+    }
 
     return this.authService.getAuthIdentity().pipe(
       switchMap((fUser) => {

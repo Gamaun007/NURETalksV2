@@ -11,6 +11,8 @@ export class ControlErrorsComponent {
     return this.ngControl?.control;
   }
 
+
+
   @Input()
   errorTexts: object;
 
@@ -30,6 +32,10 @@ export class ControlErrorsComponent {
     }
 
     return null;
+  }
+
+  errorTextAsTemplate(error: any): TemplateRef<any> {
+    return error as TemplateRef<any>;
   }
 
   isErrorTextTemplateRef(errText: any): boolean {

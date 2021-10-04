@@ -9,6 +9,7 @@ export class AuthGuardService implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   async canActivate(): Promise<boolean | UrlTree> {
+    debugger;
     // startsWith solves the bug with calling wrong authguard
     if (
       !this.router.routerState.snapshot.url.startsWith(`/${AppRoutes.Auth}`) &&

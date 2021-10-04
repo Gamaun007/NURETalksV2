@@ -100,7 +100,7 @@ export class TextFieldComponent extends AbstractValueAccessor {
   readonly: boolean;
 
   @Output()
-  input = new EventEmitter<InputEvent>();
+  input = new EventEmitter<Event>();
 
   @Output()
   valueChanges = new EventEmitter<string>();
@@ -109,6 +109,10 @@ export class TextFieldComponent extends AbstractValueAccessor {
   removeControl: EventEmitter<string> = new EventEmitter();
 
   placeholderObj: { type: string; value: string | TemplateRef<any> };
+
+  get placeholderAsTemplate(): TemplateRef<any> {
+    return this.placeholderObj.value as TemplateRef<any>;
+  }
 
   // Autocomplete related properties
 

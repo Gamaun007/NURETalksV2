@@ -44,6 +44,10 @@ export class TextAreaComponent extends AbstractValueAccessor {
     return this.value;
   }
 
+  get placeholderAsTemplate(): TemplateRef<any> {
+    return this.placeholderObj.value as TemplateRef<any>;
+  }
+
   @HostBinding('class.active')
   isActive: boolean;
 
@@ -91,7 +95,7 @@ export class TextAreaComponent extends AbstractValueAccessor {
   resizable = true;
 
   @Output()
-  input = new EventEmitter<InputEvent>();
+  input = new EventEmitter<Event>();
 
   @Output()
   valueChanges = new EventEmitter<string>();

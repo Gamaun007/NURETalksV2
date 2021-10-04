@@ -1,0 +1,15 @@
+<ng-container *ngIf="curentUser$ | async as currentUser">
+  <div class="metadata flex flex-row items-center">
+    <div id="profile-icon-wrapper">
+      <div class="user-icon" [style.background-image]="userProfileIconUrl$ | async"></div>
+    </div>
+    <div class="name">
+      <span>{{ currentUser.firstName }}</span>
+      <span>{{ currentUser.lastName }}</span>
+    </div>
+  </div>
+
+  <div class="logout-btn-wrapper">
+    <app-button [svgIconPath]="'logout'" (click)="logout()"></app-button>
+  </div>
+</ng-container>
