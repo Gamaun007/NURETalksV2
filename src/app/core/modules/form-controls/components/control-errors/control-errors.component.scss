@@ -1,7 +1,7 @@
-// @import 'index.scss';
+@import 'index.scss';
 
-// :host {
-//   @include MulishFontStyle(11px);
-//   color: $mc-text-error;
-//   position: absolute;
-// }
+:host {
+  @apply font-main;
+  color: $mc-text-error;
+  position: absolute;
+}

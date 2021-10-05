@@ -1,3 +1,20 @@
 {
-  "app-component": "App component text"
+  "app-component": "App component text",
+  "auth": {
+    "loginPage": {
+      "mainDescription": "Welcome to \"NURE Talks\"",
+      "loginButton": "Login",
+      "form": {
+        "placeholder": "@nure.ua",
+        "label": "Enter your university email"
+      }
+    }
+  },
+  "formControlErrors": {
+    "required": "This field is required",
+    "wrongEmailFormat": "Email provided in a wrong format",
+    "emailNotFound": "Please enter a valid email address",
+    "url": "This must be an URL",
+    "email": "This must be an email"
+  }
 }

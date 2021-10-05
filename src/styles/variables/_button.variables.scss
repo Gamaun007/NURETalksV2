@@ -1,0 +1,38 @@
+@import '_palette';
+
+/* Common */
+$border-radius: 6px;
+$disabled-opacity: 0.3;
+$min-width: 160px;
+$min-height: 40px;
+$distance-between-icon-and-text: 5px;
+$padding-right-left: 10px;
+$loading-circle-size: 24px;
+
+/* Sizes */
+$medium-button-width: 160px;
+$medium-button-height: 40px;
+
+$small-button-width: 40px;
+$small-button-height: 40px;
+
+$stretch-button-width: 100%;
+$stretch-button-height: 40px;
+
+$responsive-button-padding-left-right: 20px;
+$responsive-button-height: 40px;
+
+$fixed160-button-width: 160px;
+
+/* Primary button */
+
+/* Secondary button */
+
+/* Filters button */
+$filters-button-width: 130px;
+$filters-button-height: $min-height;
+$filters-button-border-radius: 6px 0px 0px 6px;
+
+/* Icon button */
+$icon-button-width: 40px;
+$icon-button-height: $min-height;

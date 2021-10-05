@@ -33,15 +33,15 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
   dynamicFormGroup = new DynamicFormGroup({
     email: new TextFieldControl({
       initialInputs: {
-        label: this.buildTranslationKey('email.label'),
-        placeholder: this.buildTranslationKey('email.placeholder'),
+        label: this.buildTranslationKey('form.label'),
+        placeholder: this.buildTranslationKey('form.placeholder'),
         validateOnDirty: true,
         required: true,
-        errorTexts: {
-          required: this.buildTranslationKey('email.requiredErrorText'),
-          email: this.buildTranslationKey('email.wrongEmailFormat'),
-          emailNotFound: this.buildTranslationKey('email.emailNotFound'),
-        },
+        // errorTexts: {
+        //   required: this.buildTranslationKey('email.requiredErrorText'),
+        //   email: this.buildTranslationKey('email.wrongEmailFormat'),
+        //   emailNotFound: this.buildTranslationKey('email.emailNotFound'),
+        // },
       },
       validators: [Validators.required, Validators.email],
     }),
@@ -79,6 +79,6 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
   }
 
   buildTranslationKey(relativeKey: string): string {
-    return `auth.emailPart.${relativeKey}`;
+    return `auth.loginPage.${relativeKey}`;
   }
 }

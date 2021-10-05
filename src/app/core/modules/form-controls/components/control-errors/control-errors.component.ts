@@ -1,27 +1,45 @@
-import { Component, Input, Optional, TemplateRef } from '@angular/core';
+import { Component, HostBinding, Input, OnChanges, Optional, SimpleChanges, TemplateRef } from '@angular/core';
 import { AbstractControl, NgControl } from '@angular/forms';
+
+const defaultErrors = {
+  required: 'formControlErrors.required',
+  email: 'formControlErrors.wrongEmailFormat',
+  emailNotFound: 'formControlErrors.emailNotFound',
+};
 
 @Component({
   selector: 'app-control-errors',
   templateUrl: './control-errors.component.html',
   styleUrls: ['./control-errors.component.scss'],
 })
-export class ControlErrorsComponent {
+export class ControlErrorsComponent implements OnChanges {
+  @HostBinding('class')
+  private classes = 'inline font-main text-sm';
+
   get control(): AbstractControl {
     return this.ngControl?.control;
   }
 
-
-
   @Input()
   errorTexts: object;
+  resolvedErrorTexts: object;
 
   constructor(@Optional() private ngControl: NgControl) {}
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if('errorTexts' in changes) {
+      this.resolvedErrorTexts = { ...defaultErrors };
 
-  buildErrorTexts(): string[] {
-    if (this.errorTexts && this.control && this.control.errors) {
+      if(this.errorTexts) {
+        this.resolvedErrorTexts = { ...this.resolvedErrorTexts, ...this.errorTexts };
+      }
+    }
+  }
+
+  buildErrorTexts(): (string | TemplateRef<any> | any)[] {
+    if (this.resolvedErrorTexts && this.control && this.control.errors) {
       return Object.keys(this.control.errors).map((errorKey) => {
-        const propValue = this.errorTexts[errorKey];
+        const propValue = this.resolvedErrorTexts[errorKey];
 
         if (typeof propValue === 'function') {
           return propValue();
@@ -32,10 +50,6 @@ export class ControlErrorsComponent {
     }
 
     return null;
-  }
-
-  errorTextAsTemplate(error: any): TemplateRef<any> {
-    return error as TemplateRef<any>;
   }
 
   isErrorTextTemplateRef(errText: any): boolean {

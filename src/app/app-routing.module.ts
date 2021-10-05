@@ -1,3 +1,4 @@
+import { TranslateResolverService } from './core/services/translate-resolver/translate-resolver.service';
 import { RootComponent } from 'src/app/components';
 import { WildCardComponent } from './components/wild-card/wild-card.component';
 import { AuthGuardService } from './core/modules/auth-core/services';
@@ -8,7 +9,8 @@ import { RouterModule } from '@angular/router';
 const routes = [
   {
     path: '',
-    canActivate: [AuthGuardService],
+    // TODO: PluginRedirectionGuardService to be removed when we migrate all customers to firebase
+    canActivate: [TranslateResolverService],
     children: [
       {
         path: '',
@@ -16,24 +18,32 @@ const routes = [
         children: [
           {
             path: '',
-            component: RootComponent,
+            canActivate: [AuthGuardService],
             children: [
               {
                 path: '',
-                loadChildren: () =>
-                  import('./section-modules/messanger/messanger.module').then((m) => m.MessangerModule),
+                component: RootComponent,
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                      import('./section-modules/messanger/messanger.module').then((m) => m.MessangerModule),
+                  },
+                ],
               },
             ],
           },
         ],
       },
+      {
+        path: AppRoutes.Auth,
+        canActivate: [],
+        loadChildren: () =>
+          import('./section-modules/authentication/authentication.module').then((m) => m.AuthenticationModule),
+      },
     ],
   },
-  {
-    path: AppRoutes.Auth,
-    loadChildren: () =>
-      import('./section-modules/authentication/authentication.module').then((m) => m.AuthenticationModule),
-  },
+
   {
     path: '**',
     component: WildCardComponent,

@@ -21,7 +21,7 @@ svg {
 // @include angular-material-theme($anectodes-frontend-theme);
 
 /* You can add global styles to this file, and also import other style files */
-// @import 'index';
+@import 'index';
 // @import './typography.scss';
 // @import 'base-modal';
 // @import './scrollbar';
@@ -33,7 +33,7 @@ svg {
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 // @import './btn-group.scss';
-// @import './button.scss';
+@import './button.scss';
 
 @font-face {
   font-family: 'Mulish';
