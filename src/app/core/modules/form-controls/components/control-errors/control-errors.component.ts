@@ -5,6 +5,7 @@ const defaultErrors = {
   required: 'formControlErrors.required',
   email: 'formControlErrors.wrongEmailFormat',
   emailNotFound: 'formControlErrors.emailNotFound',
+  emailnure: 'formControlErrors.emailnure'
 };
 
 @Component({

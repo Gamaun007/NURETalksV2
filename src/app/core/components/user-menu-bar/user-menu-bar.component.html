@@ -1,15 +1,17 @@
 <ng-container *ngIf="curentUser$ | async as currentUser">
   <div class="metadata flex flex-row items-center">
-    <div id="profile-icon-wrapper">
+    <div id="profile-icon-wrapper" class="mr-3">
       <div class="user-icon" [style.background-image]="userProfileIconUrl$ | async"></div>
     </div>
-    <div class="name">
-      <span>{{ currentUser.firstName }}</span>
-      <span>{{ currentUser.lastName }}</span>
+    <div class="name m-3">
+      <span class="mr-1">{{ currentUser.firstName }}&nbsp;{{ currentUser.lastName }}</span>
+      <span class="mr-1" *ngIf="getNameByNureEmail(currentUser.email) as res"
+        >{{ res.firstName }} {{ res.lastName }}</span
+      >
     </div>
   </div>
 
   <div class="logout-btn-wrapper">
-    <app-button [svgIconPath]="'logout'" (click)="logout()"></app-button>
+    <app-button [svgIconPath]="'logout'" [size]="'stretch'" (click)="logout()"></app-button>
   </div>
 </ng-container>

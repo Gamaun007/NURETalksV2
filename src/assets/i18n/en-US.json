@@ -3,6 +3,7 @@
   "auth": {
     "loginPage": {
       "mainDescription": "Welcome to \"NURE Talks\"",
+      "confirmationSent": "Login confirmation sent to email.\n Please confirm your login to the system \n by following the link in email",
       "loginButton": "Login",
       "form": {
         "placeholder": "@nure.ua",
@@ -15,6 +16,7 @@
     "wrongEmailFormat": "Email provided in a wrong format",
     "emailNotFound": "Please enter a valid email address",
     "url": "This must be an URL",
-    "email": "This must be an email"
+    "email": "This must be an email",
+    "emailnure": "This must be email with @nure.ua domain"
   }
 }

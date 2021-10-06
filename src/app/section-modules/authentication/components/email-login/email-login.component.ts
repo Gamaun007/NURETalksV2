@@ -11,7 +11,7 @@ import {
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TextFieldControl } from 'core/modules/form-controls';
-import { DynamicFormGroup } from 'core/modules/dynamic-form';
+import { CustomValidators, DynamicFormGroup } from 'core/modules/dynamic-form';
 import { SubscriptionDetacher } from 'core/utils';
 import { Subject } from 'rxjs';
 
@@ -29,6 +29,7 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
   signInEmailSent = new EventEmitter<string>();
 
   isProcessing$ = new Subject<boolean>();
+  emailConfirmationMessageSent: boolean;
 
   dynamicFormGroup = new DynamicFormGroup({
     email: new TextFieldControl({
@@ -38,12 +39,12 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
         validateOnDirty: true,
         required: true,
         // errorTexts: {
-        //   required: this.buildTranslationKey('email.requiredErrorText'),
-        //   email: this.buildTranslationKey('email.wrongEmailFormat'),
-        //   emailNotFound: this.buildTranslationKey('email.emailNotFound'),
+        //   // emailnure: this.buildTranslationKey('email.nureEmail'),
+        //   // email: this.buildTranslationKey('email.wrongEmailFormat'),
+        //   // emailNotFound: this.buildTranslationKey('email.emailNotFound'),
         // },
       },
-      validators: [Validators.required, Validators.email],
+      validators: [CustomValidators.emailNureValidator],
     }),
   });
 
@@ -70,6 +71,7 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
 
       try {
         await this.authenticationService.sendSignInToEmail(this.dynamicFormGroup.items.email.value);
+        this.emailConfirmationMessageSent = true;
       } catch (err) {
         this.dynamicFormGroup.items.email.setErrors({ emailNotFound: true });
       } finally {

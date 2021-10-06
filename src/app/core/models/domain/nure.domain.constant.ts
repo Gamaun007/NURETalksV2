@@ -1,1 +1,1 @@
-export const NUREUaDomain = 'nure@nure.ua';
+export const NUREUaDomain = '@nure.ua';

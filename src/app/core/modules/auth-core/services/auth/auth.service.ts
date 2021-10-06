@@ -57,6 +57,7 @@ export class AuthService {
 
   async isAuthenticatedAsync(): Promise<boolean> {
     const user = await this.getCurrentUserAsync();
+    debugger;
 
     return !!user;
   }

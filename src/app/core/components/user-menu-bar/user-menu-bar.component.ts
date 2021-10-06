@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from 'core/models/domain';
 import { map } from 'rxjs/operators';
+import { getNameByNureEmail } from 'core/utils';
 
 @Component({
   selector: 'app-user-menu-bar',
@@ -13,6 +14,8 @@ import { map } from 'rxjs/operators';
 export class UserMenuBarComponent implements OnInit {
   curentUser$: Observable<User>;
   userProfileIconUrl$: Observable<string>;
+
+  getNameByNureEmail = getNameByNureEmail;
 
   constructor(private authService: AuthService, private userFacade: UserFacadeService) {}
 

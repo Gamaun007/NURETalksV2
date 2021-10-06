@@ -18,7 +18,7 @@ const routes = [
         children: [
           {
             path: '',
-            canActivate: [AuthGuardService],
+            canActivate: [],
             children: [
               {
                 path: '',

@@ -1,15 +1,25 @@
-<div class="description">
-  <span class="text-5xl font-semibold">{{ buildTranslationKey('mainDescription') | translate }}</span>
-</div>
-<div class="wrapper">
-  <app-dynamic-form-outlet [dynamicFormGroup]="dynamicFormGroup"></app-dynamic-form-outlet>
-  <app-button
-    (click)="sendSignInLink()"
-    [loading]="isProcessing$ | async"
-    [class.disabled]="dynamicFormGroup.invalid"
-    [size]="'stretch'"
-    id="sign-in-btn"
-    class="main mulish action-btn mt-5"
-    >{{ buildTranslationKey('loginButton') | translate }}</app-button
-  >
-</div>
+<ng-container *ngTemplateOutlet="emailConfirmationMessageSent ? confirmationWaiting : loginForm"></ng-container>
+
+<ng-template #loginForm>
+  <div class="description">
+    <span class="text-5xl font-semibold">{{ buildTranslationKey('mainDescription') | translate }}</span>
+  </div>
+  <div class="wrapper">
+    <app-dynamic-form-outlet [dynamicFormGroup]="dynamicFormGroup"></app-dynamic-form-outlet>
+    <app-button
+      (click)="sendSignInLink()"
+      [loading]="isProcessing$ | async"
+      [class.disabled]="dynamicFormGroup.invalid"
+      [size]="'stretch'"
+      id="sign-in-btn"
+      class="main mulish action-btn mt-5"
+      >{{ buildTranslationKey('loginButton') | translate }}</app-button
+    >
+  </div>
+</ng-template>
+
+<ng-template #confirmationWaiting> 
+  <div class="flex flex-col justify-center text-center items-center w-full h-full">
+    <app-text class="text-5xl font-semibold" [text]="buildTranslationKey('confirmationSent')"></app-text>
+  </div>
+</ng-template>

@@ -14,12 +14,12 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AppConfigService, LoaderManagerService, MessageBusService } from './services';
 import { LoggerService } from 'core/services';
-import { GlobalLoaderComponent, UserMenuBarComponent } from 'core/components';
+import { GlobalLoaderComponent, TextComponent, UserMenuBarComponent } from 'core/components';
 
 export const WINDOW = new InjectionToken<Window>('window');
 
 @NgModule({
-  declarations: [GlobalLoaderComponent, UserMenuBarComponent],
+  declarations: [GlobalLoaderComponent, UserMenuBarComponent, TextComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -48,7 +48,8 @@ export const WINDOW = new InjectionToken<Window>('window');
 
     // Component
     GlobalLoaderComponent,
-    UserMenuBarComponent
+    UserMenuBarComponent,
+    TextComponent
   ],
 })
 export class CoreModule {

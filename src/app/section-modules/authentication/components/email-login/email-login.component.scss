@@ -1,8 +1,8 @@
 // @import '../shared-styles.scss';
 :host {
   zoom: 1.7;
-  width: 25rem;
-  height: 15rem;
+  min-width: 25rem;
+  min-height: 15rem;
   @apply bg-blue-70 rounded-2xl text-white p-5 flex items-center justify-between flex-col;
 
   &::ng-deep {
