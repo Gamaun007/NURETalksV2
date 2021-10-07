@@ -15,6 +15,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AppConfigService, LoaderManagerService, MessageBusService } from './services';
 import { LoggerService } from 'core/services';
 import { GlobalLoaderComponent, TextComponent, UserMenuBarComponent } from 'core/components';
+import { RoomsModule } from 'core/modules/rooms';
 
 export const WINDOW = new InjectionToken<Window>('window');
 
@@ -33,7 +34,8 @@ export const WINDOW = new InjectionToken<Window>('window');
     DynamicFormModule,
     FormControlsModule,
     LoadersModule,
-    ButtonsModule
+    ButtonsModule,
+    RoomsModule,
   ],
   exports: [
     // Modules
@@ -45,6 +47,7 @@ export const WINDOW = new InjectionToken<Window>('window');
     FormControlsModule,
     LoadersModule,
     ButtonsModule,
+    RoomsModule,
 
     // Component
     GlobalLoaderComponent,

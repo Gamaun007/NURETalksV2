@@ -21,7 +21,7 @@ export class UserMenuBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.curentUser$ = this.authService.getCurrentUserObservable();
-    this.userProfileIconUrl$ = this.curentUser$.pipe(map((user) => `url(${user.photoUrl})`));
+    this.userProfileIconUrl$ = this.curentUser$.pipe(map((user) => `url(${user.photo_url})`));
   }
 
   logout(): void {

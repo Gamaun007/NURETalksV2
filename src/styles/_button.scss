@@ -39,6 +39,37 @@
     }
   }
 
+  &[type='secondary noborder'] {
+    @apply bg-transparent;
+    @apply text-navy-90;
+    @apply text-navy-90;
+    border-radius: $border-radius;
+
+    app-circle-loader {
+      .loaderQuart {
+        @apply border-navy-40;
+
+        &:after {
+          border-top-color: $mc-navy-90;
+        }
+      }
+    }
+    @apply border-0;
+
+    &:hover {
+      @apply bg-navy-90;
+      @apply text-white;
+
+      .font-color {
+        fill: $mc-white;
+
+        * {
+          fill: $mc-white;
+        }
+      }
+    }
+  }
+
   &[type='secondary'] {
     @apply bg-transparent;
     @apply text-navy-90;

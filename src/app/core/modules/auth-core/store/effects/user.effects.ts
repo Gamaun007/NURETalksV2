@@ -62,7 +62,7 @@ export class UserEffects {
                 switchMap((snap) => from(snap.ref.getDownloadURL()) as Observable<string>),
                 map((response) => {
                   const partialUser: Partial<User> = {
-                    photoUrl: response,
+                    photo_url: response,
                   };
                   return partialUser;
                 }),
@@ -107,7 +107,7 @@ export class UserEffects {
         return this.fileStorageService.getFileFromStorage(USER_PROFILE_IMAGE_PATH, 'default.jpg').pipe(
           switchMap((imageUrl) => {
             debugger;
-            return this.usersHttpService.createNewUser(action.email, { photoUrl: imageUrl }).pipe(
+            return this.usersHttpService.createNewUser(action.email, { photo_url: imageUrl }).pipe(
               tap((user) => this.operationsTrackerService.trackSuccess(user.email, TrackOperations.CREATE_USER)),
               map((createdUser) => {
                 return new UserCreatedAction(createdUser);

@@ -5,7 +5,7 @@ export interface RoomId {
   id?: string;
 }
 export interface Room extends RoomId {
-  roomDetails: RoomDetails;
+  room_details: RoomDetails;
   //User ID's array
   users?: string[];
 }

@@ -9,9 +9,9 @@ export interface UserId {
 export interface User extends UserId {
   email?: string;
   role: string;
-  photoUrl?: string;
-  firstName?: string;
-  lastName?: string;
+  photo_url?: string;
+  first_name?: string;
+  last_name?: string;
   password?: string;
 
   direction?: Direction;

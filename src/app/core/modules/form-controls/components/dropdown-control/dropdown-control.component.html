@@ -1,0 +1,27 @@
+<app-control-header *ngIf="titleTranslationKey" [label]="titleTranslationKey" [index]="index" [required]="required" [infoTooltip]="infoTooltip">
+</app-control-header>
+<div class="flex flex-row">
+  <app-dropdown-button cdkOverlayOrigin 
+                       #trigger="cdkOverlayOrigin"
+                       [isOpen]="isDropdownOpened"
+                       [value]="getDisplayValue(value)"
+                       [placeholder]="placeholderTranslationKey | translate"
+                       (click)="toggleDropdown()"
+                       [disabled]="isDisabled$ | async"
+  ></app-dropdown-button>
+  <svg-icon *ngIf="comingSoon" class="coming-soon-icon" src="coming_soon" preserveAspectRatio="none" [stretch]="true"></svg-icon>
+</div>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isDropdownOpened"
+  [cdkConnectedOverlayPanelClass]="overlayPanelClass" (backdropClick)="close()">
+  <app-dropdown-options-backdrop [style.width.px]="listWidth" #openableElement>
+    <app-text-field *ngIf="searchEnabled" [formControl]="searchField" [clearButtonEnabled]="true" [placeholderIcon]="'search'" [placeholder]="searchFieldPlaceholder | translate"
+      (valueChanges)="search($event)" (click)="searchFieldClick($event)">
+    </app-text-field>
+    <perfect-scrollbar [style.max-height]="listMaxHeight + 'px'" [config]="{ suppressScrollX: true }">
+      <app-dropdown-option [style.height]="buttonHeight + 'px'" [selected]="item === value" *ngFor="let item of displayedData" (click)="selectItem(item)">
+        {{ getDisplayValue(item) }}
+      </app-dropdown-option>
+    </perfect-scrollbar>
+  </app-dropdown-options-backdrop>
+</ng-template>
