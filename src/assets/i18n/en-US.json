@@ -13,10 +13,24 @@
   },
   "formControlErrors": {
     "required": "This field is required",
+    "requiredTooltip": "This field is required",
     "wrongEmailFormat": "Email provided in a wrong format",
     "emailNotFound": "Please enter a valid email address",
     "url": "This must be an URL",
     "email": "This must be an email",
     "emailnure": "This must be email with @nure.ua domain"
+  },
+  "university": {
+    "form": {
+      "selectFaculty": "Faculty",
+      "selectFacultyPlaceholder": "Select faculty",
+      "selectDirection": "Direction",
+      "selectDirectionPlaceholder": "Select direction",
+      "selectSpeciality": "Specility",
+      "selectSpecialityPlaceholder": "Select specility",
+      "selectGroup": "Group",
+      "selectGroupPlaceholder": "Select group",
+      "specialityByDirection": "By Direction"
+    }
   }
 }

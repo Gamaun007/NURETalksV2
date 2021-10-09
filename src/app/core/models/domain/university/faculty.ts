@@ -1,5 +1,5 @@
 import { Department } from './department';
-import { DirectionExtended } from './direction';
+import { Direction } from './direction';
 
 export interface Faculty {
   id: number;
@@ -7,7 +7,7 @@ export interface Faculty {
   shortName: string;
 
   departments: Department[];
-  directions: DirectionExtended[];
+  directions: Direction[];
 }
 
 // export interface Faculty {

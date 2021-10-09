@@ -21,7 +21,8 @@ svg {
 
 /* You can add global styles to this file, and also import other style files */
 @import 'index';
-@include cdk-overlay();
+@import "~@angular/cdk/overlay-prebuilt.css";
+// @include cdk-overlay();
 // @import './typography.scss';
 // @import 'base-modal';
 // @import './scrollbar';
