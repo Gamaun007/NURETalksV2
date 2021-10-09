@@ -30,19 +30,8 @@ export class TextFieldComponent extends AbstractValueAccessor {
     super(injector);
   }
 
-  @HostBinding('class.dirty')
-  get dirty(): boolean {
-    return this.formControl?.dirty;
-  }
-
-  @HostBinding('class.invalid')
-  get invalid(): boolean {
-    return this.formControl?.invalid;
-  }
-
-  @HostBinding('class.has-value')
-  get hasValue(): boolean {
-    return this.value;
+  get isClearButtonDisplayed(): boolean {
+    return this.clearButtonEnabled && this.value;
   }
 
   @HostBinding('class.active')
@@ -76,6 +65,9 @@ export class TextFieldComponent extends AbstractValueAccessor {
   placeholder: string | TemplateRef<any>;
 
   @Input()
+  placeholderIcon: string;
+
+  @Input()
   placeholderParamsObj: any;
 
   @Input()
@@ -83,9 +75,6 @@ export class TextFieldComponent extends AbstractValueAccessor {
 
   @Input()
   displayCharactersCounter: boolean;
-
-  @Input()
-  validateOnDirty = false;
 
   @Input()
   index: number;
@@ -99,20 +88,17 @@ export class TextFieldComponent extends AbstractValueAccessor {
   @Input()
   readonly: boolean;
 
+  @Input()
+  clearButtonEnabled: boolean;
+
   @Output()
-  input = new EventEmitter<Event>();
+  input = new EventEmitter<InputEvent | Event>();
 
   @Output()
   valueChanges = new EventEmitter<string>();
 
   @Output()
   removeControl: EventEmitter<string> = new EventEmitter();
-
-  placeholderObj: { type: string; value: string | TemplateRef<any> };
-
-  get placeholderAsTemplate(): TemplateRef<any> {
-    return this.placeholderObj.value as TemplateRef<any>;
-  }
 
   // Autocomplete related properties
 
@@ -132,18 +118,6 @@ export class TextFieldComponent extends AbstractValueAccessor {
     }, 0);
   }
 
-  ngOnChanges(simpleChange: SimpleChanges): void {
-    super.ngOnChanges(simpleChange);
-
-    if ('placeholder' in simpleChange) {
-      if (typeof this.placeholder === 'string') {
-        this.placeholderObj = { type: 'string', value: this.placeholder };
-      } else {
-        this.placeholderObj = { type: 'template', value: this.placeholder };
-      }
-    }
-  }
-
   focus(): void {
     this.textfieldElement.nativeElement.focus();
   }
@@ -157,14 +131,16 @@ export class TextFieldComponent extends AbstractValueAccessor {
     }
   }
 
-  isTextPlaceholderType(): boolean {
-    return this.placeholderObj.type === 'string';
-  }
-
   placeholderClick(): void {
     if (!this.isDisabled) {
       this.textfieldElement.nativeElement.focus();
     }
+  }
+
+  clear(): void {
+    this.textfieldElement.nativeElement.value = '';
+    this.value = this.textfieldElement.nativeElement.value;
+    this.valueChangesEventEmitHandler(this.textfieldElement.nativeElement.value);
   }
 
   inputBlur(): void {

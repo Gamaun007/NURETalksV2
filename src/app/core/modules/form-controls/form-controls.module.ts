@@ -1,4 +1,14 @@
-import { ControlErrorsComponent, ControlHeaderComponent, DropdownOptionComponent, DropdownOptionsBackdropComponent, IndexIconComponent } from './components/atoms';
+import {
+  AutocompleteComponent,
+  CharactersCounterComponent,
+  ClearButtonComponent,
+  ControlErrorsComponent,
+  ControlHeaderComponent,
+  ControlPlaceholderComponent,
+  DropdownOptionComponent,
+  DropdownOptionsBackdropComponent,
+  IndexIconComponent,
+} from './components/atoms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,27 +22,39 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { DirectivesModule } from 'core/modules/directives/directives.module';
 
 @NgModule({
   imports: [
+    OverlayModule,
     CommonModule,
     FormsModule,
     AngularSvgIconModule,
     PerfectScrollbarModule,
     ReactiveFormsModule,
     TranslateModule.forChild(),
+    DirectivesModule,
+    NgbTooltipModule
   ],
   declarations: [
-    ControlErrorsComponent,
-    ControlHeaderComponent,
     FileInputComponent,
     TextFieldComponent,
     IndexIconComponent,
     TextAreaComponent,
     DropdownButtonComponent,
     DropdownControlComponent,
+
+    // Atoms
     DropdownOptionComponent,
-    DropdownOptionsBackdropComponent
+    DropdownOptionsBackdropComponent,
+    ControlErrorsComponent,
+    ControlHeaderComponent,
+    AutocompleteComponent,
+    ControlPlaceholderComponent,
+    ClearButtonComponent,
+    CharactersCounterComponent
   ],
   exports: [
     ControlErrorsComponent,
@@ -44,7 +66,11 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     DropdownButtonComponent,
     DropdownControlComponent,
     DropdownOptionComponent,
-    DropdownOptionsBackdropComponent
+    DropdownOptionsBackdropComponent,
+    AutocompleteComponent,
+    ControlPlaceholderComponent,
+    ClearButtonComponent,
+    CharactersCounterComponent
   ],
 })
 export class FormControlsModule {}

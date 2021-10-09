@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   forwardRef,
+  HostBinding,
   Injector,
   Input,
   OnChanges,
@@ -9,18 +10,18 @@ import {
   OnInit,
   Provider,
   SimpleChanges,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SubscriptionDetacher } from 'core/utils';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-abstract-value-accessor',
   template: '',
 })
 /* tslint:disable:component-class-suffix */
-export abstract class AbstractValueAccessor implements ControlValueAccessor, OnInit, OnDestroy, OnChanges {
+export class AbstractValueAccessor implements ControlValueAccessor, OnInit, OnDestroy, OnChanges {
   private _isDisabled = false;
   private _value: any = null;
   private ngControl: NgControl;
@@ -45,12 +46,32 @@ export abstract class AbstractValueAccessor implements ControlValueAccessor, OnI
 
   protected detacher: SubscriptionDetacher = new SubscriptionDetacher();
 
+  @HostBinding('class.dirty')
   get dirty(): boolean {
-    return this.formControl ? this.formControl.dirty : false;
+    return this.formControl?.dirty;
   }
 
   get fieldName(): string {
     return this.hostNativeElement.id;
+  }
+
+  @HostBinding('class.errors-displayed')
+  get errorsDisplayed(): boolean {
+    if (this.validateOnDirty) {
+      return this.dirty && this.invalid;
+    }
+
+    return this.invalid;
+  }
+
+  @HostBinding('class.invalid')
+  get invalid(): boolean {
+    return this.formControl?.invalid;
+  }
+
+  @HostBinding('class.has-value')
+  get hasValue(): boolean {
+    return !!this.value;
   }
 
   get value(): any {
@@ -103,9 +124,9 @@ export abstract class AbstractValueAccessor implements ControlValueAccessor, OnI
     this._value = value;
   }
 
-  onChange = (_) => {};
+  onChange: (_) => void = () => { };
 
-  onTouch = () => {};
+  onTouch: () =>  void = () => { };
 
   registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;

@@ -1,5 +1,5 @@
+import { UniversityHttpService } from './../../services/http/university/university.service';
 import { AuthService } from 'core/modules/auth-core/services/auth/auth.service';
-import { UniveristyHttpService } from '../../services/http/rooms/rooms.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
@@ -8,10 +8,10 @@ import { OperationsTrackerService, TrackOperations } from 'core/modules/data/ser
 import { from, NEVER, Observable, of, throwError } from 'rxjs';
 import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { User } from 'core/models/domain';
-import {
-} from '../actions';
+import { UniversityActionTypes } from '../actions';
 import { AuthState } from 'core/modules/auth-core/store/state';
 import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
+import { UniversityActions } from '../actions';
 
 @Injectable()
 export class UniversityEffects {
@@ -19,15 +19,15 @@ export class UniversityEffects {
     private actions$: Actions,
     private store: Store<AuthState>,
     private operationsTrackerService: OperationsTrackerService,
-    private roomsHttpService: RoomsHttpService,
+    private universityHttpService: UniversityHttpService,
     private fileStorageService: FileStorageService,
     private authService: AuthService
   ) {}
 
   // @Effect()
-  // loadSpecificUser$: Observable<Action> = this.actions$.pipe(
-  //   ofType(UserActionType.LoadSpecificUser),
-  //   mergeMap((action: LoadSpecificUserAction) =>
+  // loadFaculties$: Observable<Action> = this.actions$.pipe(
+  //   ofType(UniversityActionTypes.LoadFaculties),
+  //   mergeMap((action: loadFaculties) =>
   //     this.usersHttpService.getSpecificUser(action.email).pipe(
   //       tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_SPECIFIC_USER, action.email)),
   //       map((response) => {
@@ -41,38 +41,22 @@ export class UniversityEffects {
   //   )
   // );
 
-  // uploadUserProfileIcon = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(UserActionType.UploadUserProfileIcon),
-  //     mergeMap((action: UploadUserProfileIconAction) =>
-  //       this.authService.getCurrentUserObservable().pipe(
-  //         switchMap((user) => {
-  //           return this.fileStorageService
-  //             .uploadFileToStorage(USER_PROFILE_IMAGE_PATH, user.uid, action.file)
-  //             .snapshotChanges()
-  //             .pipe(
-  //               switchMap((snap) => from(snap.ref.getDownloadURL()) as Observable<string>),
-  //               map((response) => {
-  //                 const partialUser: Partial<User> = {
-  //                   photoUrl: response,
-  //                 };
-  //                 return partialUser;
-  //               }),
-  //               switchMap((pUser) => this.usersHttpService.updateUser(user.uid, pUser).pipe(map(() => pUser))),
-  //               map((pUser) => new UserUpdatedAction(pUser)),
-  //               tap(() =>
-  //                 this.operationsTrackerService.trackSuccess(TrackOperations.UPLOAD_USER_PROFILE_ICON, user.email)
-  //               ),
-  //               catchError((err: Error) => {
-  //                 this.operationsTrackerService.trackError(TrackOperations.UPLOAD_USER_PROFILE_ICON, err, user.email);
-  //                 return NEVER;
-  //               })
-  //             );
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
+  loadFaculties$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UniversityActions.loadFaculties),
+      mergeMap((_) => {
+        debugger;
+        return this.universityHttpService.getFaculties().pipe(
+          map((faculties) => UniversityActions.facultiesLoaded({ faculties })),
+          tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_FACULTIES)),
+          catchError((err: Error) => {
+            this.operationsTrackerService.trackError(TrackOperations.LOAD_FACULTIES, err);
+            return NEVER;
+          })
+        );
+      })
+    )
+  );
 
   // loadSpecificUser$ = createEffect(() =>
   //   this.actions$.pipe(

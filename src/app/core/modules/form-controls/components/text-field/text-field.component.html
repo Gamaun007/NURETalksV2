@@ -1,17 +1,15 @@
 <app-control-header *ngIf="label" [label]="label" [labelParamsObj]="labelParamsObj" [index]="index" [required]="required"></app-control-header>
-<div class="wrapper" [class.is-disabled]="isDisabled$ | async"
-[class.is-with-addon]="addonText">
-  <span (click)="placeholderClick()" #placeholderElement class="placeholder">
-    <ng-container *ngIf="placeholderObj">
-      <span class="text" *ngIf="isTextPlaceholderType(); else placeholderTemplate" translate
-        [translateParams]="placeholderParamsObj">{{ placeholderObj.value }}</span>
-    </ng-container>
-    <ng-template #placeholderTemplate>
-      <ng-container *ngTemplateOutlet="placeholderAsTemplate"></ng-container>
-    </ng-template>
-  </span>
+<div class="wrapper" [class.pointer-events-none]="isDisabled$ | async"
+[class.is-with-addon]="addonText" [class.border-error]="errorsDisplayed">
+  <app-control-placeholder *ngIf="!hasValue && !isActive" (click)="placeholderClick()" #placeholderElement
+    [placeholder]="placeholder" [placeholderParamsObj]="placeholderParamsObj" [placeholderIcon]="placeholderIcon">
+  </app-control-placeholder>
+  <div *ngIf="isClearButtonDisplayed" class="clear-btn-wrapper flex flex-row items-center absolute h-full">
+    <app-clear-button (click)="clear()"></app-clear-button>
+  </div>
   <input
-      #textfield id="{{ fieldName }}-textfield" 
+      #textfield id="{{ fieldName }}-textfield"
+      class="outline-none bg-white w-full h-full font-main text-base"
       [attr.type]="inputType"
       [(ngModel)]="value" 
       (ngModelChange)="valueChangesEventEmitHandler($event)"
@@ -24,9 +22,10 @@
       (input)="input.emit($event)" 
       (blur)="inputBlur()" 
       (focusin)="inputFocusIn()"
-      (focusout)="inputFocusOut()" 
+      (focusout)="inputFocusOut()"
+      [class.padding-right]="isClearButtonDisplayed"
     />
-  <div class="addon-text" *ngIf="addonText">{{ addonText | translate }}</div>
+  <div class="addon-text flex flex-row items-center bg-navy-30 whitespace-nowrap" *ngIf="addonText">{{ addonText | translate }}</div>
 
   <div class="buttons">
     <ng-content select="app-button"></ng-content>
@@ -45,24 +44,14 @@
       </button>
     </ng-container>
   </div>
-  <!-- <ng-container *ngIf="textfieldElement$ | async as txtField">
+  <ng-container *ngIf="textfieldElement$ | async as txtField">
     <app-autocomplete *ngIf="txtField && suggestions?.length" [autocompleteData]="suggestions"
       [maxItemsToDisplay]="suggestionsConfig?.maxItemsToDisplay" [inputElement]="txtField" (select)="value = $event">
     </app-autocomplete>
-  </ng-container> -->
+  </ng-container>
 
 </div>
-<div *ngIf="displayCharactersCounter && maxLength" class="characters-counter">
-  <span>{{ value ? value.length : 0 }}</span>
-  <span>/</span>
-  <span>{{ maxLength }}</span>
+<div class="flex justify-end items-center absolute">
+  <app-control-errors class="flex-1" *ngIf="errorsDisplayed" [errorTexts]="errorTexts"></app-control-errors>
+  <app-characters-counter *ngIf="displayCharactersCounter" [value]="value" [maxLength]="maxLength"></app-characters-counter>
 </div>
-<app-control-errors *ngIf="dirty || !validateOnDirty" [errorTexts]="errorTexts"></app-control-errors>
-
-<ng-template #requiredPopover>
-  <div class="popover-container">
-    <span translate>
-      core.formControls.textfield.requiredTooltip
-    </span>
-  </div>
-</ng-template>

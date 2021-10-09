@@ -6,7 +6,7 @@
   </div>
   <div class="wrapper">
     <app-dynamic-form-outlet [dynamicFormGroup]="dynamicFormGroup"></app-dynamic-form-outlet>
-    <app-button
+    <app-button 
       (click)="sendSignInLink()"
       [loading]="isProcessing$ | async"
       [class.disabled]="dynamicFormGroup.invalid"

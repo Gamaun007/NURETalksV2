@@ -1,9 +1,8 @@
 /* Tailwind styles */
-// @import 'bootstrap/dist/css/bootstrap.min';
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
+// @include cdk-overlay();
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 // Plus imports for other components in your app.
@@ -22,6 +21,7 @@ svg {
 
 /* You can add global styles to this file, and also import other style files */
 @import 'index';
+@include cdk-overlay();
 // @import './typography.scss';
 // @import 'base-modal';
 // @import './scrollbar';
@@ -59,6 +59,7 @@ body {
 }
 
 body {
+  position: relative;
   margin: 0;
   overflow: hidden;
 }
@@ -121,6 +122,161 @@ app-button {
 [hidden] {
   display: none !important;
 }
+
+//* Default popover */
+$popover-background-color: $mc-navy-80;
+
+.popover {
+  border: none;
+}
+
+.default-popover {
+  z-index: 10;
+  background: $popover-background-color;
+  font-size: 125%;
+  border-radius: 10px;
+
+  .popover-container {
+    padding: 0 17px 0 17px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .popover-body {
+    padding: 0;
+    height: 40px;
+  }
+
+  > * {
+    @include basicWhite();
+  }
+
+  & .arrow::after {
+    color: $mc-white;
+    border-right-color: $popover-background-color;
+  }
+
+  & .arrow::before {
+    border: none;
+  }
+}
+
+.copy-tooltip {
+  top: 30px !important;
+
+  .arrow {
+    left: calc(50% - 0.4rem) !important;
+  }
+}
+
+.default-tooltip,
+.header-item-info,
+.required-mark-tooltip {
+  * {
+    @include MulishFontStyle();
+    color: $mc-white;
+  }
+
+  &.show {
+    opacity: 1;
+  }
+
+  &.bs-tooltip-bottom {
+    .arrow {
+      &::before {
+        border-bottom-color: $popover-background-color;
+      }
+    }
+  }
+
+  &.bs-tooltip-left {
+    .arrow {
+      &::before {
+        border-left-color: $popover-background-color;
+      }
+    }
+  }
+
+  &.bs-tooltip-top {
+    .arrow {
+      &::before {
+        border-top-color: $popover-background-color;
+      }
+    }
+  }
+
+  &.bs-tooltip-right {
+    .arrow {
+      &::before {
+        border-right-color: $popover-background-color;
+      }
+    }
+  }
+
+  .tooltip-inner {
+    background: $popover-background-color;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    border-radius: 6px;
+    min-height: 40px;
+    max-width: 327px;
+    padding: 10px;
+  }
+}
+
+.header-item-info {
+  top: 3px !important;
+  .tooltip-inner {
+    padding: 15px 15px;
+  }
+}
+
+// .required-mark-tooltip {
+//   top: -7px !important;
+// }
+
+.evidence-status-tooltip {
+  left: 3px !important;
+}
+
+.element-help-tooltip {
+  left: -11px !important;
+}
+
+.evidence-help-tooltip {
+  top: 3px !important;
+  left: -10px !important;
+  .tooltip-inner {
+    max-width: fit-content;
+  }
+}
+
+.evidence-help-tooltip-right {
+  top: 3px !important;
+  left: 10px !important;
+  .tooltip-inner {
+    max-width: fit-content;
+  }
+}
+
+.framework-icon-tooltip {
+  max-width: fit-content;
+  text-align: center;
+  white-space: pre-line;
+
+  .tooltip-inner {
+    text-align: center;
+  }
+
+  .arrow {
+    margin-left: -6px;
+  }
+}
+
 
 // .common-container {
 //   position: relative;

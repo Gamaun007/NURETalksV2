@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from 'core/models/domain';
 import { map } from 'rxjs/operators';
-import { getNameByNureEmail } from 'core/utils';
+import { getNameByNureEmail } from 'core/utils/user-extensions.functions';
 
 @Component({
   selector: 'app-user-menu-bar',

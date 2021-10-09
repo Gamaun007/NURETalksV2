@@ -14,10 +14,15 @@ export interface User extends UserId {
   last_name?: string;
   password?: string;
 
-  direction?: Direction;
-  faculty?: Faculty;
-  speciality?: Speciality;
-  group?: Group;
+  // direction?: Direction;
+  // faculty?: Faculty;
+  // speciality?: Speciality;
+  // group?: Group;
+
+  direction_id?: string;
+  faculty_id?: string;
+  group_id?: string;
+  speciality_id?: string;
 
   // room id's as array
   rooms?: string[];

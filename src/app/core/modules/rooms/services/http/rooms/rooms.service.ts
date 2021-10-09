@@ -6,7 +6,7 @@ import { Observable, of, from, throwError } from 'rxjs';
 import { Room, User } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { map, take, switchMap } from 'rxjs/operators';
-import { getNameByNureEmail } from 'core';
+import { getNameByNureEmail } from 'core/utils/user-extensions.functions';
 
 @Injectable({
   providedIn: 'root',

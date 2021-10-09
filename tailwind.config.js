@@ -25,7 +25,8 @@ var colors = {
   'navy-70': '#81939e',
   'navy-80': '#2a495b',
   'navy-90': 'rgb(4, 41, 62)',
-  'white': '#ffffff'
+  'white': '#ffffff',
+  'error': '#ae0057'
 };
 
 module.exports = {

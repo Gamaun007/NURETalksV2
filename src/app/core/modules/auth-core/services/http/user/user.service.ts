@@ -6,7 +6,7 @@ import { Observable, of, from, throwError } from 'rxjs';
 import { User } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { map, take, switchMap } from 'rxjs/operators';
-import { getNameByNureEmail } from 'core';
+import { getNameByNureEmail } from 'core/utils/user-extensions.functions';
 
 @Injectable({
   providedIn: 'root',
@@ -39,11 +39,11 @@ export class UserHttpService {
   }
 
   createNewUser(email: string, user?: Partial<User>): Observable<User> {
-    const { firstName, lastName } = getNameByNureEmail(email);
+    const { first_name, last_name } = getNameByNureEmail(email);
     const newUser: User = {
       email: email,
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       // Setting student role by default
       role: RoleEnum.Student,
     };

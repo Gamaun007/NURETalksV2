@@ -4,10 +4,10 @@
       <div class="user-icon" [style.background-image]="userProfileIconUrl$ | async"></div>
     </div>
     <div class="name m-3">
-      <span class="mr-1">{{ currentUser.firstName }}&nbsp;{{ currentUser.lastName }}</span>
-      <span class="mr-1" *ngIf="getNameByNureEmail(currentUser.email) as res"
+      <span class="mr-1">{{ currentUser.first_name }}&nbsp;{{ currentUser.last_name }}</span>
+      <!-- <span class="mr-1" *ngIf="getNameByNureEmail(currentUser.email) as res"
         >{{ res.firstName }} {{ res.lastName }}</span
-      >
+      > -->
     </div>
   </div>
 

@@ -4,7 +4,7 @@ import { ActionReducerMap, combineReducers, compose, createFeatureSelector, crea
 export const featureKey = 'universityState';
 
 export interface UniversityState {
-  universityState: t.universityState;
+  universityState: t.UniversityState;
 }
 
 export const reducers: ActionReducerMap<UniversityState> = {

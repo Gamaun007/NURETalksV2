@@ -1,1 +1,1 @@
-export { RoomsFacadeService } from './rooms-facade/rooms-facade.service';
+export { UniversityFacadeService } from './university-facade/university-facade.service';

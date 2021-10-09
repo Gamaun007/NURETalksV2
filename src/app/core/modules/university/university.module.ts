@@ -6,8 +6,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../../../../environments/environment';
-import { AuthGuardService, RoleService, AuthService, RoomsFacadeService } from './services';
-import { FirebaseWrapperService } from './services';
+import { UniversityFacadeService } from './services';
 import { StoreModule } from '@ngrx/store';
 import * as storeFeature from './store';
 import { AngularFireStorageModule } from '@angular/fire/storage';
@@ -28,12 +27,14 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
     DynamicFormModule,
   ],
   declarations: [SelectUniversityGroupComponent],
+  exports: [SelectUniversityGroupComponent],
+  providers: [UniversityFacadeService, UniversityHttpService]
 })
 export class UniversityModule {
   static forRoot(): ModuleWithProviders<UniversityModule> {
     return {
       ngModule: UniversityModule,
-      providers: [UniversityHttpService],
+      providers: [UniversityHttpService, UniversityFacadeService],
     };
   }
 }

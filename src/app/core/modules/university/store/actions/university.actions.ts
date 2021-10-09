@@ -1,4 +1,4 @@
-import { FacultyExtended } from 'core/models/domain/university/faculty';
+import { Faculty } from 'core/models/domain/university/faculty';
 import { createAction, props } from '@ngrx/store';
 
 export const UniversityActionTypes = {
@@ -7,6 +7,6 @@ export const UniversityActionTypes = {
 };
 
 export const UniversityActions = {
-  loadFacultirs: createAction(UniversityActionTypes.LoadFaculties),
-  facultiesLoaded: createAction(UniversityActionTypes.FacultiesLoaded, props<{ faculties: FacultyExtended[] }>()),
+  loadFaculties: createAction(UniversityActionTypes.LoadFaculties),
+  facultiesLoaded: createAction(UniversityActionTypes.FacultiesLoaded, props<{ faculties: Faculty[] }>()),
 };

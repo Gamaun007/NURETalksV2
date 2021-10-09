@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DynamicFormModule } from 'core/modules/dynamic-form';
 import { ButtonsModule } from 'core/modules/buttons';
+import { ContinueProfileComponent } from './components/continue-profile/continue-profile.component';
 
 const routes: Route[] = [
   {
@@ -43,9 +44,10 @@ const routes: Route[] = [
     TranslateModule,
     AngularSvgIconModule,
     DynamicFormModule,
+    
   ],
   providers: [AuthService],
-  declarations: [AuthComponent, EmailLoginComponent, EmailCallbackComponent],
+  declarations: [AuthComponent, EmailLoginComponent, EmailCallbackComponent, ContinueProfileComponent],
   exports: [AuthComponent, EmailLoginComponent, EmailCallbackComponent],
 })
 export class AuthenticationModule {}

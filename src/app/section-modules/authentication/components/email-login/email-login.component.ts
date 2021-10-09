@@ -37,12 +37,7 @@ export class EmailLoginComponent implements OnInit, OnDestroy {
         label: this.buildTranslationKey('form.label'),
         placeholder: this.buildTranslationKey('form.placeholder'),
         validateOnDirty: true,
-        required: true,
-        // errorTexts: {
-        //   // emailnure: this.buildTranslationKey('email.nureEmail'),
-        //   // email: this.buildTranslationKey('email.wrongEmailFormat'),
-        //   // emailNotFound: this.buildTranslationKey('email.emailNotFound'),
-        // },
+        required: false,
       },
       validators: [CustomValidators.emailNureValidator],
     }),

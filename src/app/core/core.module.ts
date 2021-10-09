@@ -1,3 +1,5 @@
+import { UniversityModule } from './modules/university/university.module';
+import { DirectivesModule } from './modules/directives/directives.module';
 import { ButtonsModule } from './modules/buttons/buttons.module';
 import { FileStorageService } from './modules/firebase/http/file-storage.service';
 import { LoadersModule } from './modules/loaders';
@@ -16,12 +18,15 @@ import { AppConfigService, LoaderManagerService, MessageBusService } from './ser
 import { LoggerService } from 'core/services';
 import { GlobalLoaderComponent, TextComponent, UserMenuBarComponent } from 'core/components';
 import { RoomsModule } from 'core/modules/rooms';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { NgbPopoverModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 export const WINDOW = new InjectionToken<Window>('window');
 
 @NgModule({
   declarations: [GlobalLoaderComponent, UserMenuBarComponent, TextComponent],
   imports: [
+    OverlayModule,
     CommonModule,
     HttpClientModule,
     FormsModule,
@@ -35,7 +40,15 @@ export const WINDOW = new InjectionToken<Window>('window');
     FormControlsModule,
     LoadersModule,
     ButtonsModule,
+    DirectivesModule,
+
+    // Structural entities modules
     RoomsModule,
+    UniversityModule,
+
+    // BootsTrap
+    NgbPopoverModule,
+    NgbTooltipModule,
   ],
   exports: [
     // Modules
@@ -47,12 +60,19 @@ export const WINDOW = new InjectionToken<Window>('window');
     FormControlsModule,
     LoadersModule,
     ButtonsModule,
+    DirectivesModule,
+
+    // Structural entities modules
     RoomsModule,
+    UniversityModule,
+
+    // Bootstrap
+    NgbTooltipModule,
 
     // Component
     GlobalLoaderComponent,
     UserMenuBarComponent,
-    TextComponent
+    TextComponent,
   ],
 })
 export class CoreModule {
