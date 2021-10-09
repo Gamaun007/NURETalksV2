@@ -36,7 +36,7 @@ const adapterReducer = createReducer(
   }),
   on(UsersAdapterActions.userCreated, (state: UsersState, action: UserCreatedAction) => {
     return usersAdapter.addOne(action.payload, state);
-  }),
+  })
 );
 
 export function usersReducer(state = initialState, action: Action): UsersState {

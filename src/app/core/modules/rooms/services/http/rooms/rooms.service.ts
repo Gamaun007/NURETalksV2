@@ -14,8 +14,6 @@ import { getNameByNureEmail } from 'core/utils/user-extensions.functions';
 export class RoomsHttpService {
   constructor(private afs: AngularFirestore, private authService: AuthService) {}
 
-  
-
   private getRoomsCollectionReference(): AngularFirestoreCollection<Room> {
     return this.afs.collection<Room>('rooms');
   }

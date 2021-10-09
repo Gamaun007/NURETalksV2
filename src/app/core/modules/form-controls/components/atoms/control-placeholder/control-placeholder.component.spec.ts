@@ -6,12 +6,13 @@ describe('ControlPlaceholderComponent', () => {
   let componentUnderTest: ControlPlaceholderComponent;
   let fixture: ComponentFixture<ControlPlaceholderComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ControlPlaceholderComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ControlPlaceholderComponent],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ControlPlaceholderComponent);

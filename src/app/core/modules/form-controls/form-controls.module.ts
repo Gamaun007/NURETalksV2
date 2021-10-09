@@ -36,7 +36,7 @@ import { DirectivesModule } from 'core/modules/directives/directives.module';
     ReactiveFormsModule,
     TranslateModule.forChild(),
     DirectivesModule,
-    NgbTooltipModule
+    NgbTooltipModule,
   ],
   declarations: [
     FileInputComponent,
@@ -54,7 +54,7 @@ import { DirectivesModule } from 'core/modules/directives/directives.module';
     AutocompleteComponent,
     ControlPlaceholderComponent,
     ClearButtonComponent,
-    CharactersCounterComponent
+    CharactersCounterComponent,
   ],
   exports: [
     ControlErrorsComponent,
@@ -70,7 +70,7 @@ import { DirectivesModule } from 'core/modules/directives/directives.module';
     AutocompleteComponent,
     ControlPlaceholderComponent,
     ClearButtonComponent,
-    CharactersCounterComponent
+    CharactersCounterComponent,
   ],
 })
 export class FormControlsModule {}

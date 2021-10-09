@@ -16,7 +16,7 @@ export const UserActionType = {
 
   UserUpdated: '[User] User updated',
 
-  UploadUserProfileIcon: '[User] Upload user profile icon'
+  UploadUserProfileIcon: '[User] Upload user profile icon',
 };
 
 export class LoadUsersAction implements Action {

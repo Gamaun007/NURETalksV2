@@ -5,12 +5,12 @@ const defaultErrors = {
   required: 'formControlErrors.required',
   email: 'formControlErrors.wrongEmailFormat',
   emailNotFound: 'formControlErrors.emailNotFound',
-  emailnure: 'formControlErrors.emailnure'
+  emailnure: 'formControlErrors.emailnure',
 };
 
 @Component({
   selector: 'app-control-errors',
-  templateUrl: './control-errors.component.html'
+  templateUrl: './control-errors.component.html',
 })
 export class ControlErrorsComponent implements OnChanges {
   @HostBinding('class')
@@ -25,12 +25,12 @@ export class ControlErrorsComponent implements OnChanges {
   resolvedErrorTexts: object;
 
   constructor(@Optional() private ngControl: NgControl) {}
-  
+
   ngOnChanges(changes: SimpleChanges): void {
-    if('errorTexts' in changes) {
+    if ('errorTexts' in changes) {
       this.resolvedErrorTexts = { ...defaultErrors };
 
-      if(this.errorTexts) {
+      if (this.errorTexts) {
         this.resolvedErrorTexts = { ...this.resolvedErrorTexts, ...this.errorTexts };
       }
     }

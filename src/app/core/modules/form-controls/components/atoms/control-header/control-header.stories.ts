@@ -11,7 +11,7 @@ export default {
   component: ControlHeaderComponent,
   decorators: [
     moduleMetadata({
-      imports: [CommonModule, TranslateModule.forRoot(), SvgIconsModule.forRoot(),  LoadersModule],
+      imports: [CommonModule, TranslateModule.forRoot(), SvgIconsModule.forRoot(), LoadersModule],
       declarations: [ControlHeaderComponent],
     }),
   ],
@@ -19,18 +19,19 @@ export default {
 
 const Template: Story<ControlHeaderComponent> = (args: ControlHeaderComponent) => ({
   props: args,
-  template: '<app-control-header [infoTooltip]="infoTooltip" [label]="label" [infoTooltipPlacement]="infoTooltipPlacement" ' +
+  template:
+    '<app-control-header [infoTooltip]="infoTooltip" [label]="label" [infoTooltipPlacement]="infoTooltipPlacement" ' +
     '[infoTooltipClass]="infoTooltipClass" [index]="index" [labelParamsObj]="labelParamsObj" [required]="required"></app-control-header>',
 });
 
 export const BasicExample = Template.bind({});
 BasicExample.args = {
   label: 'Field',
-  infoTooltip: 'tooltip'
+  infoTooltip: 'tooltip',
 };
 
 export const RequiredField = Template.bind({});
 RequiredField.args = {
   label: 'Required field',
-  required: true
+  required: true,
 };

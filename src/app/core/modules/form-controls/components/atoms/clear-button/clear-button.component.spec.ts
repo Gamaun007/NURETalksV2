@@ -11,9 +11,8 @@ describe('ClearButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClearButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [ClearButtonComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

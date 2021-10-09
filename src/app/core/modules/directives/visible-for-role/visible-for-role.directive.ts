@@ -39,7 +39,7 @@ export class VisibleForRoleDirective implements OnInit, OnChanges {
         this.visibleForRoleSubject.next([this.visibleForRole]);
       } else if (Array.isArray(this.visibleForRole)) {
         this.visibleForRoleSubject.next(this.visibleForRole);
-      } else if (this.visibleForRole === undefined) { 
+      } else if (this.visibleForRole === undefined) {
         this.visibleForAll = true;
       } else {
         this.visibleForRoleSubject.next([]);

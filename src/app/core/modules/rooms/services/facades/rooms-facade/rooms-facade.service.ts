@@ -7,12 +7,9 @@ import { Store } from '@ngrx/store';
 
 @Injectable()
 export class RoomsFacadeService {
+  constructor(private store: Store<RoomsState>, private actionDispatcher: ActionDispatcherService) {}
 
-  constructor(private store: Store<RoomsState>, private actionDispatcher: ActionDispatcherService) { }
-
-  createRoom(): void {
-
-  }
+  createRoom(): void {}
 
   getRoom(roomId: string): Observable<Room> {
     return;

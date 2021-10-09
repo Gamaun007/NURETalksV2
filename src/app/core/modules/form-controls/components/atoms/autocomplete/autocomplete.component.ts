@@ -1,10 +1,13 @@
 import {
   AfterViewInit,
-  ChangeDetectorRef, Component,
+  ChangeDetectorRef,
+  Component,
   ElementRef,
-  EventEmitter, Input,
+  EventEmitter,
+  Input,
   OnDestroy,
-  Output, ViewChild
+  Output,
+  ViewChild,
 } from '@angular/core';
 import { SubscriptionDetacher } from 'core/utils';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';

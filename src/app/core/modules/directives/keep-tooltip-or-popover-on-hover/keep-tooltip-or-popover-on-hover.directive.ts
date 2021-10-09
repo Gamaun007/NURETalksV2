@@ -73,8 +73,12 @@ export class KeepTooltipOrPopoverOnHoverDirective implements OnDestroy, OnChange
       this.destroyAllSubscriptions();
 
       if (this.keepOnHover) {
-        fromEvent(this.host, 'mouseenter').pipe(this.detacher.takeUntilDetach()).subscribe(this.hostMouseEnter.bind(this));
-        fromEvent(this.host, 'mouseleave').pipe(this.detacher.takeUntilDetach()).subscribe(this.hostMouseLeave.bind(this));
+        fromEvent(this.host, 'mouseenter')
+          .pipe(this.detacher.takeUntilDetach())
+          .subscribe(this.hostMouseEnter.bind(this));
+        fromEvent(this.host, 'mouseleave')
+          .pipe(this.detacher.takeUntilDetach())
+          .subscribe(this.hostMouseLeave.bind(this));
       }
     }
   }

@@ -8,8 +8,7 @@ import { OperationsTrackerService, TrackOperations } from 'core/modules/data/ser
 import { from, NEVER, Observable, of, throwError } from 'rxjs';
 import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { User } from 'core/models/domain';
-import {
-} from '../actions';
+import {} from '../actions';
 import { AuthState } from 'core/modules/auth-core/store/state';
 import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
 

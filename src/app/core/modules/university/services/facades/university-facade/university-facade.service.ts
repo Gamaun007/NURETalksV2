@@ -15,7 +15,10 @@ export class UniversityFacadeService {
 
   async loadAllFaculties(): Promise<void> {
     try {
-      await this.actionDispatcher.dispatchActionAsync(UniversityActions.loadFaculties(), TrackOperations.LOAD_FACULTIES);
+      await this.actionDispatcher.dispatchActionAsync(
+        UniversityActions.loadFaculties(),
+        TrackOperations.LOAD_FACULTIES
+      );
     } catch (error) {
       // HANDLE critical error
     }

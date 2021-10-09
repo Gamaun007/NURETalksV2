@@ -19,7 +19,7 @@ const initialState: RoomsState = roomsAdapter.getInitialState({ isLoaded: false 
 
 const adapterReducer = createReducer(
   initialState,
-  on(RoomsActions.roomsLoaded, (state: RoomsState, action ) =>
+  on(RoomsActions.roomsLoaded, (state: RoomsState, action) =>
     roomsAdapter.upsertMany(action.payload, { ...state, isLoaded: true })
   ),
   on(RoomsActions.specificRoomLoaded, (state: RoomsState, action) => {
@@ -30,7 +30,7 @@ const adapterReducer = createReducer(
   }),
   on(RoomsActions.roomUpdated, (state: RoomsState, action) => {
     return roomsAdapter.addOne(action.room as Room, state);
-  }),
+  })
 );
 
 export function roomsReducer(state = initialState, action: Action): RoomsState {

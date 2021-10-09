@@ -11,29 +11,21 @@ import { SvgIconsModule } from 'core/modules/svg-icons';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        TranslateModule.forChild(),
-        NgbTooltipModule,
-        SvgIconsModule,
-        RouterModule,
-        NgbPopoverModule
-    ],
-    declarations: [
-        HtmlElementReferenceDirective,
-        KeepTooltipOrPopoverOnHoverDirective,
-        NgVarDirective,
-        OpenTooltipWhenOverflowedAndHoveredDirective,
-        VisibleForRoleDirective,
-    ],
-    exports: [
-        HtmlElementReferenceDirective,
-        KeepTooltipOrPopoverOnHoverDirective,
-        NgVarDirective,
-        OpenTooltipWhenOverflowedAndHoveredDirective,
-        VisibleForRoleDirective,
-    ],
-    providers: [],
+  imports: [CommonModule, TranslateModule.forChild(), NgbTooltipModule, SvgIconsModule, RouterModule, NgbPopoverModule],
+  declarations: [
+    HtmlElementReferenceDirective,
+    KeepTooltipOrPopoverOnHoverDirective,
+    NgVarDirective,
+    OpenTooltipWhenOverflowedAndHoveredDirective,
+    VisibleForRoleDirective,
+  ],
+  exports: [
+    HtmlElementReferenceDirective,
+    KeepTooltipOrPopoverOnHoverDirective,
+    NgVarDirective,
+    OpenTooltipWhenOverflowedAndHoveredDirective,
+    VisibleForRoleDirective,
+  ],
+  providers: [],
 })
-export class DirectivesModule {
-}
+export class DirectivesModule {}

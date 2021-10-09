@@ -10,7 +10,7 @@ import {
   OnInit,
   Provider,
   SimpleChanges,
-  TemplateRef
+  TemplateRef,
 } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SubscriptionDetacher } from 'core/utils';
@@ -124,9 +124,9 @@ export class AbstractValueAccessor implements ControlValueAccessor, OnInit, OnDe
     this._value = value;
   }
 
-  onChange: (_) => void = () => { };
+  onChange: (_) => void = () => {};
 
-  onTouch: () =>  void = () => { };
+  onTouch: () => void = () => {};
 
   registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;

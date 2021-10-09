@@ -82,7 +82,7 @@
 @mixin fonts($name, $family) {
   .#{$name}-font {
     font-family: $family;
-  };
+  }
 
   @include fontStyle($name, $family, 10);
   @include fontStyle($name, $family, 11);

@@ -37,25 +37,25 @@ export const WithoutSearch = Template.bind({});
 export const WithSearch = Template.bind({});
 WithSearch.args = {
   searchEnabled: true,
-  searchFieldPlaceholder: 'Input something to search values'
+  searchFieldPlaceholder: 'Input something to search values',
 };
 
 export const Required = Template.bind({});
 Required.args = {
-  required: true
+  required: true,
 };
 
 export const ConfigurableVisibleItemsCount = Template.bind({});
 ConfigurableVisibleItemsCount.args = {
-  visibleItemsCount: 6
+  visibleItemsCount: 6,
 };
 
 export const ComingSoon = Template.bind({});
 ComingSoon.args = {
-  comingSoon: true
+  comingSoon: true,
 };
 
 export const Disabled = Template.bind({});
 Disabled.args = {
-  isDisabled: true
+  isDisabled: true,
 };

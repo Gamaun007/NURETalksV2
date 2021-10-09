@@ -34,7 +34,7 @@ const routes = [
                   },
                   {
                     path: 'continue-profile',
-                    component: ContinueProfileComponent
+                    component: ContinueProfileComponent,
                   },
                 ],
               },

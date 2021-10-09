@@ -26,7 +26,7 @@ import { AbstractValueAccessor, MakeProvider } from '../abstract-value-accessor'
 })
 export class DropdownControlComponent extends AbstractValueAccessor implements AfterViewInit {
   @HostBinding('class')
-  private readonly hostClasses = 'block'
+  private readonly hostClasses = 'block';
 
   private openableElementElementRef: ElementRef<HTMLElement>;
   private previousVisibleItemsCount: number;
@@ -35,7 +35,7 @@ export class DropdownControlComponent extends AbstractValueAccessor implements A
   private openableElementQueryList: QueryList<ElementRef<HTMLElement>>;
 
   @ViewChild('trigger', { read: ElementRef })
-  private dropdownButton: ElementRef<HTMLElement>
+  private dropdownButton: ElementRef<HTMLElement>;
 
   @HostBinding('class.disabled')
   private get disabled(): boolean {

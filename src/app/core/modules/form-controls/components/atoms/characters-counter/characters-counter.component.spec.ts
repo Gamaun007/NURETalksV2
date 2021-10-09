@@ -8,12 +8,13 @@ describe('CharactersCounterComponent', () => {
   let componentUnderTest: CharactersCounterComponent;
   let fixture: ComponentFixture<CharactersCounterComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CharactersCounterComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CharactersCounterComponent],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CharactersCounterComponent);

@@ -14,10 +14,7 @@ export const reducers: ActionReducerMap<AuthState> = {
 
 export const authStateFeatureSelector = createFeatureSelector<AuthState>(featureKey);
 
-export const userStateSelector = createSelector(
-  authStateFeatureSelector,
-  (state) => state.userState
-);
+export const userStateSelector = createSelector(authStateFeatureSelector, (state) => state.userState);
 
 // tslint:disable-next-line:typedef
 export function store(state: any, action: any) {

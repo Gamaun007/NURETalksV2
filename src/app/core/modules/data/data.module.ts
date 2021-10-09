@@ -4,10 +4,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { environment } from '../../../../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import {
-  ActionDispatcherService,
-  OperationsTrackerService,
-} from './services';
+import { ActionDispatcherService, OperationsTrackerService } from './services';
 // import {
 //   AuditCommentEffects,
 //   AuditEffects,
@@ -60,10 +57,7 @@ export class DataModule {
   static forRoot(): ModuleWithProviders<DataModule> {
     return {
       ngModule: DataModule,
-      providers: [
-        OperationsTrackerService,
-        ActionDispatcherService,
-      ],
+      providers: [OperationsTrackerService, ActionDispatcherService],
     };
   }
 }

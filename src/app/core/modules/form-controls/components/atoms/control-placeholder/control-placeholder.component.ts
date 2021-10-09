@@ -1,15 +1,24 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+} from '@angular/core';
 
 @Component({
   selector: 'app-control-placeholder',
   templateUrl: './control-placeholder.component.html',
   styleUrls: ['./control-placeholder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ControlPlaceholderComponent implements OnChanges {
   @HostBinding('class')
-  private classes = 'flex justify-between items-center cursor-text font-main text-base text-navy-70 absolute whitespace-nowrap justify-between w-full';
-  
+  private classes =
+    'flex justify-between items-center cursor-text font-main text-base text-navy-70 absolute whitespace-nowrap justify-between w-full';
+
   placeholderObj: { type: string; value: string | TemplateRef<any> | any };
 
   @Input()

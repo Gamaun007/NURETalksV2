@@ -14,7 +14,7 @@ export const RoomActionTypes = {
 
   RoomCreated: '[Room] Room created',
 
-  RoomUpdated: '[Room] Room updated'
+  RoomUpdated: '[Room] Room updated',
 };
 
 export const RoomsActions = {

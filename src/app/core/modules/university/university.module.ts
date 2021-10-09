@@ -28,7 +28,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
   ],
   declarations: [SelectUniversityGroupComponent],
   exports: [SelectUniversityGroupComponent],
-  providers: [UniversityFacadeService, UniversityHttpService]
+  providers: [UniversityFacadeService, UniversityHttpService],
 })
 export class UniversityModule {
   static forRoot(): ModuleWithProviders<UniversityModule> {

@@ -15,7 +15,7 @@ import { EffectsModule } from '@ngrx/effects';
     AngularFireModule.initializeApp(environment.config.firebase),
     AngularFireStorageModule,
     StoreModule.forFeature(storeFeature.featureKey, storeFeature.reducers),
-    EffectsModule.forFeature([storeFeature.UserEffects])
+    EffectsModule.forFeature([storeFeature.UserEffects]),
   ],
   declarations: [],
 })

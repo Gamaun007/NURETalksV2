@@ -44,7 +44,6 @@ const routes: Route[] = [
     TranslateModule,
     AngularSvgIconModule,
     DynamicFormModule,
-    
   ],
   providers: [AuthService],
   declarations: [AuthComponent, EmailLoginComponent, EmailCallbackComponent, ContinueProfileComponent],

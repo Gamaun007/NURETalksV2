@@ -18,6 +18,6 @@ export class MessangerComponent implements OnInit {
 
     this.user$.subscribe((user) => {
       console.log('User returned', user);
-    })
+    });
   }
 }
