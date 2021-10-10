@@ -38,9 +38,13 @@ export class SelectUniversityGroupComponent implements OnInit {
   private detacher: SubscriptionDetacher = new SubscriptionDetacher();
   private readonly directionAsSpecialityTranslation: string;
 
-  form: DynamicFormGroup<UniversityStructureDynamicForm>;
+  private _form: DynamicFormGroup<UniversityStructureDynamicForm>;
 
-  faculties: Faculty[];
+  get form(): DynamicFormGroup<UniversityStructureDynamicForm> {
+    return this._form;
+  }
+
+  private faculties: Faculty[];
 
   constructor(
     private universityFacade: UniversityFacadeService,
@@ -74,7 +78,7 @@ export class SelectUniversityGroupComponent implements OnInit {
   }
 
   initializeFormGroup(): void {
-    this.form = new DynamicFormGroup({
+    this._form = new DynamicFormGroup({
       faculty: this.selectFacultyDropdown(),
       direction: this.selectDirectionDropdown(),
       speciality: this.selectSpecialityDropdown(),
@@ -98,6 +102,7 @@ export class SelectUniversityGroupComponent implements OnInit {
       this.form.items.direction.inputs.isDisabled = false;
 
       this.form.items.direction.inputs.data = faculties.directions;
+      this.cd.detectChanges();
     });
 
     this.form.items.direction.valueChanges
@@ -120,6 +125,7 @@ export class SelectUniversityGroupComponent implements OnInit {
         } else {
           this.form.items.speciality.inputs.data = direction.specialities;
         }
+        this.cd.detectChanges();
       });
 
     this.form.items.speciality.valueChanges
@@ -129,6 +135,7 @@ export class SelectUniversityGroupComponent implements OnInit {
         this.form.items.group.inputs.isDisabled = false;
 
         this.form.items.group.inputs.data = speciality.groups;
+        this.cd.detectChanges();
       });
   }
 

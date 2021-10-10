@@ -9,6 +9,11 @@
         "placeholder": "@nure.ua",
         "label": "Enter your university email"
       }
+    },
+    "continueProfile": {
+      "description": "In order to confirm you in the system,\n please provide required information of you",
+      "selectRole": "Please select who you are",
+      "confirmationButton": "Save & Send"
     }
   },
   "formControlErrors": {
@@ -31,6 +36,12 @@
       "selectGroup": "Group",
       "selectGroupPlaceholder": "Select group",
       "specialityByDirection": "By Direction"
+    }
+  },
+  "domain": {
+    "roles": {
+      "Student": "Student",
+      "UniversityStaff": "University staff/etc."
     }
   }
 }

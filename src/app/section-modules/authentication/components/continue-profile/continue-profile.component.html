@@ -1,1 +1,13 @@
-<app-select-university-group></app-select-university-group>
+<div class="description font-main font-bold text-5xl mb-5">
+  <app-text [text]="buildTranslationKey('description')"></app-text>
+</div>
+<app-dynamic-form-outlet
+  id="roles-enum-form"
+  *ngIf="formGroup"
+  [dynamicFormGroup]="formGroup"
+></app-dynamic-form-outlet>
+<app-select-university-group #selectUniversityStructure class="w-full"></app-select-university-group>
+
+<app-button [type]="'primary'" class="mt-5" [disabled]="selectUniversityStructure.form.invalid || formGroup.invalid" (click)="sendUserPhaseTwoData">
+  <span>{{ buildTranslationKey('confirmationButton') | translate }}</span></app-button
+>

@@ -1,0 +1,9 @@
+<div class="radio-button-wrapper flex flex-row items-center w-full cursor-pointer" (click)="allowToggle ? toggle() : choose()">
+  <svg height="18" width="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="9" cy="9" r="8.5" class="stroke-navy-90" [attr.stroke-opacity]="value ? null : '0.2'" />
+    <circle *ngIf="value" cx="9" cy="9" r="5" class="fill-navy-90" />
+  </svg>
+  <span class="inline-flex font-main text-base" [class]="value ? 'text-navy-90' : 'text-navy-70'">
+    <ng-content></ng-content>
+  </span>
+</div>

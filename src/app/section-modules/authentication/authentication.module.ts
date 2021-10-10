@@ -1,3 +1,4 @@
+import { UniversityModule } from './../../core/modules/university/university.module';
 import { AuthComponent } from './components/auth/auth.component';
 import { AuthService } from 'core/modules/auth-core/services';
 import { AuthCoreModule } from './../../core/modules/auth-core/auth-core.module';
@@ -44,6 +45,7 @@ const routes: Route[] = [
     TranslateModule,
     AngularSvgIconModule,
     DynamicFormModule,
+    UniversityModule
   ],
   providers: [AuthService],
   declarations: [AuthComponent, EmailLoginComponent, EmailCallbackComponent, ContinueProfileComponent],

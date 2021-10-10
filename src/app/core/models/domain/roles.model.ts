@@ -1,8 +1,8 @@
-export type RoleEnum = 'student' | 'university staff' | 'admin' | 'headman';
+export type RoleEnumType = 'student' | 'university staff' | 'admin' | 'headman';
 
 export const RoleEnum = {
-  Student: 'student' as RoleEnum,
-  UniversityStaff: 'university staff' as RoleEnum,
-  Admin: 'admin' as RoleEnum,
-  Headman: 'headman' as RoleEnum,
+  Student: 'student',
+  UniversityStaff: 'university staff',
+  Admin: 'admin',
+  Headman: 'headman',
 };

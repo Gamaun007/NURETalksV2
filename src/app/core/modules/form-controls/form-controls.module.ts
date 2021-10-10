@@ -13,9 +13,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
+  CheckboxComponent,
+  CheckboxGroupComponent,
   DropdownButtonComponent,
   DropdownControlComponent,
   FileInputComponent,
+  RadioButtonComponent,
+  RadioButtonGroupComponent,
   TextAreaComponent,
   TextFieldComponent,
 } from './components';
@@ -45,6 +49,8 @@ import { DirectivesModule } from 'core/modules/directives/directives.module';
     TextAreaComponent,
     DropdownButtonComponent,
     DropdownControlComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
 
     // Atoms
     DropdownOptionComponent,
@@ -55,6 +61,8 @@ import { DirectivesModule } from 'core/modules/directives/directives.module';
     ControlPlaceholderComponent,
     ClearButtonComponent,
     CharactersCounterComponent,
+    RadioButtonGroupComponent,
+    RadioButtonComponent,
   ],
   exports: [
     ControlErrorsComponent,
@@ -71,6 +79,10 @@ import { DirectivesModule } from 'core/modules/directives/directives.module';
     ControlPlaceholderComponent,
     ClearButtonComponent,
     CharactersCounterComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    RadioButtonGroupComponent,
+    RadioButtonComponent,
   ],
 })
 export class FormControlsModule {}

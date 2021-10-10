@@ -1,0 +1,21 @@
+:host {
+  @apply w-9/12 flex flex-col items-center justify-self-center self-center;
+  margin: 0 auto;
+}
+
+:host::ng-deep {
+  #roles-enum-form {
+    app-control-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      @apply text-3xl;
+    }
+  }
+
+  .description {
+    app-text {
+      align-items: center;
+    }
+  }
+}

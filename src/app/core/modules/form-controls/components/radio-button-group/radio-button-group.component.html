@@ -1,0 +1,24 @@
+<app-control-header
+  *ngIf="label"
+  [label]="label"
+  [infoTooltip]="infoTooltip"
+  [infoTooltipClass]="infoTooltipClass"
+  [infoTooltipPlacement]="infoTooltipPlacement"
+  [labelParamsObj]="labelParamsObj"
+  [index]="index"
+  [required]="required"
+></app-control-header>
+<div>
+  <app-radio-button
+    [value]="value === radioBtn.value"
+    [id]="radioBtn.id"
+    *ngFor="let radioBtn of buttons; let i = index"
+    (toggled)="setValue(i)"
+  >
+    <svg-icon class="radio-button-icon" [src]="radioBtn.icon"></svg-icon
+    ><span class="radio-button-label">{{ radioBtn.label | translate }}</span>
+  </app-radio-button>
+</div>
+<div class="note">
+  <ng-container *ngIf="noteTranslationKey && noteTranslationKey()">{{ noteTranslationKey() | translate }}</ng-container>
+</div>
