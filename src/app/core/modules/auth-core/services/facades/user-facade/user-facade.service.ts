@@ -1,9 +1,12 @@
+import { UniversityStructureByIds } from './../../../../university/models/university-structure.model';
+import { RoleEnum } from 'core/models/domain/roles.model';
 import { NO_USERS_ERROR } from './../../http/errors.constants';
 import { ActionDispatcherService, TrackOperations } from 'core/modules/data/services';
 import {
   LoadSpecificUserAction,
   CreateUserAction,
   UploadUserProfileIconAction,
+  UsersAdapterActions,
 } from './../../../store/actions/user.actions';
 import { Injectable } from '@angular/core';
 import { User } from 'core/models/domain';
@@ -27,6 +30,33 @@ export class UserFacadeService {
       if (error.message === NO_USERS_ERROR(email)) {
         this.createUser(email);
       }
+    }
+  }
+
+  async changeUserUniversityStructureAccessory(
+    user_id: string,
+    universityStructure: UniversityStructureByIds
+  ): Promise<void> {
+    try {
+      await this.actionDispatcher.dispatchActionAsync(
+        UsersAdapterActions.changeUserUniversityStructure({ user_id, universityStructure }),
+        TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+        user_id
+      );
+    } catch (error) {
+      // TODO
+    }
+  }
+
+  async changeUserRole(user_id: string, role: RoleEnum): Promise<void> {
+    try {
+      await this.actionDispatcher.dispatchActionAsync(
+        UsersAdapterActions.changeUserRole({user_id, role }),
+        TrackOperations.CHANGE_USER_ROLE,
+        user_id
+      );
+    } catch (error) {
+      // TODO
     }
   }
 

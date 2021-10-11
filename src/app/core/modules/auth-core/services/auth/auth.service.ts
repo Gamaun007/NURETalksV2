@@ -1,3 +1,5 @@
+import { RoleEnum } from 'core/models/domain/roles.model';
+import { UniversityStructureByIds } from './../../../university/models/university-structure.model';
 import { UserFacadeService } from './../facades/user-facade/user-facade.service';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -39,6 +41,21 @@ export class AuthService {
 
   async signInWithEmailLinkAsync(email: string): Promise<firebase.auth.UserCredential> {
     return await this.firebaseWrapper.signInWithEmailLinkAsync(email);
+  }
+
+  async sendCurrentUserSecondPhaseAuthData(
+    universityStructure: UniversityStructureByIds,
+    role: RoleEnum
+  ): Promise<void> {
+    const currentUserId = (await this.getCurrentUserAsync()).uid;
+    try {
+      await Promise.all([
+        this.userFacade.changeUserUniversityStructureAccessory(currentUserId, universityStructure),
+        this.userFacade.changeUserRole(currentUserId, role),
+      ]);
+    } catch (e) {
+      // TODO
+    }
   }
 
   isSignInWithEmailLink(): boolean {

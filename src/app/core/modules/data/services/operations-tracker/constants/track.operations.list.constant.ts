@@ -3,6 +3,8 @@ export const enum TrackOperations {
   UPDATE_USER = 'update-user',
   LOAD_SPECIFIC_USER = 'load-specific-user',
   UPLOAD_USER_PROFILE_ICON = 'upload-user-profile-icon',
+  CHANGE_USER_UNIVERSITY_STRUCTURE = 'change-user-university-structure',
+  CHANGE_USER_ROLE = 'change-user-role',
 
   // University
   LOAD_FACULTIES = 'load-faculties',

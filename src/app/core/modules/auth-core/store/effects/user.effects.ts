@@ -1,5 +1,12 @@
+import {
+  FACULTY_NOT_FOUND,
+  DIRECTION_NOT_FOUND,
+  GROUP_NOT_FOUND,
+  SPECIALITY_NOT_FOUND,
+} from './../../../university/models/errors.constants';
+import { UniversityFacadeService } from './../../../university/services/facades/university-facade/university-facade.service';
 import { AuthService } from './../../services/auth/auth.service';
-import { UploadUserProfileIconAction } from './../actions/user.actions';
+import { UploadUserProfileIconAction, UsersAdapterActions } from './../actions/user.actions';
 import { UserHttpService } from '../../services/http/user/user.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
@@ -20,6 +27,7 @@ import {
 } from '../actions';
 import { AuthState } from 'core/modules/auth-core/store/state';
 import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
+import { UniversityEntitiesName } from 'core/modules/university/models';
 
 @Injectable()
 export class UserEffects {
@@ -29,7 +37,8 @@ export class UserEffects {
     private operationsTrackerService: OperationsTrackerService,
     private usersHttpService: UserHttpService,
     private fileStorageService: FileStorageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private universityFacade: UniversityFacadeService
   ) {}
 
   // @Effect()
@@ -67,7 +76,7 @@ export class UserEffects {
                   return partialUser;
                 }),
                 switchMap((pUser) => this.usersHttpService.updateUser(user.uid, pUser).pipe(map(() => pUser))),
-                map((pUser) => new UserUpdatedAction(pUser)),
+                map((pUser) => UsersAdapterActions.userUpdated({ user: pUser, user_id: user.uid })),
                 tap(() =>
                   this.operationsTrackerService.trackSuccess(TrackOperations.UPLOAD_USER_PROFILE_ICON, user.email)
                 ),
@@ -94,6 +103,73 @@ export class UserEffects {
           catchError((err: Error) => {
             this.operationsTrackerService.trackError(TrackOperations.LOAD_SPECIFIC_USER, err, action.email);
             return NEVER;
+          })
+        )
+      )
+    )
+  );
+
+  changeUserUniversityStructure$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UsersAdapterActions.changeUserUniversityStructure),
+      mergeMap((action) =>
+        this.universityFacade.getFaculties().pipe(
+          tap((faculties) => {
+            const faculty_id_to_find = action.universityStructure[UniversityEntitiesName.faculty];
+            const faculty = faculties.find((f) => f.id === faculty_id_to_find);
+
+            if (!faculty) {
+              return throwError(FACULTY_NOT_FOUND(faculty_id_to_find));
+            }
+
+            const direction_id_to_find = action.universityStructure[UniversityEntitiesName.direction];
+            const direction = faculty.directions.find((d) => d.id === direction_id_to_find);
+
+            if (!direction) {
+              return throwError(DIRECTION_NOT_FOUND(direction_id_to_find));
+            }
+
+            const speciality_name_to_find = action.universityStructure[UniversityEntitiesName.speciality];
+            const group_id_to_find = action.universityStructure[UniversityEntitiesName.group];
+
+            // If there is no speciality provided that means that group was selected from direction but not from speciality, so we skip it.
+            if (speciality_name_to_find) {
+              const speciality = direction.specialities.find((s) => s.fullName === speciality_name_to_find);
+
+              if (!speciality) {
+                return throwError(SPECIALITY_NOT_FOUND(speciality_name_to_find));
+              }
+
+              const group_from_speciality = speciality.groups.find((g) => g.id === group_id_to_find);
+
+              if (!group_from_speciality) {
+                return throwError(GROUP_NOT_FOUND(group_id_to_find));
+              }
+            } else {
+              const group_from_direction = direction.groups.find((g) => g.id === group_id_to_find);
+
+              if (!group_from_direction) {
+                return throwError(GROUP_NOT_FOUND(group_id_to_find));
+              }
+            }
+          }),
+          map((_) => {
+            const parial: Partial<User> = {
+              faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
+              direction_id: action.universityStructure[UniversityEntitiesName.direction],
+              group_id: action.universityStructure[UniversityEntitiesName.group],
+            };
+
+            if (action.universityStructure[UniversityEntitiesName.speciality]) {
+              parial.speciality_id = action.universityStructure[UniversityEntitiesName.speciality];
+            }
+
+            return parial;
+          }),
+          switchMap((parialUser) => {
+            return this.usersHttpService
+              .updateUser(action.user_id, parialUser)
+              .pipe(map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user })));
           })
         )
       )

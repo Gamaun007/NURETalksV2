@@ -28,7 +28,7 @@ const adapterReducer = createReducer(
   on(UsersAdapterActions.usersLoaded, (state: UsersState, action: UsersLoadedAction) =>
     usersAdapter.upsertMany(action.payload, { ...state, isLoaded: true })
   ),
-  on(UsersAdapterActions.userUpdated, (state: UsersState, action: UserUpdatedAction) => {
+  on(UsersAdapterActions.userUpdated, (state: UsersState, action) => {
     return usersAdapter.upsertOne(action.user as User, state);
   }),
   on(UsersAdapterActions.specificUserLoaded, (state: UsersState, action: SpecificUserLoadedAction) => {

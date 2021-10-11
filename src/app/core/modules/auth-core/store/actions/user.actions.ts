@@ -1,3 +1,5 @@
+import { RoleEnum } from 'core/models/domain/roles.model';
+import { UniversityStructureByIds } from './../../../university/models/university-structure.model';
 import { Action, createAction, props } from '@ngrx/store';
 import { User } from 'core/models/domain';
 
@@ -17,6 +19,8 @@ export const UserActionType = {
   UserUpdated: '[User] User updated',
 
   UploadUserProfileIcon: '[User] Upload user profile icon',
+
+  ChangeUserUniversityStructure: '[User] Change user university structure ',
 };
 
 export class LoadUsersAction implements Action {
@@ -63,7 +67,7 @@ export class SpecificUserLoadedAction implements Action {
 
 export class UserUpdatedAction implements Action {
   readonly type = UserActionType.UserUpdated;
-  constructor(public user: Partial<User>) {}
+  constructor(public user_id: string, public user: Partial<User>) {}
 }
 
 // // Consider to remove this action as it handles inappropriate way
@@ -76,8 +80,18 @@ export class UserUpdatedAction implements Action {
 export const UsersAdapterActions = {
   specificUserLoaded: createAction(UserActionType.SpecificUserLoaded, props<{ user: User }>()),
   usersLoaded: createAction(UserActionType.UsersLoaded, props<{ payload: User[] }>()),
-  userUpdated: createAction(UserActionType.UserUpdated, props<{ user: Partial<User> }>()),
+  userUpdated: createAction(UserActionType.UserUpdated, props<{ user_id: string, user: Partial<User> }>()),
 
   createUser: createAction(UserActionType.CreateUser, props<{ email: string }>()),
   userCreated: createAction(UserActionType.UserCreated, props<{ payload: User }>()),
+
+  // Actions only
+  changeUserUniversityStructure: createAction(
+    UserActionType.ChangeUserUniversityStructure,
+    props<{ user_id: string; universityStructure: UniversityStructureByIds }>()
+  ),
+  changeUserRole: createAction(
+    UserActionType.ChangeUserUniversityStructure,
+    props<{ user_id: string; role: RoleEnum }>()
+  ),
 };

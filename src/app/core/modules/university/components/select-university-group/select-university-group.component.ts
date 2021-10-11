@@ -11,21 +11,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { take, tap, filter } from 'rxjs/operators';
 import { DropdownControl } from 'core/modules/form-controls';
 import { Validators } from '@angular/forms';
-
-export type UniversityStructureDynamicForm = {
-  faculty: DropdownControl;
-  direction: DropdownControl;
-  speciality: DropdownControl;
-  group: DropdownControl;
-  // subCategory?: DropdownControl;
-  // controlName: TextFieldControl;
-  // addDescription: TextAreaControl;
-  // tsc?: MultiDropdownControl;
-};
-
-interface DirectionAsSpeciality extends Speciality {
-  direction_id: number;
-}
+import { DirectionAsSpeciality, UniversityStructureDynamicForm } from '../../models';
 
 const directionAsSpecialityTranslationKey = 'form.specialityByDirection';
 

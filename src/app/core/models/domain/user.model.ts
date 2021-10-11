@@ -19,9 +19,9 @@ export interface User extends UserId {
   // speciality?: Speciality;
   // group?: Group;
 
-  direction_id?: string;
-  faculty_id?: string;
-  group_id?: string;
+  direction_id?: number;
+  faculty_id?: number;
+  group_id?: number;
   speciality_id?: string;
 
   // room id's as array
