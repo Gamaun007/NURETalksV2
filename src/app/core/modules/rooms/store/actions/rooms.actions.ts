@@ -17,6 +17,13 @@ export const RoomActionTypes = {
   RoomUpdated: '[Room] Room updated',
 };
 
+export const RoomsFirebaseActionTypes = {
+  QueryRoomsChanges: '[Rooms Firebase] Rooms listener are set',
+  RoomsAddedFirebaseAction: '[Rooms Firebase] Rooms added action from firebase handles',
+  RoomsRemovedFirebaseAction: '[Rooms Firebase] Rooms removed action from firebase handles',
+  RoomsModifiedFirebaseAction: '[Rooms Firebase] Rooms modified action from firebase handles',
+};
+
 export const RoomsActions = {
   loadRooms: createAction(RoomActionTypes.LoadRooms),
   roomsLoaded: createAction(RoomActionTypes.RoomsLoaded, props<{ payload: Room[] }>()),
@@ -25,4 +32,17 @@ export const RoomsActions = {
   roomUpdated: createAction(RoomActionTypes.RoomUpdated, props<{ room: Partial<Room> }>()),
   createRoom: createAction(RoomActionTypes.CreateRoom, props<{ room: Room }>()),
   roomCreated: createAction(RoomActionTypes.RoomCreated, props<{ room: Room }>()),
+};
+
+export const RoomsFirebaseActions = {
+  queryRoomsChanges: createAction(RoomsFirebaseActionTypes.QueryRoomsChanges),
+  roomsAddedFirebaseAction: createAction(RoomsFirebaseActionTypes.RoomsAddedFirebaseAction, props<{ payload: Room }>()),
+  roomsRemovedFirebaseAction: createAction(
+    RoomsFirebaseActionTypes.RoomsRemovedFirebaseAction,
+    props<{ payload: Room }>()
+  ),
+  roomsModifiedFirebaseAction: createAction(
+    RoomsFirebaseActionTypes.RoomsModifiedFirebaseAction,
+    props<{ payload: Room }>()
+  ),
 };

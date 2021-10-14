@@ -8,6 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import * as storeFeature from './store';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { EffectsModule } from '@ngrx/effects';
+import { RoomItemComponent } from './components/room-item/room-item.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,12 @@ import { EffectsModule } from '@ngrx/effects';
     StoreModule.forFeature(storeFeature.featureKey, storeFeature.reducers),
     EffectsModule.forFeature([storeFeature.RoomsEffects]),
   ],
+  declarations: [
+    RoomItemComponent
+  ],
+  exports: [
+    RoomItemComponent
+  ]
 })
 export class RoomsModule {
   static forRoot(): ModuleWithProviders<RoomsModule> {

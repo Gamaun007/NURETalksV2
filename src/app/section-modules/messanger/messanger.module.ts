@@ -1,3 +1,4 @@
+import { RoomsModule } from 'core/modules/rooms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Route, RouterModule } from '@angular/router';
@@ -8,6 +9,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DynamicFormModule } from 'core/modules/dynamic-form';
 import { ButtonsModule } from 'core/modules/buttons';
 import { MessangerComponent } from './components/messanger/messanger.component';
+import { RoomsSectionLayoutComponent } from './components/rooms-section/rooms-section-layout/rooms-section-layout.component';
+import { RoomsRendererComponent } from './components/rooms-section/rooms-renderer/rooms-renderer.component';
 
 const routes: Route[] = [
   {
@@ -25,9 +28,10 @@ const routes: Route[] = [
     TranslateModule,
     AngularSvgIconModule,
     DynamicFormModule,
+    RoomsModule
   ],
   providers: [],
-  declarations: [MessangerComponent],
+  declarations: [MessangerComponent, RoomsSectionLayoutComponent, RoomsRendererComponent],
   exports: [],
 })
 export class MessangerModule {}

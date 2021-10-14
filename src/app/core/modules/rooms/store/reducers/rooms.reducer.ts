@@ -1,3 +1,4 @@
+import { RoomsFirebaseActions } from './../actions/rooms.actions';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { Action, createReducer, on } from '@ngrx/store';
 import { RoomsActions } from '../actions';
@@ -30,7 +31,20 @@ const adapterReducer = createReducer(
   }),
   on(RoomsActions.roomUpdated, (state: RoomsState, action) => {
     return roomsAdapter.addOne(action.room as Room, state);
-  })
+  }),
+
+  // Firebase actions reducer handlers
+  on(RoomsFirebaseActions.roomsAddedFirebaseAction, (state: RoomsState, action) => {
+    return roomsAdapter.addOne(action.payload, state);
+  }),
+
+  on(RoomsFirebaseActions.roomsModifiedFirebaseAction, (state: RoomsState, action) => {
+    return roomsAdapter.upsertOne(action.payload, state);
+  }),
+
+  on(RoomsFirebaseActions.roomsRemovedFirebaseAction, (state: RoomsState, action) => {
+    return roomsAdapter.removeOne(action.payload.id, state);
+  }),
 );
 
 export function roomsReducer(state = initialState, action: Action): RoomsState {

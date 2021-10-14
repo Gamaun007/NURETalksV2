@@ -1,0 +1,13 @@
+<app-virtual-scroll-renderer
+  [parentScroller]="parentScroller"
+  [allItemsStream]="allControlsStream$"
+  [filteredItemsStream]="filteredControlsStream$"
+  [itemAddingStream]="controlAddingStream$"
+  [idSelector]="controlOrCategoryIdSelector"
+  [buildRenderingItemsCallback]="buildRenderingItems"
+  [scrollToNewlyAddedItem]="true"
+>
+  <ng-template #itemTemplate let-item="item">
+    <app-room-item #roomItemComp [room]="item"></app-room-item>
+  </ng-template>
+</app-virtual-scroll-renderer>
