@@ -21,6 +21,8 @@ export const UserActionType = {
   UploadUserProfileIcon: '[User] Upload user profile icon',
 
   ChangeUserUniversityStructure: '[User] Change user university structure ',
+
+  ChangeUserRole: '[User] Change user role'
 };
 
 export class LoadUsersAction implements Action {
@@ -91,7 +93,7 @@ export const UsersAdapterActions = {
     props<{ user_id: string; universityStructure: UniversityStructureByIds }>()
   ),
   changeUserRole: createAction(
-    UserActionType.ChangeUserUniversityStructure,
+    UserActionType.ChangeUserRole,
     props<{ user_id: string; role: RoleEnum }>()
   ),
 };

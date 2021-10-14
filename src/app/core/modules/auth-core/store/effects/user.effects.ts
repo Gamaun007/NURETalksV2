@@ -115,6 +115,7 @@ export class UserEffects {
       mergeMap((action) =>
         this.universityFacade.getFaculties().pipe(
           tap((faculties) => {
+            debugger;
             const faculty_id_to_find = action.universityStructure[UniversityEntitiesName.faculty];
             const faculty = faculties.find((f) => f.id === faculty_id_to_find);
 
@@ -158,6 +159,8 @@ export class UserEffects {
               faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
               direction_id: action.universityStructure[UniversityEntitiesName.direction],
               group_id: action.universityStructure[UniversityEntitiesName.group],
+              // Set user account approval immediately to true, in the future the Admin role will manage user approval
+              is_approved_account: true,
             };
 
             if (action.universityStructure[UniversityEntitiesName.speciality]) {
@@ -173,6 +176,19 @@ export class UserEffects {
           })
         )
       )
+    )
+  );
+
+  createUserRole$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UsersAdapterActions.changeUserRole),
+      mergeMap((action) => {
+        debugger;
+        // Set user account approval immediately to true, in the future the Admin role will manage user approval
+        return this.usersHttpService
+          .updateUser(action.user_id, { role: action.role, is_approved_account: true, })
+          .pipe(map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user })));
+      })
     )
   );
 

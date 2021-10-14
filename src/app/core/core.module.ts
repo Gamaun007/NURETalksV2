@@ -1,3 +1,4 @@
+import { RootGuardService } from 'core/guards/root-guard/root-guard.service';
 import { UniversityModule } from './modules/university/university.module';
 import { DirectivesModule } from './modules/directives/directives.module';
 import { ButtonsModule } from './modules/buttons/buttons.module';
@@ -85,6 +86,7 @@ export class CoreModule {
         LoaderManagerService,
         LoggerService,
         FileStorageService,
+        RootGuardService,
         {
           provide: WINDOW,
           useFactory: () => window,

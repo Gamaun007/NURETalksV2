@@ -24,6 +24,9 @@ export interface User extends UserId {
   group_id?: number;
   speciality_id?: string;
 
+  // Additional properties
+  is_approved_account?: boolean;
+
   // room id's as array
   rooms?: string[];
 }

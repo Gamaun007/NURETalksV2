@@ -61,6 +61,7 @@ export class UserHttpService {
   }
 
   updateUser(id: string, userToUpdate: Partial<User>): Observable<User> {
+    debugger;
     return from(this.getUsersCollectionReference().doc(id).update(userToUpdate)).pipe(
       switchMap(() => this.getSpecificUserById(id))
     );

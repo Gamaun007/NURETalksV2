@@ -49,6 +49,7 @@ export class AuthService {
   ): Promise<void> {
     const currentUserId = (await this.getCurrentUserAsync()).uid;
     try {
+      debugger;
       await Promise.all([
         this.userFacade.changeUserUniversityStructureAccessory(currentUserId, universityStructure),
         this.userFacade.changeUserRole(currentUserId, role),
