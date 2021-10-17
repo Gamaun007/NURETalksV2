@@ -1,17 +1,19 @@
+import { CreateGroupRoomEntity } from './../../services/http/rooms/rooms.service';
+import { UniversityFacadeService } from './../../../university/services/facades/university-facade/university-facade.service';
+import { RoomsActions } from './../actions/rooms.actions';
 import { AuthService } from 'core/modules/auth-core/services/auth/auth.service';
 import { RoomsHttpService } from '../../services/http/rooms/rooms.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
-// import { State } from 'core/modules/data/store';
-import { from, NEVER, Observable, of, throwError } from 'rxjs';
+import { NEVER } from 'rxjs';
 import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
-import { User } from 'core/models/domain';
-import { RoomActionTypes, RoomsFirebaseActions, RoomsFirebaseActionTypes } from '../actions';
+import { RoomsFirebaseActionTypes } from '../actions';
 import { AuthState } from 'core/modules/auth-core/store/state';
-import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
+import { FileStorageService, ROOM_IMAGE_PATH } from 'core/modules/firebase';
 import { FirebaseRoomsActionsToNgrx } from '../mappers';
+import { UniversityEntitiesName } from 'core/modules/university/models';
 
 @Injectable()
 export class RoomsEffects {
@@ -21,7 +23,8 @@ export class RoomsEffects {
     private operationsTrackerService: OperationsTrackerService,
     private roomsHttpService: RoomsHttpService,
     private fileStorageService: FileStorageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private universityFacade: UniversityFacadeService
   ) {}
 
   listenToRoomsChanges$ = createEffect(() =>
@@ -38,136 +41,64 @@ export class RoomsEffects {
       })
     )
   );
-  // @Effect()
-  // loadSpecificUser$: Observable<Action> = this.actions$.pipe(
-  //   ofType(UserActionType.LoadSpecificUser),
-  //   mergeMap((action: LoadSpecificUserAction) =>
-  //     this.usersHttpService.getSpecificUser(action.email).pipe(
-  //       tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_SPECIFIC_USER, action.email)),
-  //       map((response) => {
-  //         return new SpecificUserLoadedAction(response);
-  //       }),
-  //       catchError((err: Error) => {
-  //         this.operationsTrackerService.trackError(TrackOperations.LOAD_SPECIFIC_USER, err, action.email);
-  //         return NEVER;
-  //       })
-  //     )
-  //   )
-  // );
 
-  // uploadUserProfileIcon = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(UserActionType.UploadUserProfileIcon),
-  //     mergeMap((action: UploadUserProfileIconAction) =>
-  //       this.authService.getCurrentUserObservable().pipe(
-  //         switchMap((user) => {
-  //           return this.fileStorageService
-  //             .uploadFileToStorage(USER_PROFILE_IMAGE_PATH, user.uid, action.file)
-  //             .snapshotChanges()
-  //             .pipe(
-  //               switchMap((snap) => from(snap.ref.getDownloadURL()) as Observable<string>),
-  //               map((response) => {
-  //                 const partialUser: Partial<User> = {
-  //                   photoUrl: response,
-  //                 };
-  //                 return partialUser;
-  //               }),
-  //               switchMap((pUser) => this.usersHttpService.updateUser(user.uid, pUser).pipe(map(() => pUser))),
-  //               map((pUser) => new UserUpdatedAction(pUser)),
-  //               tap(() =>
-  //                 this.operationsTrackerService.trackSuccess(TrackOperations.UPLOAD_USER_PROFILE_ICON, user.email)
-  //               ),
-  //               catchError((err: Error) => {
-  //                 this.operationsTrackerService.trackError(TrackOperations.UPLOAD_USER_PROFILE_ICON, err, user.email);
-  //                 return NEVER;
-  //               })
-  //             );
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
+  loadRooms$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RoomsActions.loadRooms),
+      mergeMap((action) => {
+        return this.roomsHttpService.getAllRooms().pipe(
+          map((resp) => {
+            return RoomsActions.roomsLoaded({ payload: resp });
+          })
+        );
+      })
+    )
+  );
 
-  // loadSpecificUser$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(UserActionType.LoadSpecificUser),
-  //     mergeMap((action: LoadSpecificUserAction) =>
-  //       this.usersHttpService.getSpecificUser(action.email).pipe(
-  //         tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_SPECIFIC_USER, action.email)),
-  //         map((response: User) => {
-  //           return new SpecificUserLoadedAction(response);
-  //         }),
-  //         catchError((err: Error) => {
-  //           this.operationsTrackerService.trackError(TrackOperations.LOAD_SPECIFIC_USER, err, action.email);
-  //           return NEVER;
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
+  createRoom$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RoomsActions.createRoom),
+        mergeMap((action) => {
+          return this.universityFacade.getGroupByUniversityStructure(action.universityStructure).pipe(
+            switchMap((foundGroup) => {
+              return this.fileStorageService
+                .getFileFromStorage(ROOM_IMAGE_PATH, 'Group-pale-violet.png')
+                .pipe(map((path) => ({ icon_Path: path, foundGroup })));
+            }),
+            map((accumulatedData) => {
+              const createRoomEntity: CreateGroupRoomEntity = {
+                faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
+                direction_id: action.universityStructure[UniversityEntitiesName.direction],
+                speciality_id: action.universityStructure[UniversityEntitiesName.speciality],
+                group_id: accumulatedData.foundGroup.id,
+                photo_url: accumulatedData.icon_Path,
+                name: accumulatedData.foundGroup.name,
+              };
 
-  // createUser$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(UserActionType.CreateUser),
-  //     mergeMap((action: CreateUserAction) => {
-  //       return this.fileStorageService.getFileFromStorage(USER_PROFILE_IMAGE_PATH, 'default.jpg').pipe(
-  //         switchMap((imageUrl) => {
-  //           debugger;
-  //           return this.usersHttpService.createNewUser(action.email, { photoUrl: imageUrl }).pipe(
-  //             tap((user) => this.operationsTrackerService.trackSuccess(user.email, TrackOperations.CREATE_USER)),
-  //             map((createdUser) => {
-  //               return new UserCreatedAction(createdUser);
-  //             }),
-  //             catchError((err) => {
-  //               this.operationsTrackerService.trackError(action.email, err, TrackOperations.CREATE_USER);
-  //               return NEVER;
-  //             })
-  //           );
-  //         })
-  //       );
-  //     })
-  //   )
-  // );
+              return createRoomEntity;
+            }),
 
-  // @Effect({ dispatch: false })
-  // removeSpecificUser$: Observable<User> = this.actions$.pipe(
-  //   ofType(UserActionType.RemoveUser),
-  //   mergeMap((action: RemoveUserAction) => {
-  //     return this.usersHttpService.removeSpecificUser(action.payload.email).pipe(
-  //       tap(() => this.operationsTrackerService.trackSuccess(action.payload.email, TrackOperations.REMOVE_USER)),
-  //       catchError((err) => {
-  //         this.operationsTrackerService.trackError(action.payload.email, new Error(err), TrackOperations.REMOVE_USER);
-  //         this.store.dispatch(new UserUpdatedAction(action.payload.user));
-  //         return NEVER;
-  //       })
-  //     );
-  //   })
-  // );
-
-  // @Effect({ dispatch: false })
-  // resendUserInvitation$: Observable<Action> = this.actions$.pipe(
-  //   ofType(UserActionType.ResendUserInvitation),
-  //   mergeMap((action: ResendUserInvitationAction) => {
-  //     return this.usersHttpService.updateUser(action.user_email).pipe(
-  //       tap(() => this.operationsTrackerService.trackSuccess(action.user_email, TrackOperations.UPDATE_USER)),
-  //       catchError((err) => {
-  //         this.operationsTrackerService.trackError(action.user_email, new Error(err), TrackOperations.UPDATE_USER);
-  //         return NEVER;
-  //       })
-  //     );
-  //   })
-  // );
-
-  // userUpdated$ = createEffect(() => this.actions$.pipe(
-  //   ofType(UserActionType.UserUpdated),
-  //   mergeMap((action: UserUpdatedAction) => {
-  //     return this.usersHttpService.updateUser(action.user.email).pipe(
-  //       tap(() => this.operationsTrackerService.trackSuccess(action.user.email, TrackOperations.UPDATE_USER)),
-  //       catchError((err) => {
-  //         this.operationsTrackerService.trackError(action.user.email, new Error(err), TrackOperations.UPDATE_USER);
-  //         return NEVER;
-  //       })
-  //     );
-  //   })
-  // ), { dispatch: false})
+            switchMap((createRoomEntity) => {
+              return this.roomsHttpService.createRoom(createRoomEntity);
+            }),
+            tap(() => {
+              this.operationsTrackerService.trackSuccess(
+                TrackOperations.CREATE_GROUP_ROOM,
+                action.universityStructure.group.toString()
+              );
+            }),
+            catchError((e) => {
+              this.operationsTrackerService.trackError(
+                TrackOperations.CREATE_GROUP_ROOM,
+                e,
+                action.universityStructure.group.toString()
+              );
+              return NEVER;
+            })
+          );
+        })
+      ),
+    { dispatch: false }
+  );
 }

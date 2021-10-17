@@ -1,6 +1,9 @@
 <div class="wrapper flex flex-row justify-between">
-  <div class="left-side">{{ room.room_details.room_image }}</div>
+  <div id="room-icon-wrapper" class="mr-3">
+    <div class="room-icon" [style.background-image]="roomIcon"></div>
+  </div>
+
   <div class="right-side">
-    <span class="name text-4xl text-navy-90">{{ room.room_details.name }}</span>
+    <span class="name text-4xl text-navy-90">{{ room?.room_details?.name }}</span>
   </div>
 </div>

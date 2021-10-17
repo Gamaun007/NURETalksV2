@@ -1,3 +1,5 @@
+import { UniversityStructureByIds } from './../../../../core/modules/university/models/university-structure.model';
+import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UserFacadeService } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
 import { UniversityEntitiesName, UniversityStructureDynamicFormValuesMap } from 'core/modules/university/models';
 import { SelectUniversityGroupComponent } from 'core/modules/university/components';
@@ -33,29 +35,33 @@ export class ContinueProfileComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private translatService: TranslateService,
-    private authService: AuthService
+    private authService: AuthService,
+    private roomFacade: RoomsFacadeService
   ) {}
 
   ngOnInit(): void {
     this.setRoleRadiobuttonsForm();
   }
 
-  sendUserPhaseTwoData(): void {
+  async sendUserPhaseTwoData(): Promise<void> {
     const universityStructureFormValues = this.selectUniversityStructureRef.form
       .value as UniversityStructureDynamicFormValuesMap;
     const rolesFormValues = this.formGroup.value as RolesFormValuesMap;
-    debugger;
-    this.authService.sendCurrentUserSecondPhaseAuthData(
-      {
-        [UniversityEntitiesName.faculty]: universityStructureFormValues[UniversityEntitiesName.faculty].id,
-        [UniversityEntitiesName.direction]: universityStructureFormValues[UniversityEntitiesName.direction].id,
-        [UniversityEntitiesName.speciality]: universityStructureFormValues[UniversityEntitiesName.speciality].direction_id
-          ? null
-          : universityStructureFormValues[UniversityEntitiesName.speciality].fullName,
-        [UniversityEntitiesName.group]: universityStructureFormValues[UniversityEntitiesName.group].id,
-      },
-      rolesFormValues.roles as RoleEnum
-    );
+
+    const universityStructure: UniversityStructureByIds = {
+      [UniversityEntitiesName.faculty]: universityStructureFormValues[UniversityEntitiesName.faculty].id,
+      [UniversityEntitiesName.direction]: universityStructureFormValues[UniversityEntitiesName.direction].id,
+      [UniversityEntitiesName.speciality]: universityStructureFormValues[UniversityEntitiesName.speciality].direction_id
+        ? null
+        : universityStructureFormValues[UniversityEntitiesName.speciality].fullName,
+      [UniversityEntitiesName.group]: universityStructureFormValues[UniversityEntitiesName.group].id,
+    };
+
+    const role = RoleEnum[rolesFormValues.roles];
+    await this.authService.sendCurrentUserSecondPhaseAuthData(universityStructure, role);
+    if (role === RoleEnum.Headman || role === RoleEnum.Student) {
+      await this.roomFacade.createGroupRoom(universityStructure);
+    }
   }
 
   private setRoleRadiobuttonsForm(): void {

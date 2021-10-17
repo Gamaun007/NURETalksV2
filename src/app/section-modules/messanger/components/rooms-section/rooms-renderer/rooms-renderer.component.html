@@ -1,9 +1,8 @@
 <app-virtual-scroll-renderer
   [parentScroller]="parentScroller"
-  [allItemsStream]="allControlsStream$"
-  [filteredItemsStream]="filteredControlsStream$"
-  [itemAddingStream]="controlAddingStream$"
-  [idSelector]="controlOrCategoryIdSelector"
+  [allItemsStream]="allRooms$"
+  [filteredItemsStream]="allRooms$"
+  [idSelector]="roomIdSelector"
   [buildRenderingItemsCallback]="buildRenderingItems"
   [scrollToNewlyAddedItem]="true"
 >

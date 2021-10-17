@@ -1,3 +1,4 @@
+import { UniversityStructureByIds } from './../../../university/models/university-structure.model';
 import { createAction, props } from '@ngrx/store';
 import { Room } from 'core/models/domain';
 
@@ -30,7 +31,7 @@ export const RoomsActions = {
   loadSpecificRoom: createAction(RoomActionTypes.LoadSpecificRoom, props<{ room_id: string }>()),
   specificRoomLoaded: createAction(RoomActionTypes.SpecificRoomLoaded, props<{ room: Room }>()),
   roomUpdated: createAction(RoomActionTypes.RoomUpdated, props<{ room: Partial<Room> }>()),
-  createRoom: createAction(RoomActionTypes.CreateRoom, props<{ room: Room }>()),
+  createRoom: createAction(RoomActionTypes.CreateRoom, props<{ universityStructure: UniversityStructureByIds }>()),
   roomCreated: createAction(RoomActionTypes.RoomCreated, props<{ room: Room }>()),
 };
 

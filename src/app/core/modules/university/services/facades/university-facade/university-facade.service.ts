@@ -1,13 +1,15 @@
-import { map, switchMap } from 'rxjs/operators';
+import { UniversityStructureByIds } from './../../../models/university-structure.model';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { universityStateSelector } from './../../../store/state';
 import { UniversityActions } from './../../../store/actions/university.actions';
 import { ActionDispatcherService, TrackOperations } from 'core/modules/data/services';
 import { UniversityState } from './../../../store/reducers/university.reducer';
 import { Room } from 'core/models/domain/room.model';
 import { Injectable } from '@angular/core';
-import { NEVER, Observable } from 'rxjs';
+import { NEVER, Observable, throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Faculty } from 'core/models/domain';
+import { Faculty, Group } from 'core/models/domain';
+import { getGroupFromUniversityStructure, universityStructureChecker } from 'core/modules/university/domain';
 
 @Injectable()
 export class UniversityFacadeService {
@@ -24,10 +26,24 @@ export class UniversityFacadeService {
     }
   }
 
+  getGroupByUniversityStructure(universityStructure: UniversityStructureByIds): Observable<Group> {
+    return this.getFaculties().pipe(
+      tap((faculties) => {
+        try {
+          universityStructureChecker(universityStructure, faculties);
+        } catch (e) {
+          return throwError(e);
+        }
+      }),
+      map((faculties) => {
+        return getGroupFromUniversityStructure(universityStructure, faculties);
+      })
+    );
+  }
+
   getFaculties(): Observable<Faculty[]> {
     return this.store.select(universityStateSelector).pipe(
       switchMap((state) => {
-        debugger;
         if (!state.isLoaded) {
           this.loadAllFaculties();
           return NEVER;

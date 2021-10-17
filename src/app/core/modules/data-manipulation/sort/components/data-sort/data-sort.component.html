@@ -1,0 +1,2 @@
+<app-icon-button [type]="'primary'" [svgIconPath]="'direction_arrows'" (click)="changeDirection()"></app-icon-button>
+<app-dropdown-control [data]="sortDefinitions" [displayValueSelector]="displayValueSelector" [overlayPanelClass]="'sort-dropdown-overlay'" (select)="selectSort($event)"></app-dropdown-control>

@@ -113,47 +113,8 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(UsersAdapterActions.changeUserUniversityStructure),
       mergeMap((action) =>
-        this.universityFacade.getFaculties().pipe(
-          tap((faculties) => {
-            debugger;
-            const faculty_id_to_find = action.universityStructure[UniversityEntitiesName.faculty];
-            const faculty = faculties.find((f) => f.id === faculty_id_to_find);
-
-            if (!faculty) {
-              return throwError(FACULTY_NOT_FOUND(faculty_id_to_find));
-            }
-
-            const direction_id_to_find = action.universityStructure[UniversityEntitiesName.direction];
-            const direction = faculty.directions.find((d) => d.id === direction_id_to_find);
-
-            if (!direction) {
-              return throwError(DIRECTION_NOT_FOUND(direction_id_to_find));
-            }
-
-            const speciality_name_to_find = action.universityStructure[UniversityEntitiesName.speciality];
-            const group_id_to_find = action.universityStructure[UniversityEntitiesName.group];
-
-            // If there is no speciality provided that means that group was selected from direction but not from speciality, so we skip it.
-            if (speciality_name_to_find) {
-              const speciality = direction.specialities.find((s) => s.fullName === speciality_name_to_find);
-
-              if (!speciality) {
-                return throwError(SPECIALITY_NOT_FOUND(speciality_name_to_find));
-              }
-
-              const group_from_speciality = speciality.groups.find((g) => g.id === group_id_to_find);
-
-              if (!group_from_speciality) {
-                return throwError(GROUP_NOT_FOUND(group_id_to_find));
-              }
-            } else {
-              const group_from_direction = direction.groups.find((g) => g.id === group_id_to_find);
-
-              if (!group_from_direction) {
-                return throwError(GROUP_NOT_FOUND(group_id_to_find));
-              }
-            }
-          }),
+        // getGroupByUniversityStructure is here because under the hood there is a structure checker!
+        this.universityFacade.getGroupByUniversityStructure(action.universityStructure).pipe(
           map((_) => {
             const parial: Partial<User> = {
               faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
@@ -170,9 +131,23 @@ export class UserEffects {
             return parial;
           }),
           switchMap((parialUser) => {
-            return this.usersHttpService
-              .updateUser(action.user_id, parialUser)
-              .pipe(map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user })));
+            return this.usersHttpService.updateUser(action.user_id, parialUser).pipe(
+              tap((_) =>
+                this.operationsTrackerService.trackSuccess(
+                  TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+                  action.user_id
+                )
+              ),
+              map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user }))
+            );
+          }),
+          catchError((error) => {
+            this.operationsTrackerService.trackError(
+              TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+              error,
+              action.user_id
+            );
+            return NEVER;
           })
         )
       )
@@ -183,11 +158,15 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(UsersAdapterActions.changeUserRole),
       mergeMap((action) => {
-        debugger;
         // Set user account approval immediately to true, in the future the Admin role will manage user approval
-        return this.usersHttpService
-          .updateUser(action.user_id, { role: action.role, is_approved_account: true, })
-          .pipe(map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user })));
+        return this.usersHttpService.updateUser(action.user_id, { role: action.role, is_approved_account: true }).pipe(
+          tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.CHANGE_USER_ROLE, action.user_id)),
+          map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user })),
+          catchError((error) => {
+            this.operationsTrackerService.trackError(TrackOperations.CHANGE_USER_ROLE, error, action.user_id);
+            return NEVER;
+          })
+        );
       })
     )
   );
@@ -198,7 +177,6 @@ export class UserEffects {
       mergeMap((action: CreateUserAction) => {
         return this.fileStorageService.getFileFromStorage(USER_PROFILE_IMAGE_PATH, 'default.jpg').pipe(
           switchMap((imageUrl) => {
-            debugger;
             return this.usersHttpService.createNewUser(action.email, { photo_url: imageUrl }).pipe(
               tap((user) => this.operationsTrackerService.trackSuccess(user.email, TrackOperations.CREATE_USER)),
               map((createdUser) => {

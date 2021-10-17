@@ -8,4 +8,7 @@ export const enum TrackOperations {
 
   // University
   LOAD_FACULTIES = 'load-faculties',
+
+  // Rooms
+  CREATE_GROUP_ROOM = 'create-group-room',
 }

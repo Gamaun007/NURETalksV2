@@ -27,10 +27,19 @@ import { ActionDispatcherService, OperationsTrackerService } from './services';
 @NgModule({
   imports: [
     CommonModule,
-    StoreModule.forRoot({}),
+    // StoreModule.forRoot({}),
+    StoreModule.forRoot({}, {
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+        strictStateSerializability: false,
+        strictActionSerializability: false,
+        strictActionWithinNgZone: true,
+        strictActionTypeUniqueness: true,
+      },
+    }),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
-      logOnly: environment.production, // Restrict extension to log-only mode
     }),
     EffectsModule.forRoot([
       // ControlEffects,

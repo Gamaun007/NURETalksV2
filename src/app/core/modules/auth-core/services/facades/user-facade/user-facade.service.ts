@@ -1,3 +1,4 @@
+import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UniversityStructureByIds } from './../../../../university/models/university-structure.model';
 import { RoleEnum } from 'core/models/domain/roles.model';
 import { NO_USERS_ERROR } from './../../http/errors.constants';
@@ -92,5 +93,9 @@ export class UserFacadeService {
       }),
       shareReplay()
     );
+  }
+
+  private ensureUserRelatedRoomCreated(): void {
+
   }
 }

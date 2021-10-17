@@ -1,3 +1,4 @@
+import { RoomsModule } from './../rooms/rooms.module';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularFireModule } from '@angular/fire';

@@ -1,3 +1,4 @@
+import { RoomsModule } from './../../core/modules/rooms/rooms.module';
 import { RootGuardService } from 'core/guards/root-guard/root-guard.service';
 import { UniversityModule } from 'core/modules/university/university.module';
 import { AuthService } from 'core/modules/auth-core/services';
@@ -17,6 +18,7 @@ import { ContinueProfileComponent } from './components/continue-profile/continue
 const routes: Route[] = [
   {
     path: '',
+    component: ContinueProfileComponent,
     children: [
       {
         path: AuthRoutes.ContinueProfile,
@@ -39,6 +41,7 @@ const routes: Route[] = [
     AngularSvgIconModule,
     DynamicFormModule,
     UniversityModule,
+    RoomsModule.forRoot()
   ],
   providers: [AuthService],
   declarations: [ContinueProfileComponent],

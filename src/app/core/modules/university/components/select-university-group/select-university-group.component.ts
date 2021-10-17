@@ -126,7 +126,6 @@ export class SelectUniversityGroupComponent implements OnInit {
   }
 
   private selectFacultyDropdown(): DropdownControl {
-    debugger;
     return new DropdownControl({
       initialInputs: {
         titleTranslationKey: this.buildTranslationKey('form.selectFaculty'),
@@ -142,7 +141,6 @@ export class SelectUniversityGroupComponent implements OnInit {
   }
 
   private selectDirectionDropdown(): DropdownControl {
-    debugger;
     return new DropdownControl({
       initialInputs: {
         titleTranslationKey: this.buildTranslationKey('form.selectDirection'),
@@ -159,7 +157,6 @@ export class SelectUniversityGroupComponent implements OnInit {
   }
 
   private selectSpecialityDropdown(): DropdownControl {
-    debugger;
     return new DropdownControl({
       initialInputs: {
         titleTranslationKey: this.buildTranslationKey('form.selectSpeciality'),
@@ -176,7 +173,6 @@ export class SelectUniversityGroupComponent implements OnInit {
   }
 
   private selectGroupDropdown(): DropdownControl {
-    debugger;
     return new DropdownControl({
       initialInputs: {
         titleTranslationKey: this.buildTranslationKey('form.selectGroup'),

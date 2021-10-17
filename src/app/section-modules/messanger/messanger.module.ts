@@ -1,3 +1,5 @@
+import { SearchModule } from './../../core/modules/data-manipulation/search/search.module';
+import { RenderingModule } from './../../core/modules/rendering/rendering.module';
 import { RoomsModule } from 'core/modules/rooms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -28,7 +30,10 @@ const routes: Route[] = [
     TranslateModule,
     AngularSvgIconModule,
     DynamicFormModule,
-    RoomsModule
+    RoomsModule.forRoot(),
+    RoomsModule,
+    SearchModule,
+    RenderingModule,
   ],
   providers: [],
   declarations: [MessangerComponent, RoomsSectionLayoutComponent, RoomsRendererComponent],

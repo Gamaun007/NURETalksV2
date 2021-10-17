@@ -19,7 +19,6 @@ export class RootGuardService implements CanActivate {
     _: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<boolean | UrlTree> {
-    debugger;
     const currUser = await this.authService.getCurrentUserAsync();
 
     if (currUser?.is_approved_account === undefined && !state.url.startsWith(`/${AppRoutes.ContinueProfile}`)) {

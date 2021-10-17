@@ -1,3 +1,5 @@
+import { environment } from './../environments/environment.local';
+import { DataManipulationModule } from './core/modules/data-manipulation/data-manipulation.module';
 import { DataModule } from './core/modules/data/data.module';
 import { SvgIconsModule } from './core/modules/svg-icons/svg-icons.module';
 import { AuthCoreModule } from './core/modules/auth-core/auth-core.module';
@@ -15,6 +17,7 @@ import { StoreModule } from '@ngrx/store';
 import { RootComponent, WildCardComponent } from 'src/app/components';
 import { LottieModule } from 'ngx-lottie';
 import player, { LottiePlayer } from 'lottie-web';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 export function playerFactory(): LottiePlayer {
   return player;
 }
@@ -22,19 +25,22 @@ export function playerFactory(): LottiePlayer {
 @NgModule({
   declarations: [AppComponent, WildCardComponent, RootComponent],
   imports: [
+    BrowserModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     LottieModule.forRoot({ player: playerFactory }),
     AppRoutingModule,
     CoreModule.forRoot(),
     SvgIconsModule.forRoot(),
-    TranslateConfigModule,
     RouterModule,
     BrowserAnimationsModule,
     PerfectScrollbarModule,
     AuthenticationModule,
-    DataModule.forRoot(),
+
     AuthCoreModule.forRoot(),
-    StoreModule.forRoot({}),
+    DataManipulationModule.forRoot(),
+    DataManipulationModule,
+    DataModule.forRoot(),
+    TranslateConfigModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -17,7 +17,6 @@ export class AuthGuardService implements CanActivate {
 
   async canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
     // startsWith solves the bug with calling wrong authguard
-    debugger;
     if (!state.url.startsWith(`/${AppRoutes.Auth}`) && !(await this.authService.isAuthenticatedAsync())) {
       return this.router.createUrlTree([AppRoutes.Auth, AuthRoutes.SignIn]);
     }
@@ -28,7 +27,6 @@ export class AuthGuardService implements CanActivate {
     // ) {
     //   //return this.router.createUrlTree([`/${AppRoutes.ContinueProfile}`, '']);
     //   await this.router.navigate([`/${AppRoutes.ContinueProfile}`]);
-    //   debugger;
     //   return false;
     //   // return this.router.createUrlTree([{ segmentPath: `./${AppRoutes.ContinueProfile}` }], {
     //   //   relativeTo: this.activatedRoute,

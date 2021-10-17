@@ -17,23 +17,6 @@ export class UserHttpService {
 
   getSpecificUser(email: string): Observable<User> {
     return this.getUserByQuery(email, (collection) => collection.where('email', '==', email));
-    // return this.afs
-    //   .collection<User>('users', (collection) => collection.where('email', '==', email))
-    //   .valueChanges()
-    //   .pipe(
-    //     switchMap((users) => {
-    //       if (!users?.length) {
-    //         return throwError(new Error(NO_USERS_ERROR(email)));
-    //       }
-
-    //       if (users.length > 1) {
-    //         return throwError(new Error(MORE_THAN_ONE_USER_ERROR(email)));
-    //       }
-
-    //       return of(users[0]);
-    //     }),
-    //     take(1)
-    //   );
   }
 
   private getUserByQuery(user_identifier: string, query: QueryFn<firebase.firestore.DocumentData>): Observable<User> {
@@ -61,7 +44,6 @@ export class UserHttpService {
   }
 
   updateUser(id: string, userToUpdate: Partial<User>): Observable<User> {
-    debugger;
     return from(this.getUsersCollectionReference().doc(id).update(userToUpdate)).pipe(
       switchMap(() => this.getSpecificUserById(id))
     );

@@ -1,3 +1,4 @@
+import { RoomsFacadeService } from 'core/modules/rooms/services';
 import { RoleEnum } from 'core/models/domain/roles.model';
 import { UniversityStructureByIds } from './../../../university/models/university-structure.model';
 import { UserFacadeService } from './../facades/user-facade/user-facade.service';
@@ -18,7 +19,7 @@ export class AuthService {
     private authService: AngularFireAuth,
     private windowHelper: WindowHelperService,
     private firebaseWrapper: FirebaseWrapperService,
-    private userFacade: UserFacadeService
+    private userFacade: UserFacadeService,
   ) {
     this.userCache = this.buildCache();
   }
@@ -49,7 +50,6 @@ export class AuthService {
   ): Promise<void> {
     const currentUserId = (await this.getCurrentUserAsync()).uid;
     try {
-      debugger;
       await Promise.all([
         this.userFacade.changeUserUniversityStructureAccessory(currentUserId, universityStructure),
         this.userFacade.changeUserRole(currentUserId, role),
@@ -75,7 +75,6 @@ export class AuthService {
 
   async isAuthenticatedAsync(): Promise<boolean> {
     const user = await this.getCurrentUserAsync();
-    debugger;
 
     return !!user;
   }

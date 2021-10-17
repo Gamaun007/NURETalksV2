@@ -45,7 +45,6 @@ export class UniversityEffects {
     this.actions$.pipe(
       ofType(UniversityActions.loadFaculties),
       mergeMap((_) => {
-        debugger;
         return this.universityHttpService.getFaculties().pipe(
           map((faculties) => UniversityActions.facultiesLoaded({ faculties })),
           tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_FACULTIES)),
@@ -82,7 +81,6 @@ export class UniversityEffects {
   //     mergeMap((action: CreateUserAction) => {
   //       return this.fileStorageService.getFileFromStorage(USER_PROFILE_IMAGE_PATH, 'default.jpg').pipe(
   //         switchMap((imageUrl) => {
-  //           debugger;
   //           return this.usersHttpService.createNewUser(action.email, { photoUrl: imageUrl }).pipe(
   //             tap((user) => this.operationsTrackerService.trackSuccess(user.email, TrackOperations.CREATE_USER)),
   //             map((createdUser) => {
