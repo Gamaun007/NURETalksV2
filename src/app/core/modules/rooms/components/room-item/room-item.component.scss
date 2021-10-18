@@ -1,4 +1,18 @@
 :host {
+  @apply flex bg-navy-40 rounded-lg;
+  min-width: inherit;
+  min-height: 100px;
+  height: 100px;
+
+  &:hover {
+      cursor: pointer;
+      @apply bg-navy-50;
+  }
+
+  &.selected {
+    @apply bg-navy-50;
+  }
+
   #room-icon-wrapper {
     display: block;
     width: 60px;

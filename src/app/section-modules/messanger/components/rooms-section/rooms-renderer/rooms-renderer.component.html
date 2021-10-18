@@ -1,12 +1,14 @@
-<app-virtual-scroll-renderer
-  [parentScroller]="parentScroller"
-  [allItemsStream]="allRooms$"
-  [filteredItemsStream]="allRooms$"
-  [idSelector]="roomIdSelector"
-  [buildRenderingItemsCallback]="buildRenderingItems"
-  [scrollToNewlyAddedItem]="true"
->
-  <ng-template #itemTemplate let-item="item">
-    <app-room-item #roomItemComp [room]="item"></app-room-item>
-  </ng-template>
-</app-virtual-scroll-renderer>
+<ng-container *ngIf="(allRooms$ | async)?.length">
+  <app-virtual-scroll-renderer
+    [parentScroller]="parentScroller"
+    [allItemsStream]="allRooms$"
+    [filteredItemsStream]="allRooms$"
+    [idSelector]="roomIdSelector"
+    [buildRenderingItemsCallback]="buildRenderingItems"
+    [scrollToNewlyAddedItem]="true"
+  >
+    <ng-template #itemTemplate let-item="item">
+      <app-room-item #roomItemComp [room]="item" [relatedScopeKey]="roomsBarSectionKey"></app-room-item>
+    </ng-template>
+  </app-virtual-scroll-renderer>
+</ng-container>

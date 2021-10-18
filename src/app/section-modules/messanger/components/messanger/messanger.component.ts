@@ -15,9 +15,5 @@ export class MessangerComponent implements OnInit {
 
   ngOnInit(): void {
     this.user$ = this.authService.getCurrentUserObservable();
-
-    this.user$.subscribe((user) => {
-      console.log('User returned', user);
-    });
   }
 }

@@ -4,3 +4,4 @@
 // export { FirebaseWrapperService } from './firebase-wrapper/firebase-wrapper.service';
 // export * from './http';
 export * from './facades';
+export * from './helpers';

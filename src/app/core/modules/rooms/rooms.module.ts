@@ -3,7 +3,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../../../../environments/environment';
-import { RoomsFacadeService } from './services';
+import { RoomItemManagerService, RoomsFacadeService } from './services';
 import { StoreModule } from '@ngrx/store';
 import * as storeFeature from './store';
 import { AngularFireStorageModule } from '@angular/fire/storage';
@@ -28,7 +28,7 @@ export class RoomsModule {
   static forRoot(): ModuleWithProviders<RoomsModule> {
     return {
       ngModule: RoomsModule,
-      providers: [RoomsFacadeService],
+      providers: [RoomsFacadeService, RoomItemManagerService],
     };
   }
 }

@@ -24,7 +24,7 @@ export class MessageBusService {
     this.subject.next({ key: this.resolveFullMessageKey(key, partitionKey), payload: data });
   }
 
-  sendAsyncMessage<TMessage>(key: MessageKey, data: TMessage, isAsync?: boolean, partitionKey?: MessageKey): void {
+  sendAsyncMessage<TMessage>(key: MessageKey, data: TMessage, partitionKey?: MessageKey): void {
     setTimeout(() => {
       this.subject.next({ key: this.resolveFullMessageKey(key, partitionKey), payload: data });
     }, 0);
