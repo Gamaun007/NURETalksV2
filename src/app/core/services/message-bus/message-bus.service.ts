@@ -1,12 +1,12 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 declare type MessageKey = string | number;
 
 @Injectable()
 export class MessageBusService {
-  private subject = new EventEmitter<{ key: MessageKey; payload: any }>(true);
+  private subject = new BehaviorSubject<{ key: MessageKey; payload: any }>({ key: null, payload: null });
 
   getObservable<TMessage>(key: MessageKey, partitionKey?: MessageKey): Observable<TMessage> {
     const resolvedKey = this.resolveFullMessageKey(key, partitionKey);

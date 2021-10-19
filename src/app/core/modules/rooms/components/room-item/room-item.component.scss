@@ -1,3 +1,5 @@
+@import 'index';
+
 :host {
   @apply flex bg-navy-40 rounded-lg;
   min-width: inherit;
@@ -5,12 +7,13 @@
   height: 100px;
 
   &:hover {
-      cursor: pointer;
-      @apply bg-navy-50;
+    cursor: pointer;
+    @apply bg-navy-50;
   }
 
   &.selected {
     @apply bg-navy-50;
+    border: 1px solid $mc-navy-90;
   }
 
   #room-icon-wrapper {

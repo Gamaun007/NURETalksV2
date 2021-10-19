@@ -1,5 +1,8 @@
 {
   "app-component": "App component text",
+  "messanger": {
+    "emptyStateDescription": "Select a room to open a conversation"
+  },
   "auth": {
     "loginPage": {
       "mainDescription": "Welcome to \"NURE Talks\"",

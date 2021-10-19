@@ -6,6 +6,7 @@
     [idSelector]="roomIdSelector"
     [buildRenderingItemsCallback]="buildRenderingItems"
     [scrollToNewlyAddedItem]="true"
+    [scrollToFocusedItem]="true"
   >
     <ng-template #itemTemplate let-item="item">
       <app-room-item #roomItemComp [room]="item" [relatedScopeKey]="roomsBarSectionKey"></app-room-item>
