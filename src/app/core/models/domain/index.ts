@@ -1,5 +1,5 @@
 export * from './university';
-export * from './chat-message.model';
+// export * from './chat-message.model';
 export * from './user.model';
 export * from './message.model';
 export * from './room-detail.model';

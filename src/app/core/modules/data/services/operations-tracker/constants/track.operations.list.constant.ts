@@ -11,4 +11,7 @@ export const enum TrackOperations {
 
   // Rooms
   CREATE_GROUP_ROOM = 'create-group-room',
+
+  // Messages
+  CREATE_MESSAGE = 'create-message'
 }
