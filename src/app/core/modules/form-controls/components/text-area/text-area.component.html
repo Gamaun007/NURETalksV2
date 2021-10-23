@@ -6,7 +6,7 @@
   [required]="required"
 ></app-control-header>
 <div class="wrapper" [class.is-disabled]="isDisabled$ | async">
-  <span (click)="placeholderClick()" #placeholderElement class="placeholder">
+  <span (click)="placeholderClick()" #placeholderElement class="placeholder text-navy-50">
     <ng-container *ngIf="placeholderObj">
       <span
         *ngIf="isTextPlaceholderType(); else placeholderTemplate"
@@ -38,7 +38,8 @@
   </textarea>
 
   <div class="buttons">
-    <ng-content select="app-button"></ng-content>
+    <ng-content select="app-new-button"></ng-content>
+    <ng-content select="app-icon-button"></ng-content>
     <ng-container *ngIf="removable">   
       <button (click)="removeControl.emit(fieldName)" class="remove-contol-button">
         <svg-icon src='close'>
@@ -52,7 +53,7 @@
   <span>/</span>
   <span>{{ maxLength }}</span>
 </div>
-<app-control-errors *ngIf="dirty || !validateOnDirty" [errorTexts]="errorTexts"></app-control-errors>
+<app-control-errors *ngIf="(dirty || !validateOnDirty) && allowErrorsDisplay" [errorTexts]="errorTexts"></app-control-errors>
 
 <ng-template #requiredPopover>
   <div class="popover-container">

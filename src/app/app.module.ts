@@ -13,11 +13,12 @@ import { CoreModule } from 'core/core.module';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { StoreModule } from '@ngrx/store';
 import { RootComponent, WildCardComponent } from 'src/app/components';
 import { LottieModule } from 'ngx-lottie';
 import player, { LottiePlayer } from 'lottie-web';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { RoomsModule } from 'core/modules/rooms';
+import { MessagesModule } from 'core/modules/messages';
+
 export function playerFactory(): LottiePlayer {
   return player;
 }
@@ -41,6 +42,9 @@ export function playerFactory(): LottiePlayer {
     DataManipulationModule,
     DataModule.forRoot(),
     TranslateConfigModule,
+
+    MessagesModule.forRoot(),
+    RoomsModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],

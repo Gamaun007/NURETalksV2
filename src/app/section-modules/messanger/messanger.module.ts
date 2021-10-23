@@ -1,3 +1,4 @@
+import { MessagesModule } from './../../core/modules/messages/messages.module';
 import { SearchModule } from './../../core/modules/data-manipulation/search/search.module';
 import { RenderingModule } from './../../core/modules/rendering/rendering.module';
 import { RoomsModule } from 'core/modules/rooms';
@@ -33,8 +34,10 @@ const routes: Route[] = [
     TranslateModule,
     AngularSvgIconModule,
     DynamicFormModule,
-    RoomsModule.forRoot(),
+
     RoomsModule,
+
+    MessagesModule,
     SearchModule,
     RenderingModule,
   ],

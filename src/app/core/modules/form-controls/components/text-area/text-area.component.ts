@@ -90,6 +90,9 @@ export class TextAreaComponent extends AbstractValueAccessor {
   @Input()
   rows: number;
 
+  @Input()
+  allowErrorsDisplay = true;
+
   @HostBinding('class.resizable')
   @Input()
   resizable = true;

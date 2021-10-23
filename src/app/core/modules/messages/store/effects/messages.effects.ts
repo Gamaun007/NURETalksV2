@@ -1,29 +1,18 @@
-import { UniversityFacadeService } from './../../../university/services/facades/university-facade/university-facade.service';
-import { AuthService } from 'core/modules/auth-core/services/auth/auth.service';
 import { MessagesHttpService } from '../../services/http';
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
 import { NEVER } from 'rxjs';
-import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
-import { MessagesActions, MessagesFirebaseActions, MessagesFirebaseActionTypes } from '../actions';
-import { AuthState } from 'core/modules/auth-core/store/state';
-import { FileStorageService, ROOM_IMAGE_PATH } from 'core/modules/firebase';
-import { UniversityEntitiesName } from 'core/modules/university/models';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { MessagesActions, MessagesFirebaseActions } from '../actions';
 import { FirebaseMessagesActionsToNgrx } from '../mappers';
 
 @Injectable()
 export class MessagesEffects {
   constructor(
     private actions$: Actions,
-    private store: Store<AuthState>,
     private operationsTrackerService: OperationsTrackerService,
-    private messagesHttpService: MessagesHttpService,
-    private fileStorageService: FileStorageService,
-    private authService: AuthService,
-    private universityFacade: UniversityFacadeService
-  ) {}
+    private messagesHttpService: MessagesHttpService  ) {}
 
   listenToMessagesChanges$ = createEffect(() =>
     this.actions$.pipe(
@@ -45,12 +34,66 @@ export class MessagesEffects {
       ofType(MessagesActions.getLatestMessage),
       mergeMap((action) => {
         return this.messagesHttpService
-          .getLatestMessageListener(action.room_id, action.listenForFurtherNewMessages)
+          .getLatestMessagesListener(action.room_id, 1, action.listenForFurtherNewMessages)
           .pipe(
             map((resp) => {
-              return MessagesActions.latestMessageGot({ message: resp });
+              return MessagesActions.latestMessagesGot({ messages: resp });
             })
           );
+      })
+    )
+  );
+
+  loadBeforeSpecificRoomMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MessagesActions.loadRoomMessagesBeforeSpecific),
+      mergeMap((action) => {
+        return this.messagesHttpService
+          .getPreviousMessages(action.room_id, action.specific_message_id, action.messages_amount)
+          .pipe(
+            tap((res) =>
+              this.operationsTrackerService.trackSuccessWithData(
+                TrackOperations.GET_MESSAGES_BEFORE_SPECIFIC,
+                res,
+                action.room_id
+              )
+            ),
+            map((resp) => {
+              return MessagesActions.latestMessagesGot({ messages: resp });
+            }),
+            catchError((err) => {
+              this.operationsTrackerService.trackError(
+                TrackOperations.GET_MESSAGES_BEFORE_SPECIFIC,
+                err,
+                action.room_id
+              );
+              return NEVER;
+            })
+          );
+      })
+    )
+  );
+
+  loadLatestMessages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MessagesActions.loadLatestRoomMessages),
+      mergeMap((action) => {
+        return this.messagesHttpService.getLatestMessagesListener(action.room_id, action.messages_amount, false).pipe(
+          tap((messages) =>
+            this.operationsTrackerService.trackSuccessWithData(
+              TrackOperations.GET_LATEST_MESSAGES,
+              messages,
+              action.room_id
+            )
+          ),
+          map((resp) => {
+            return MessagesActions.latestMessagesGot({ messages: resp });
+          }),
+          catchError((err) => {
+            this.operationsTrackerService.trackError(TrackOperations.GET_LATEST_MESSAGES, err, action.room_id);
+            return NEVER;
+          })
+        );
       })
     )
   );

@@ -1,3 +1,31 @@
 :host {
   @apply flex w-full flex-col bg-navy-10 rounded-2xl p-4;
+
+  ::ng-deep {
+    app-icon-button {
+      &:hover {
+        path {
+          stroke: white;
+        }
+      }
+    }
+    app-text-area {
+      .buttons {
+        
+        width: 40px !important;
+        height: 40px;
+        position: absolute;
+        right: 0.5rem !important;
+        top: 22% !important;
+        height: inherit;
+        display: flex;
+        flex-direction: row;
+      }
+
+      textarea {
+        @apply pr-14;
+      }
+    }
+
+  }
 }

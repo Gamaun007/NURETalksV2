@@ -8,7 +8,7 @@ import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
 import { NEVER } from 'rxjs';
-import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap, switchMap, take } from 'rxjs/operators';
 import { RoomsFirebaseActionTypes } from '../actions';
 import { AuthState } from 'core/modules/auth-core/store/state';
 import { FileStorageService, ROOM_IMAGE_PATH } from 'core/modules/firebase';
@@ -45,6 +45,7 @@ export class RoomsEffects {
   loadRooms$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RoomsActions.loadRooms),
+      take(1),
       mergeMap((action) => {
         return this.roomsHttpService.getAllRooms().pipe(
           map((resp) => {

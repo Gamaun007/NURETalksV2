@@ -40,9 +40,13 @@ const adapterReducer = createReducer(
   }),
 
   // Mssages actions handling
-  on(MessagesActions.latestMessageGot, (state: RoomsState, action) => {
-    const existingEntity = state.entities[action.message.room_id];
-    return roomsAdapter.upsertOne({ ...existingEntity, latestRoomMessage: action.message }, state);
+  on(MessagesActions.latestMessagesGot, (state: RoomsState, action) => {
+    if (action.messages?.length) {
+      const latest = action.messages[action.messages.length - 1];
+      const existingEntity = state.entities[latest.room_id];
+      return roomsAdapter.upsertOne({ ...existingEntity, latestRoomMessage: latest }, state);
+    }
+    return state;
   }),
 
   // Firebase actions reducer handlers

@@ -1,16 +1,12 @@
-import {
-  UniversityEntitiesName,
-  UniversityStructureByIds,
-} from './../../../../university/models/university-structure.model';
 import { MessagesState, messagesStateSelector } from './../../../store/state';
 import { ActionDispatcherService, TrackOperations } from 'core/modules/data/services';
-import { Room } from 'core/models/domain/room.model';
 import { Injectable } from '@angular/core';
-import { NEVER, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MessagesActions } from '../../../store';
+import { Message } from 'core/models/domain';
 
 @Injectable()
 export class MessagesFacadeService {
@@ -29,6 +25,44 @@ export class MessagesFacadeService {
         MessagesActions.sendMessage({ room_id, message_text, message_opertion_id: operationId }),
         TrackOperations.CREATE_MESSAGE,
         operationId
+      );
+    } catch (e) {
+      // TODO
+    }
+  }
+
+  getMessages(room_id: string): Observable<Message[]> {
+    return this.store
+      .select(messagesStateSelector)
+      .pipe(map((state) => Object.values(state.entities).filter((m) => m.room_id === room_id)));
+  }
+
+  async getMessagesBeforeSpecific(
+    room_id: string,
+    point_message_id: string,
+    messages_amount: number = 50
+  ): Promise<Message> {
+    try {
+      return await this.actionDispatcher.dispatchActionAsync(
+        MessagesActions.loadRoomMessagesBeforeSpecific({
+          room_id,
+          specific_message_id: point_message_id,
+          messages_amount,
+        }),
+        TrackOperations.GET_MESSAGES_BEFORE_SPECIFIC,
+        room_id
+      );
+    } catch (e) {
+      // TODO
+    }
+  }
+
+  async getLatestRoomMessages(room_id: string, messages_amount: number = 50): Promise<Message> {
+    try {
+      return await this.actionDispatcher.dispatchActionAsync(
+        MessagesActions.loadLatestRoomMessages({ room_id, messages_amount }),
+        TrackOperations.GET_LATEST_MESSAGES,
+        room_id
       );
     } catch (e) {
       // TODO

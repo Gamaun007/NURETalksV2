@@ -1,12 +1,9 @@
-import { MORE_THAN_ONE_USER_ERROR, NO_USERS_ERROR } from '../errors.constants';
 import { AuthService } from 'core/modules/auth-core/services';
-import { RoleEnum } from 'core/models/domain/roles.model';
 import { Injectable } from '@angular/core';
-import { Observable, of, from, throwError } from 'rxjs';
-import { Message, Room, User } from 'core/models/domain';
+import { Observable, from } from 'rxjs';
+import { Message } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, QueryFn } from '@angular/fire/firestore';
-import { map, take, switchMap, mergeMap } from 'rxjs/operators';
-import { getNameByNureEmail } from 'core/utils/user-extensions.functions';
+import { take, switchMap } from 'rxjs/operators';
 import firebase from 'firebase/app';
 
 @Injectable({
@@ -19,8 +16,41 @@ export class MessagesHttpService {
     return this.getMessagesCollectionReference(room_id).stateChanges();
   }
 
-  getLatestMessageListener(room_id: string, listenRealTimeChanges: boolean): Observable<Message> {
-    return this.getMessagesByQuery(room_id, (col) => col.orderBy('time', 'desc').limit(1), listenRealTimeChanges).pipe(map((messages) => messages[0]));
+  getPreviousMessages(room_id: string, message_id: string, messages_amount: number = 1): Observable<Message[]> {
+    return this.getMessagesByQuery(
+      room_id,
+      (col) => col.orderBy('time', 'desc').startAfter({ id: message_id }).limit(messages_amount),
+      false
+    );
+    // const roomMessagesRef = this.getMessagesCollectionReference(room_id);
+    // this.afs.collection<Message>(this.messagesCollectionPathFactory(room_id), (col) => col.orderBy('time', 'desc').startAfter().limit(messages_amount),)
+
+    // roomMessagesRef.doc(message_id).get().pipe(switchMap(()));
+
+    // roomMessagesRef.
+
+    // const snapshot = await this.getMessageSnapshot(roomId, lastMessage.id);
+    // return this.db.collection<IMessage>(`rooms/${roomId}/messages`,
+    // opt => opt.orderBy('time', 'desc').startAfter(snapshot).limit(25))
+    //   .valueChanges();
+
+    // return this.getMessagesByQuery(
+    //   room_id,
+    //   (col) => col.orderBy('time', 'desc').limit(messages_amount),
+    //   listenRealTimeChanges
+    // );
+  }
+
+  getLatestMessagesListener(
+    room_id: string,
+    messages_amount: number,
+    listenRealTimeChanges: boolean
+  ): Observable<Message[]> {
+    return this.getMessagesByQuery(
+      room_id,
+      (col) => col.orderBy('time', 'desc').limit(messages_amount),
+      listenRealTimeChanges
+    );
   }
 
   getAllRoomMessages(room_id: string): Observable<Message[]> {
@@ -37,7 +67,7 @@ export class MessagesHttpService {
           room_id,
           text: message_text,
           sender_id: user.uid,
-          time: new Date(),
+          time: new Date() as any,
         };
         return from(this.getMessagesCollectionReference(room_id).doc(id).set(message));
       })

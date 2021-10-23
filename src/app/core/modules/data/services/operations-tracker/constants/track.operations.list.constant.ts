@@ -13,5 +13,7 @@ export const enum TrackOperations {
   CREATE_GROUP_ROOM = 'create-group-room',
 
   // Messages
-  CREATE_MESSAGE = 'create-message'
+  CREATE_MESSAGE = 'create-message',
+  GET_MESSAGES_BEFORE_SPECIFIC = 'get-messages-before-specific-message',
+  GET_LATEST_MESSAGES = 'get-latest-messages'
 }

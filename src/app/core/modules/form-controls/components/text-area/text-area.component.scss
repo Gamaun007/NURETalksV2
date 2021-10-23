@@ -1,129 +1,125 @@
-// // @import 'index';
+@import 'index';
 
-// $padding: 0 11px 0 14px;
-// $min-height: 40px;
+$padding: 0 11px 0 14px;
+$min-height: 40px;
 
-// :host {
-//   display: inline-block;
-//   position: relative;
+:host {
+  display: inline-block;
+  position: relative;
 
-//   &.stretch {
-//     height: 100%;
-//     width: 100%;
+  &.stretch {
+    height: 100%;
+    width: 100%;
 
-//     .wrapper,
-//     .wrapper textarea {
-//       height: 100%;
-//       width: 100%;
-//     }
+    .wrapper,
+    .wrapper textarea {
+      height: 100%;
+      width: 100%;
+    }
 
-//     .wrapper .placeholder {
-//       height: auto;
-//       padding-top: 11px;
-//     }
-//   }
+    .wrapper .placeholder {
+      height: auto;
+      padding-top: 11px;
+    }
+  }
 
-//   &.active,
-//   &.has-value {
-//     .placeholder {
-//       display: none;
-//     }
-//   }
+  &.active,
+  &.has-value {
+    .placeholder {
+      display: none;
+    }
+  }
 
-//   button{
-//     justify-content: center;
-//     align-items: center;
-//     border-radius: 6px;
-//     padding: 10px 0;
-//     cursor: pointer;
-//   }
+  button {
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    padding: 10px 0;
+    cursor: pointer;
+  }
 
-//   .remove-contol-button {
-//     display: none;
-//     background: $mc-dark-blue-10;
-//     width: 30px;
-//     height: 30px;
-//   }
+  .remove-contol-button {
+    @apply bg-navy-10;
+    width: 30px;
+    height: 30px;
+  }
 
-//   &:hover {
-//     .remove-contol-button {
-//       display: flex;
-//     }
-//   }
+  &:hover {
+    .remove-contol-button {
+      display: flex;
+    }
+  }
 
-//   .wrapper {
-//     &:hover {
-//       ::ng-deep.buttons app-button {
-//         display: flex !important;
-//       }
-//     }
+  .wrapper {
+    &:hover {
+      ::ng-deep.buttons app-button {
+        display: flex !important;
+      }
+    }
 
-//     position: relative;
+    position: relative;
 
-//     ::ng-deep.buttons {
-//       position: absolute;
-//       right: 5px;
-//       top: 11%;
-//       height: 30px;
-//       display: flex;
-//       flex-direction: row;
+    ::ng-deep.buttons {
+      position: absolute;
+      right: 5px;
+      top: 11%;
+      height: 30px;
+      display: flex;
+      flex-direction: row;
 
-//       > :not(:first-child) {
-//         margin-left: 20px;
-//       }
-//     }
-//   }
-// }
+      > :not(:first-child) {
+        margin-left: 20px;
+      }
+    }
+  }
+}
 
-// .placeholder {
-//   position: absolute;
-//   width: 100%;
-//   height: 100%;
-//   display: flex;
-//   align-items: center;
-//   padding: $padding;
-//   cursor: text;
-//   @include basicLight();
-// }
+.placeholder {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: $padding;
+  cursor: text;
+  @apply font-main;
+}
 
-// textarea {
-//   outline: none;
-//   border: 1px solid rgba($color: $mc-blue-gray, $alpha: 0.3);
-//   background-color: $mc-white;
-//   box-sizing: border-box;
-//   border-radius: 6px;
-//   padding: $padding;
-//   min-height: $min-height;
-//   width: 100%;
-//   height: 100%;
-//   @include basicDark();
-// }
+textarea {
+  outline: none;
+  border: 1px solid rgba($color: $mc-navy-10, $alpha: 0.3);
+  @apply bg-white font-main rounded-md w-full h-full;
+  box-sizing: border-box;
+  padding: $padding;
+  min-height: $min-height;
+}
 
-// :host.dirty.invalid {
-//   textarea {
-//     border: 1px solid $mc-text-error;
-//   }
-// }
+:host.dirty.invalid {
+  textarea {
 
-// :host:not(.resizable) {
-//   textarea {
-//     resize: none;
-//   }
-// }
+    border: 1px solid $mc-text-error;
+  }
+}
 
-// textarea {
-//   height: $min-height - 4px;
-//   padding-top: 9px;
+:host:not(.resizable) {
+  textarea {
+    resize: none;
+  }
+}
 
-//   &.rows-specified {
-//     height: 100%;
-//   }
-// }
+textarea {
+  height: $min-height - 4px;
+  padding-top: 9px;
 
-// .characters-counter {
-//   display: flex;
-//   justify-content: flex-end;
-//   @include MulishFontStyle(11px);
-//   color: $mc-blue-gray;
-//   margin-top: -6px;
-// }
+  &.rows-specified {
+    height: 100%;
+  }
+}
+
+.characters-counter {
+  display: flex;
+  justify-content: flex-end;
+  @include MulishFontStyle(11px);
+  color: $mc-navy-10;
+  margin-top: -6px;
+}

@@ -1,1 +1,28 @@
-<p>feed works!</p>
+<ng-container *ngIf="room">
+  <div class="flex w-full rounded-xl p-4 bg-navy-30 text-xl font-bold">
+    {{ room?.room_details?.name }}
+  </div>
+  <app-messages-renderer class="flex flex-grow" [room]="room"></app-messages-renderer>
+  <!-- 
+Seems to be separate component -->
+  <div lass="flex w-full p-4">
+    <app-text-area
+      class="w-full"
+      [required]="true"
+      [validateOnDirty]="true"
+      [allowErrorsDisplay]="false"
+      [formControl]="messageField"
+      [resizable]="false"
+      [rows]="3"
+      [placeholder]="buildTranslationKey('writeMessage') | translate"
+    >
+      <app-icon-button
+        [svgIconPath]="'send-message'"
+        [type]="'secondary'"
+        [disabled]="messageField.invalid || (sendingMessageLoader$ | async)"
+        (click)="sendMessage()"
+      >
+      </app-icon-button>
+    </app-text-area>
+  </div>
+</ng-container>

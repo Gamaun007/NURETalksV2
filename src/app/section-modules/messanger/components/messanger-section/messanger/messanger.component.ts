@@ -12,11 +12,9 @@ import { filter, map } from 'rxjs/operators';
   styleUrls: ['./messanger.component.scss'],
 })
 export class MessangerComponent implements AfterViewInit {
-  user$: Observable<User>;
-
   roomIdFromParams$: Observable<string>;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngAfterViewInit(): void {
     this.roomIdFromParams$ = this.router.routerState.root.queryParams.pipe(

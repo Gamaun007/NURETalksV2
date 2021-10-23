@@ -3,6 +3,9 @@
   "messanger": {
     "emptyStateDescription": "Select a room to open a conversation"
   },
+  "feed": {
+    "writeMessage": "Write message"
+  },
   "auth": {
     "loginPage": {
       "mainDescription": "Welcome to \"NURE Talks\"",

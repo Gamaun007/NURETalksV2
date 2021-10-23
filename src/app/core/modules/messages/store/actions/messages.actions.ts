@@ -1,4 +1,3 @@
-import { UniversityStructureByIds } from './../../../university/models/university-structure.model';
 import { createAction, props } from '@ngrx/store';
 import { Message } from 'core/models/domain';
 
@@ -14,6 +13,12 @@ export const MessagesActionTypes = {
   DeleteMessage: '[Message] Message deleted',
 
   GetLatestMessage: '[Message] Get latest message',
+
+  LatestMessagesGot : '[Message] latest message got',
+
+  LoadRoomMessagesBeforeSpecific: '[Messages] Load rooms messages before specific message',
+
+  LoadLatestRoomMessages: '[Messages] Load latest room messages'
 };
 
 export const MessagesFirebaseActionTypes = {
@@ -25,9 +30,11 @@ export const MessagesFirebaseActionTypes = {
 
 export const MessagesActions = {
   loadMessages: createAction(MessagesActionTypes.LoadMessages, props<{ room_id: string }>()),
-  getLatestMessage: createAction(MessagesActionTypes.LoadMessages, props<{ room_id: string, listenForFurtherNewMessages: boolean }>()),
+  loadRoomMessagesBeforeSpecific: createAction(MessagesActionTypes.LoadRoomMessagesBeforeSpecific, props<{ room_id: string, specific_message_id: string, messages_amount: number}>()),
+  loadLatestRoomMessages: createAction(MessagesActionTypes.LoadLatestRoomMessages, props<{ room_id: string, messages_amount: number }>()),
+  getLatestMessage: createAction(MessagesActionTypes.GetLatestMessage, props<{ room_id: string, listenForFurtherNewMessages: boolean}>()),
   messagesLoaded: createAction(MessagesActionTypes.MessagesLoaded, props<{ room_id: string; payload: Message[] }>()),
-  latestMessageGot: createAction(MessagesActionTypes.LoadMessages, props<{ message: Message }>()),
+  latestMessagesGot: createAction(MessagesActionTypes.LatestMessagesGot, props<{ messages: Message[] }>()),
   deleteMessage: createAction(MessagesActionTypes.DeleteMessage, props<{ room_id: string; message_id: string }>()),
   editMessage: createAction(
     MessagesActionTypes.EditMessage,
