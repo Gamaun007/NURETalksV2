@@ -1,1 +1,6 @@
-<p>message-item works!</p>
+<span *ngIf="user$ | async as user">
+  {{ user.email }}
+</span>
+<span>
+  {{ message.text }}
+</span>

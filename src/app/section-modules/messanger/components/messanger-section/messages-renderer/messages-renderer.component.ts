@@ -27,6 +27,7 @@ export class MessagesRendererComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if('room' in changes) {
       this.messageFacade.getLatestRoomMessages(this.room.id),
+      this.messageFacade.setListenerForRoomMessages(this.room.id),
       this.messages$ = this.messageFacade.getMessages(this.room.id);
     }
   }

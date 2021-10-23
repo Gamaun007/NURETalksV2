@@ -10,10 +10,10 @@ import { UploadUserProfileIconAction, UsersAdapterActions } from './../actions/u
 import { UserHttpService } from '../../services/http/user/user.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
 // import { State } from 'core/modules/data/store';
-import { from, NEVER, Observable, of, throwError } from 'rxjs';
+import { from, NEVER, Observable } from 'rxjs';
 import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { User } from 'core/models/domain';
 import {
@@ -22,41 +22,22 @@ import {
   SpecificUserLoadedAction,
   UserActionType,
   UserCreatedAction,
-  UsersLoadedAction,
-  UserUpdatedAction,
 } from '../actions';
 import { AuthState } from 'core/modules/auth-core/store/state';
 import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
 import { UniversityEntitiesName } from 'core/modules/university/models';
+import { UserLoadBy } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
 
 @Injectable()
 export class UserEffects {
   constructor(
     private actions$: Actions,
-    private store: Store<AuthState>,
     private operationsTrackerService: OperationsTrackerService,
     private usersHttpService: UserHttpService,
     private fileStorageService: FileStorageService,
     private authService: AuthService,
     private universityFacade: UniversityFacadeService
   ) {}
-
-  // @Effect()
-  // loadSpecificUser$: Observable<Action> = this.actions$.pipe(
-  //   ofType(UserActionType.LoadSpecificUser),
-  //   mergeMap((action: LoadSpecificUserAction) =>
-  //     this.usersHttpService.getSpecificUser(action.email).pipe(
-  //       tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_SPECIFIC_USER, action.email)),
-  //       map((response) => {
-  //         return new SpecificUserLoadedAction(response);
-  //       }),
-  //       catchError((err: Error) => {
-  //         this.operationsTrackerService.trackError(TrackOperations.LOAD_SPECIFIC_USER, err, action.email);
-  //         return NEVER;
-  //       })
-  //     )
-  //   )
-  // );
 
   uploadUserProfileIcon = createEffect(() =>
     this.actions$.pipe(
@@ -94,18 +75,22 @@ export class UserEffects {
   loadSpecificUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActionType.LoadSpecificUser),
-      mergeMap((action: LoadSpecificUserAction) =>
-        this.usersHttpService.getSpecificUser(action.email).pipe(
-          tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_SPECIFIC_USER, action.email)),
+      mergeMap((action: LoadSpecificUserAction) => {
+        const requestTo =
+          action.loadBy === UserLoadBy.Id
+            ? this.usersHttpService.getSpecificUserById(action.key)
+            : this.usersHttpService.getSpecificUser(action.key);
+        return requestTo.pipe(
+          tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_SPECIFIC_USER, action.key)),
           map((response: User) => {
             return new SpecificUserLoadedAction(response);
           }),
           catchError((err: Error) => {
-            this.operationsTrackerService.trackError(TrackOperations.LOAD_SPECIFIC_USER, err, action.email);
+            this.operationsTrackerService.trackError(TrackOperations.LOAD_SPECIFIC_USER, err, action.key);
             return NEVER;
           })
-        )
-      )
+        );
+      })
     )
   );
 

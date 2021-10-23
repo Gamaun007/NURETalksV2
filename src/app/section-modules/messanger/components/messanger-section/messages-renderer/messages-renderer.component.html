@@ -1,6 +1,7 @@
 <div class="flex gap-4 flex-col" *ngIf="messages$ | async as messages">
   <div class="flex" *ngFor="let message of messages">
-    <span> {{ message.text }} </span>
-    <span> {{ message.time.toDate() | date: 'yyyy-MM-dd HH:mm:ss.SSSS' }} </span>
+      <app-message-item [message]="message"></app-message-item>
+    <!-- <span> {{ message.text }} </span>
+    <span> {{ message.time.toDate() | date: 'yyyy-MM-dd HH:mm:ss.SSSS' }} </span> -->
   </div>
 </div>

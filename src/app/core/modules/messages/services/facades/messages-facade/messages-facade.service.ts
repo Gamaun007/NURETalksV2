@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { MessagesActions } from '../../../store';
+import { MessagesActions, MessagesFirebaseActions } from '../../../store';
 import { Message } from 'core/models/domain';
 
 @Injectable()
@@ -25,6 +25,18 @@ export class MessagesFacadeService {
         MessagesActions.sendMessage({ room_id, message_text, message_opertion_id: operationId }),
         TrackOperations.CREATE_MESSAGE,
         operationId
+      );
+    } catch (e) {
+      // TODO
+    }
+  }
+
+  setListenerForRoomMessages(room_id: string): void {
+    try {
+      this.actionDispatcher.dispatchActionAsync(
+        MessagesFirebaseActions.queryMessagesChanges({ room_id }),
+        TrackOperations.QUERY_FOR_MESSAGES_FOR_ROOM,
+        room_id
       );
     } catch (e) {
       // TODO

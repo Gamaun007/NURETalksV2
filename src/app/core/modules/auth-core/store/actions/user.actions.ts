@@ -1,3 +1,4 @@
+import { UserLoadBy } from './../../services/facades/user-facade/user-facade.service';
 import { RoleEnum } from 'core/models/domain/roles.model';
 import { UniversityStructureByIds } from './../../../university/models/university-structure.model';
 import { Action, createAction, props } from '@ngrx/store';
@@ -22,7 +23,7 @@ export const UserActionType = {
 
   ChangeUserUniversityStructure: '[User] Change user university structure ',
 
-  ChangeUserRole: '[User] Change user role'
+  ChangeUserRole: '[User] Change user role',
 };
 
 export class LoadUsersAction implements Action {
@@ -52,7 +53,7 @@ export class UsersLoadedAction implements Action {
 export class LoadSpecificUserAction implements Action {
   readonly type = UserActionType.LoadSpecificUser;
 
-  constructor(public email: string) {}
+  constructor(public key: string, public loadBy: UserLoadBy) {}
 }
 
 export class UploadUserProfileIconAction implements Action {
@@ -82,7 +83,7 @@ export class UserUpdatedAction implements Action {
 export const UsersAdapterActions = {
   specificUserLoaded: createAction(UserActionType.SpecificUserLoaded, props<{ user: User }>()),
   usersLoaded: createAction(UserActionType.UsersLoaded, props<{ payload: User[] }>()),
-  userUpdated: createAction(UserActionType.UserUpdated, props<{ user_id: string, user: Partial<User> }>()),
+  userUpdated: createAction(UserActionType.UserUpdated, props<{ user_id: string; user: Partial<User> }>()),
 
   createUser: createAction(UserActionType.CreateUser, props<{ email: string }>()),
   userCreated: createAction(UserActionType.UserCreated, props<{ payload: User }>()),
@@ -92,8 +93,5 @@ export const UsersAdapterActions = {
     UserActionType.ChangeUserUniversityStructure,
     props<{ user_id: string; universityStructure: UniversityStructureByIds }>()
   ),
-  changeUserRole: createAction(
-    UserActionType.ChangeUserRole,
-    props<{ user_id: string; role: RoleEnum }>()
-  ),
+  changeUserRole: createAction(UserActionType.ChangeUserRole, props<{ user_id: string; role: RoleEnum }>()),
 };

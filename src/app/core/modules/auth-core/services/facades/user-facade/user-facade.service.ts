@@ -16,22 +16,23 @@ import { Store } from '@ngrx/store';
 import { AuthState, userStateSelector } from '../../../store/state';
 import { map, switchMap, shareReplay } from 'rxjs/operators';
 
+export enum UserLoadBy {
+  Email,
+  Id,
+}
+
 @Injectable()
 export class UserFacadeService {
   constructor(private store: Store<AuthState>, private actionDispatcher: ActionDispatcherService) {}
 
-  async loadSpecificUser(email: string): Promise<void> {
+  private async loadSpecificUser(key: string, loadBy: UserLoadBy): Promise<void> {
     try {
       await this.actionDispatcher.dispatchActionAsync(
-        new LoadSpecificUserAction(email),
+        new LoadSpecificUserAction(key, loadBy),
         TrackOperations.LOAD_SPECIFIC_USER,
-        email
+        key
       );
-    } catch (error) {
-      if (error.message === NO_USERS_ERROR(email)) {
-        this.createUser(email);
-      }
-    }
+    } catch (error) {}
   }
 
   async changeUserUniversityStructureAccessory(
@@ -52,7 +53,7 @@ export class UserFacadeService {
   async changeUserRole(user_id: string, role: RoleEnum): Promise<void> {
     try {
       await this.actionDispatcher.dispatchActionAsync(
-        UsersAdapterActions.changeUserRole({user_id, role }),
+        UsersAdapterActions.changeUserRole({ user_id, role }),
         TrackOperations.CHANGE_USER_ROLE,
         user_id
       );
@@ -79,13 +80,15 @@ export class UserFacadeService {
     } catch (error) {}
   }
 
-  getUser(email: string): Observable<User> {
-    const specificUser$ = this.store.select(userStateSelector).pipe(map((state) => state.entities[email]));
+  getUserById(id: string): Observable<User> {
+    const specificUser$ = this.store
+      .select(userStateSelector)
+      .pipe(map((state) => Object.values(state.entities)?.find((u) => u.uid === id)));
 
     return specificUser$.pipe(
       switchMap((user) => {
         if (!user) {
-          this.loadSpecificUser(email);
+          this.loadSpecificUser(id, UserLoadBy.Id);
           return NEVER;
         } else {
           return specificUser$;
@@ -95,7 +98,19 @@ export class UserFacadeService {
     );
   }
 
-  private ensureUserRelatedRoomCreated(): void {
+  getUser(email: string): Observable<User> {
+    const specificUser$ = this.store.select(userStateSelector).pipe(map((state) => state.entities[email]));
 
+    return specificUser$.pipe(
+      switchMap((user) => {
+        if (!user) {
+          this.loadSpecificUser(email, UserLoadBy.Email);
+          return NEVER;
+        } else {
+          return specificUser$;
+        }
+      }),
+      shareReplay()
+    );
   }
 }

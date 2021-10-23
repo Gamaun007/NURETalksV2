@@ -15,5 +15,6 @@ export const enum TrackOperations {
   // Messages
   CREATE_MESSAGE = 'create-message',
   GET_MESSAGES_BEFORE_SPECIFIC = 'get-messages-before-specific-message',
-  GET_LATEST_MESSAGES = 'get-latest-messages'
+  GET_LATEST_MESSAGES = 'get-latest-messages',
+  QUERY_FOR_MESSAGES_FOR_ROOM = 'QUERY_FOR_MESSAGES_FOR_ROOM'
 }
