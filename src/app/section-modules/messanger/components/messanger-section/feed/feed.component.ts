@@ -46,8 +46,11 @@ export class FeedComponent implements OnInit, OnDestroy {
         distinctUntilChanged((prev, curr) => prev === curr)
       )
       .subscribe((room) => {
+        this.room = undefined;
+        this.cd.detectChanges();
         this.room = room;
         this.cd.detectChanges();
+
       });
   }
 
@@ -55,7 +58,8 @@ export class FeedComponent implements OnInit, OnDestroy {
     this.sendingMessageLoader$.next(true);
     this.messageField.disable();
     try {
-      await this.messagesFacade.sendMessage(this.messageField.value, this.room.id);
+      const res = await this.messagesFacade.sendMessage(this.messageField.value, this.room.id);
+      console.log('RES', res);
       this.messageField.reset();
     } finally {
       this.sendingMessageLoader$.next(false);

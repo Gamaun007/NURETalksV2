@@ -1,9 +1,9 @@
 import { AuthService } from 'core/modules/auth-core/services';
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
-import { Message } from 'core/models/domain';
+import { Message, MessageType } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, QueryFn } from '@angular/fire/firestore';
-import { take, switchMap } from 'rxjs/operators';
+import { take, switchMap, mergeMap } from 'rxjs/operators';
 import firebase from 'firebase/app';
 
 @Injectable({
@@ -57,7 +57,7 @@ export class MessagesHttpService {
     return this.getMessagesCollectionReference(room_id).valueChanges().pipe(take(1));
   }
 
-  createRoomMessage(room_id: string, message_text: string): Observable<void> {
+  createRoomMessage(room_id: string, message_text: string): Observable<Message> {
     return this.authService.getCurrentUserObservable().pipe(
       take(1),
       switchMap((user) => {
@@ -67,9 +67,14 @@ export class MessagesHttpService {
           room_id,
           text: message_text,
           sender_id: user.uid,
+          type: MessageType.REGULAR,
           time: new Date() as any,
         };
-        return from(this.getMessagesCollectionReference(room_id).doc(id).set(message));
+        return from(this.getMessagesCollectionReference(room_id).doc(id).set(message)).pipe(
+          switchMap(() => {
+            return this.getMessagesByQuery(room_id, (col) => col.where('id', '==', id), false).pipe(mergeMap((x) => x));
+          })
+        );
       })
     );
   }

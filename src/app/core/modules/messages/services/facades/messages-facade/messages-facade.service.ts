@@ -16,19 +16,26 @@ export class MessagesFacadeService {
     private afs: AngularFirestore
   ) {}
 
-  async sendMessage(message_text: string, room_id: string): Promise<void> {
+  async sendMessage(message_text: string, room_id: string): Promise<Message> {
     // This is not the result id of the message, we will use this generated id to track as operation id
     const operationId = this.afs.createId();
 
     try {
-      await this.actionDispatcher.dispatchActionAsync(
+      return await this.actionDispatcher.dispatchActionAsync(
         MessagesActions.sendMessage({ room_id, message_text, message_opertion_id: operationId }),
-        TrackOperations.CREATE_MESSAGE,
-        operationId
+
+        operationId,
+        TrackOperations.CREATE_MESSAGE
       );
     } catch (e) {
       // TODO
     }
+  }
+
+  getMessageById(id: string): Observable<Message> {
+    return this.store
+      .select(messagesStateSelector)
+      .pipe(map((state) => Object.values(state.entities).find((m) => m.id === id)));
   }
 
   setListenerForRoomMessages(room_id: string): void {
@@ -69,7 +76,7 @@ export class MessagesFacadeService {
     }
   }
 
-  async getLatestRoomMessages(room_id: string, messages_amount: number = 50): Promise<Message> {
+  async getLatestRoomMessages(room_id: string, messages_amount: number = 50): Promise<Message[]> {
     try {
       return await this.actionDispatcher.dispatchActionAsync(
         MessagesActions.loadLatestRoomMessages({ room_id, messages_amount }),

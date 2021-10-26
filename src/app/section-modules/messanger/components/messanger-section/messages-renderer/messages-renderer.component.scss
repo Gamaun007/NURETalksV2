@@ -1,0 +1,6 @@
+:host {
+  position: relative;
+  .current-user-message-wrapper {
+    @apply flex w-full justify-end;
+  }
+}

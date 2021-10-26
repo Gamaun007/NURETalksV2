@@ -12,7 +12,8 @@ export class MessagesEffects {
   constructor(
     private actions$: Actions,
     private operationsTrackerService: OperationsTrackerService,
-    private messagesHttpService: MessagesHttpService  ) {}
+    private messagesHttpService: MessagesHttpService
+  ) {}
 
   listenToMessagesChanges$ = createEffect(() =>
     this.actions$.pipe(
@@ -117,11 +118,15 @@ export class MessagesEffects {
         ofType(MessagesActions.sendMessage),
         mergeMap((action) => {
           return this.messagesHttpService.createRoomMessage(action.room_id, action.message_text).pipe(
-            tap((_) => {
-              this.operationsTrackerService.trackSuccess(TrackOperations.CREATE_MESSAGE, action.message_opertion_id);
+            tap((res) => {
+              this.operationsTrackerService.trackSuccessWithData(
+                action.message_opertion_id,
+                res,
+                TrackOperations.CREATE_MESSAGE,
+              );
             }),
             catchError((err) => {
-              this.operationsTrackerService.trackError(TrackOperations.CREATE_MESSAGE, err, action.message_opertion_id);
+              this.operationsTrackerService.trackError(action.message_opertion_id, err,  TrackOperations.CREATE_MESSAGE);
               return NEVER;
             })
           );

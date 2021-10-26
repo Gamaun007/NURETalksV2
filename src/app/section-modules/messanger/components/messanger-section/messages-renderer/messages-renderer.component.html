@@ -1,7 +1,24 @@
-<div class="flex gap-4 flex-col" *ngIf="messages$ | async as messages">
-  <div class="flex" *ngFor="let message of messages">
-      <app-message-item [message]="message"></app-message-item>
-    <!-- <span> {{ message.text }} </span>
-    <span> {{ message.time.toDate() | date: 'yyyy-MM-dd HH:mm:ss.SSSS' }} </span> -->
-  </div>
-</div>
+<app-loading-animation class="absolute z-10 bg-navy-10" *ngIf='(loading$ | async) && !noMessagesState'></app-loading-animation>
+<perfect-scrollbar #parentScroller class="p-5">
+  <ng-container *ngIf="(messages$ | async)?.length">
+    <app-virtual-scroll-renderer
+
+      #scroller
+      [parentScroller]="parentScroller"
+      [allItemsStream]="messages$"
+      [filteredItemsStream]="messages$"
+      [idSelector]="messageIdSelector"
+      [buildRenderingItemsCallback]="buildRenderingItems"
+      [scrollToNewlyAddedItem]="true"
+      [scrollToFocusedItem]="true"
+      (onTopPosition)="fetchNextMessages($event)"
+      
+    >
+      <ng-template #itemTemplate let-item="item">
+        <div class="py-5"  [ngClass]="(messageItemComp?.user$ | async) ? 'current-user-message-wrapper' : ''">
+          <app-message-item #messageItemComp [message]="item"></app-message-item>
+        </div>
+      </ng-template>
+    </app-virtual-scroll-renderer>
+  </ng-container>
+</perfect-scrollbar>

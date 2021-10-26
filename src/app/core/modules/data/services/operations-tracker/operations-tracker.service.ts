@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MessageBusService } from 'core/services/message-bus/message-bus.service';
 import { Observable } from 'rxjs';
-import { shareReplay, take, tap } from 'rxjs/operators';
+import { map, shareReplay, take, tap } from 'rxjs/operators';
 
 @Injectable()
 export class OperationsTrackerService {
@@ -37,7 +37,18 @@ export class OperationsTrackerService {
     ) as Observable<TData>;
   }
 
-  private buildKey(operationId: any, partition: string): string {
+  getOperationDataFeed<TData>(operationId: any): Observable<TData> {
+    return this.messageHub.getFeedByKeyPrefix<TData>(this.buildKey(operationId)).pipe(
+      tap((data) => {
+        if (data instanceof Error) {
+          throw data;
+        }
+      }),
+      map((d) => d.payload)
+    ) as Observable<TData>;
+  }
+
+  private buildKey(operationId: any, partition?: string): string {
     if (partition) {
       return `${partition}-${operationId}`;
     }

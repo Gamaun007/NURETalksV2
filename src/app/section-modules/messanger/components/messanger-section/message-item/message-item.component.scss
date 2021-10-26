@@ -1,0 +1,7 @@
+:host {
+  @apply flex flex-col bg-navy-50  rounded-xl p-3 gap-3;
+
+  &.current-user-message {
+      @apply bg-blue-10;
+  }
+}
