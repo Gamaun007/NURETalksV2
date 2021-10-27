@@ -16,13 +16,13 @@ export class MessagesFacadeService {
     private afs: AngularFirestore
   ) {}
 
-  async sendMessage(message_text: string, room_id: string): Promise<Message> {
+  async sendMessage(message_text: string, room_id: string, attachments?: FileList): Promise<Message> {
     // This is not the result id of the message, we will use this generated id to track as operation id
     const operationId = this.afs.createId();
 
     try {
       return await this.actionDispatcher.dispatchActionAsync(
-        MessagesActions.sendMessage({ room_id, message_text, message_opertion_id: operationId }),
+        MessagesActions.sendMessage({ room_id, message_text, message_opertion_id: operationId, attachments: attachments }),
 
         operationId,
         TrackOperations.CREATE_MESSAGE

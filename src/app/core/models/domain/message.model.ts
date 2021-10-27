@@ -12,9 +12,9 @@ export interface Message {
 }
 
 export interface MessageWithAttachments extends Message {
-  attachments: {
+  attachments?: {
     name: string;
-    link: string;
+    file_path: string;
   }[];
 }
 

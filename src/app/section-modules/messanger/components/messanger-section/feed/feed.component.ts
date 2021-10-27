@@ -1,5 +1,5 @@
-import { MessagesFacadeService } from './../../../../../core/modules/messages/services/facades/messages-facade/messages-facade.service';
-import { Room } from './../../../../../core/models/domain/room.model';
+import { MessagesFacadeService } from 'core/modules/messages/services/facades/messages-facade/messages-facade.service';
+import { Room } from 'core/models/domain/room.model';
 import { RoomsFacadeService } from 'core/modules/rooms/services';
 import { SubscriptionDetacher } from 'core/utils/subscription-detacher.class';
 import { filter, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { ChangeDetectorRef, Component, OnInit, OnDestroy, ChangeDetectionStrateg
 import { MessagerRouterParams } from '../../../models';
 import { FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
+import { FileFieldControl } from 'core/modules/form-controls';
 
 @Component({
   selector: 'app-feed',
@@ -18,6 +19,7 @@ import { Subject } from 'rxjs';
 export class FeedComponent implements OnInit, OnDestroy {
   private detacher: SubscriptionDetacher = new SubscriptionDetacher();
   readonly messageField = new FormControl('');
+  readonly fileField = new FileFieldControl({});
   sendingMessageLoader$ = new Subject<boolean>();
 
   room: Room;
@@ -50,20 +52,24 @@ export class FeedComponent implements OnInit, OnDestroy {
         this.cd.detectChanges();
         this.room = room;
         this.cd.detectChanges();
-
       });
   }
 
   async sendMessage(): Promise<void> {
     this.sendingMessageLoader$.next(true);
     this.messageField.disable();
+    this.fileField.disable();
     try {
-      const res = await this.messagesFacade.sendMessage(this.messageField.value, this.room.id);
-      console.log('RES', res);
+      this.messagesFacade.sendMessage(this.messageField.value, this.room.id, this.fileField.value);
       this.messageField.reset();
     } finally {
       this.sendingMessageLoader$.next(false);
+
+      this.fileField.reset();
+      this.messageField.reset();
+      
       this.messageField.enable();
+      this.fileField.enable();
     }
   }
 

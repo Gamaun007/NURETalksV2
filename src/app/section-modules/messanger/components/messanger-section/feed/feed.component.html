@@ -19,10 +19,11 @@ Seems to be separate component -->
       <app-icon-button
         [svgIconPath]="'send-message'"
         [type]="'secondary'"
-        [disabled]="messageField.invalid || (sendingMessageLoader$ | async)"
+        [disabled]="(messageField.invalid || (sendingMessageLoader$ | async)) && !attachmentsInput.value?.length"
         (click)="sendMessage()"
       >
       </app-icon-button>
     </app-text-area>
+    <app-file-input #attachmentsInput [formControl]="fileField"></app-file-input>
   </div>
 </ng-container>

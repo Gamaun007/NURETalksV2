@@ -1,16 +1,22 @@
 import { AuthService } from 'core/modules/auth-core/services';
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
-import { Message, MessageType } from 'core/models/domain';
+import { Observable, combineLatest, from, of } from 'rxjs';
+import { Message, MessageType, MessageWithAttachments } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, QueryFn } from '@angular/fire/firestore';
-import { take, switchMap, mergeMap } from 'rxjs/operators';
-import firebase from 'firebase/app';
-
+import { take, switchMap, mergeMap, map, filter } from 'rxjs/operators';
+// import {UploadTaskSnapshot} from '@angular/fire/storage/interfaces';
+import { FileStorageService, ROOM_ATTACHMENTS_PATH_FACTORY } from 'core/modules/firebase';
+import firebase from 'firebase';
+import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 @Injectable({
   providedIn: 'root',
 })
 export class MessagesHttpService {
-  constructor(private afs: AngularFirestore, private authService: AuthService) {}
+  constructor(
+    private afs: AngularFirestore,
+    private authService: AuthService,
+    private fileStorageService: FileStorageService
+  ) {}
 
   getRoomMessagesChangesListener(room_id: string): Observable<DocumentChangeAction<Message>[]> {
     return this.getMessagesCollectionReference(room_id).stateChanges();
@@ -55,6 +61,73 @@ export class MessagesHttpService {
 
   getAllRoomMessages(room_id: string): Observable<Message[]> {
     return this.getMessagesCollectionReference(room_id).valueChanges().pipe(take(1));
+  }
+
+  createRoomMessageWithAttachments(
+    room_id: string,
+    message_text: string,
+    attachments: FileList
+  ): Observable<MessageWithAttachments> {
+    const attachmentsRequestArray: Observable<[string]>[] = [];
+    for (let i = 0; i < attachments.length; i++) {
+      attachmentsRequestArray.push(
+        this.fileStorageService
+          .uploadFileToStorage(ROOM_ATTACHMENTS_PATH_FACTORY(room_id), attachments.item(i).name, attachments.item(i))
+          .snapshotChanges()
+          .pipe(
+            switchMap((snap) => {
+              console.log('snap', snap, room_id);
+              console.log('this.fileStorageService.getFileFromStorage', attachments.item(i).name);
+              const fileLink$ = this.fileStorageService.getFileFromStorage(
+                ROOM_ATTACHMENTS_PATH_FACTORY(room_id),
+                attachments.item(i).name
+              );
+              debugger;
+
+              return combineLatest([fileLink$.pipe(take(1))]);
+            })
+          )
+      );
+    }
+    console.log('attachmentsRequestArray', attachmentsRequestArray);
+    return combineLatest(attachmentsRequestArray).pipe(
+      switchMap((attachmentsLinks) => {
+        console.log('attachmentsLinks', attachmentsLinks);
+        return this.authService.getCurrentUserObservable().pipe(
+          take(1),
+          switchMap((user) => {
+            console.log(' CREATE MESSAGE');
+
+            const files = attachmentsLinks.reduce(
+              (prev, curr) => {
+                return [...prev, { file_path: curr[0], name: 'test' }];
+              },
+              [] as {
+                name: string;
+                file_path: string;
+              }[]
+            );
+            const id = this.afs.createId();
+            const message: MessageWithAttachments = {
+              id,
+              room_id,
+              text: message_text,
+              sender_id: user.uid,
+              attachments: files,
+              type: MessageType.ATTACHMENTS,
+              time: new Date() as any,
+            };
+            return from(this.getMessagesCollectionReference(room_id).doc(id).set(message)).pipe(
+              switchMap(() => {
+                return this.getMessagesByQuery(room_id, (col) => col.where('id', '==', id), false).pipe(
+                  mergeMap((x) => x)
+                );
+              })
+            );
+          })
+        ) as Observable<MessageWithAttachments>;
+      })
+    );
   }
 
   createRoomMessage(room_id: string, message_text: string): Observable<Message> {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Injector, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Injector, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MakeProvider } from '../abstract-value-accessor/abstract-value-accessor';
 import { AbstractValueAccessor } from '../abstract-value-accessor';
 
@@ -27,16 +27,16 @@ export class FileInputComponent extends AbstractValueAccessor {
   @Input()
   validateOnDirty = false;
 
-  constructor(injector: Injector) {
+  constructor(injector: Injector, private cd: ChangeDetectorRef) {
     super(injector);
   }
 
   uploadFile(): void {
-    this.value = this.fileUploadField.nativeElement.files[0];
+    this.value = this.fileUploadField.nativeElement.files;
   }
 
   buildTranslationKey(relativeKey: string): string {
-    return `openedPlugin.dynamicForm.${relativeKey}`;
+    return `dynamicForm.fileInput.${relativeKey}`;
   }
 
   selectFile(event: any): void {

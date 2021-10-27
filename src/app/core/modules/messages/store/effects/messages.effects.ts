@@ -1,8 +1,9 @@
+import { Message } from 'core/models/domain';
 import { MessagesHttpService } from '../../services/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
-import { NEVER } from 'rxjs';
+import { NEVER, Observable } from 'rxjs';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { MessagesActions, MessagesFirebaseActions } from '../actions';
 import { FirebaseMessagesActionsToNgrx } from '../mappers';
@@ -117,16 +118,27 @@ export class MessagesEffects {
       this.actions$.pipe(
         ofType(MessagesActions.sendMessage),
         mergeMap((action) => {
-          return this.messagesHttpService.createRoomMessage(action.room_id, action.message_text).pipe(
+          let resolvedOperation$: Observable<Message>;
+
+          if (action.attachments?.length) {
+            resolvedOperation$ = this.messagesHttpService.createRoomMessageWithAttachments(
+              action.room_id,
+              action.message_text,
+              action.attachments
+            );
+          } else {
+            resolvedOperation$ = this.messagesHttpService.createRoomMessage(action.room_id, action.message_text);
+          }
+          return resolvedOperation$.pipe(
             tap((res) => {
               this.operationsTrackerService.trackSuccessWithData(
                 action.message_opertion_id,
                 res,
-                TrackOperations.CREATE_MESSAGE,
+                TrackOperations.CREATE_MESSAGE
               );
             }),
             catchError((err) => {
-              this.operationsTrackerService.trackError(action.message_opertion_id, err,  TrackOperations.CREATE_MESSAGE);
+              this.operationsTrackerService.trackError(action.message_opertion_id, err, TrackOperations.CREATE_MESSAGE);
               return NEVER;
             })
           );

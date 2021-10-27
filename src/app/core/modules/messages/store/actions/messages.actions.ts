@@ -40,7 +40,7 @@ export const MessagesActions = {
     MessagesActionTypes.EditMessage,
     props<{ room_id: string; message_id: string; message_text: string }>()
   ),
-  sendMessage: createAction(MessagesActionTypes.SendMessage, props<{ room_id: string; message_text: string, message_opertion_id: string }>()),
+  sendMessage: createAction(MessagesActionTypes.SendMessage, props<{ room_id: string; message_text: string, message_opertion_id: string, attachments: FileList }>()),
 };
 
 export const MessagesFirebaseActions = {

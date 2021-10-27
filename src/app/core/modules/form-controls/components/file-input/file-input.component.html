@@ -9,6 +9,7 @@
 >
   <input
     hidden
+    multiple
     #fileUploadField
     id="{{ fieldName }}-fileField"
     type="file"
@@ -17,9 +18,12 @@
     [disabled]="isDisabled$ | async"
   />
   <div class="text-wrapper">
-    <span class="file-name" *ngIf="value; else selectFileText">{{ value.name }}</span>
+    <ng-container *ngIf="value?.length; else selectFileText">
+      <span class="file-name px-2" *ngFor="let item of value">{{ item.name }}</span>
+    </ng-container>
+    
     <ng-template #selectFileText>
-      <span>{{ buildTranslationKey('selectFile') | translate }}</span>
+      <span>{{ buildTranslationKey('selectFiles') | translate }}</span>
     </ng-template>
   </div>
 </div>
