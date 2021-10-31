@@ -3,7 +3,7 @@ import { SearchModule } from './../../core/modules/data-manipulation/search/sear
 import { RenderingModule } from './../../core/modules/rendering/rendering.module';
 import { RoomsModule } from 'core/modules/rooms';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Route, RouterModule } from '@angular/router';
 import { CoreModule } from 'core';
 // import { DynamicFormModule } from 'core/modules/dynamic-form';
@@ -41,8 +41,15 @@ const routes: Route[] = [
     SearchModule,
     RenderingModule,
   ],
-  providers: [],
-  declarations: [MessangerComponent, RoomsSectionLayoutComponent, RoomsRendererComponent, MessageItemComponent, MessagesRendererComponent, FeedComponent],
+  providers: [DatePipe],
+  declarations: [
+    MessangerComponent,
+    RoomsSectionLayoutComponent,
+    RoomsRendererComponent,
+    MessageItemComponent,
+    MessagesRendererComponent,
+    FeedComponent,
+  ],
   exports: [],
 })
 export class MessangerModule {}

@@ -22,7 +22,12 @@ export class MessagesFacadeService {
 
     try {
       return await this.actionDispatcher.dispatchActionAsync(
-        MessagesActions.sendMessage({ room_id, message_text, message_opertion_id: operationId, attachments: attachments }),
+        MessagesActions.sendMessage({
+          room_id,
+          message_text,
+          message_opertion_id: operationId,
+          attachments: attachments,
+        }),
 
         operationId,
         TrackOperations.CREATE_MESSAGE
@@ -51,9 +56,13 @@ export class MessagesFacadeService {
   }
 
   getMessages(room_id: string): Observable<Message[]> {
-    return this.store
-      .select(messagesStateSelector)
-      .pipe(map((state) => Object.values(state.entities).filter((m) => m.room_id === room_id)));
+    return this.store.select(messagesStateSelector).pipe(
+      map((state) =>
+        Object.values(state.entities)
+          .filter((m) => m.room_id === room_id)
+          .sort((a, b) => a.time.toDate().getTime() - b.time.toDate().getTime())
+      )
+    );
   }
 
   async getMessagesBeforeSpecific(

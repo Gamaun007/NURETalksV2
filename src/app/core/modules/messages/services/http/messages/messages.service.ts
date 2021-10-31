@@ -1,7 +1,7 @@
 import { AuthService } from 'core/modules/auth-core/services';
 import { Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of } from 'rxjs';
-import { Message, MessageType, MessageWithAttachments } from 'core/models/domain';
+import { Message, MessageAttachment, MessageType, MessageWithAttachments } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, QueryFn } from '@angular/fire/firestore';
 import { take, switchMap, mergeMap, map, filter } from 'rxjs/operators';
 // import {UploadTaskSnapshot} from '@angular/fire/storage/interfaces';
@@ -68,52 +68,42 @@ export class MessagesHttpService {
     message_text: string,
     attachments: FileList
   ): Observable<MessageWithAttachments> {
-    const attachmentsRequestArray: Observable<[string]>[] = [];
+    const attachmentsRequestArray: Observable<MessageAttachment>[] = [];
     for (let i = 0; i < attachments.length; i++) {
+      const attachment = attachments.item(i);
+      const fileIdAgainstName = this.afs.createId();
+      const fileFullPath = this.fileStorageService.createFileFullPath(
+        ROOM_ATTACHMENTS_PATH_FACTORY(room_id),
+        fileIdAgainstName
+      );
       attachmentsRequestArray.push(
         this.fileStorageService
-          .uploadFileToStorage(ROOM_ATTACHMENTS_PATH_FACTORY(room_id), attachments.item(i).name, attachments.item(i))
+          .uploadFileToStorageByFullPath(fileFullPath, attachment, {
+            contentType: attachment.type,
+            customMetadata: { original_name: attachment.name },
+          })
           .snapshotChanges()
           .pipe(
-            switchMap((snap) => {
-              console.log('snap', snap, room_id);
-              console.log('this.fileStorageService.getFileFromStorage', attachments.item(i).name);
-              const fileLink$ = this.fileStorageService.getFileFromStorage(
-                ROOM_ATTACHMENTS_PATH_FACTORY(room_id),
-                attachments.item(i).name
-              );
-              debugger;
-
-              return combineLatest([fileLink$.pipe(take(1))]);
+            take(1),
+            map((_) => {
+              return { file_path: fileFullPath, id: fileIdAgainstName, name: attachment.name };
             })
           )
       );
     }
-    console.log('attachmentsRequestArray', attachmentsRequestArray);
+
     return combineLatest(attachmentsRequestArray).pipe(
-      switchMap((attachmentsLinks) => {
-        console.log('attachmentsLinks', attachmentsLinks);
+      switchMap((attachmentsFiles) => {
         return this.authService.getCurrentUserObservable().pipe(
           take(1),
           switchMap((user) => {
-            console.log(' CREATE MESSAGE');
-
-            const files = attachmentsLinks.reduce(
-              (prev, curr) => {
-                return [...prev, { file_path: curr[0], name: 'test' }];
-              },
-              [] as {
-                name: string;
-                file_path: string;
-              }[]
-            );
             const id = this.afs.createId();
             const message: MessageWithAttachments = {
               id,
               room_id,
               text: message_text,
               sender_id: user.uid,
-              attachments: files,
+              attachments: attachmentsFiles,
               type: MessageType.ATTACHMENTS,
               time: new Date() as any,
             };

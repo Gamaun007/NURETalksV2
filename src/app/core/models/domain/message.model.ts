@@ -12,10 +12,13 @@ export interface Message {
 }
 
 export interface MessageWithAttachments extends Message {
-  attachments?: {
-    name: string;
-    file_path: string;
-  }[];
+  attachments?: MessageAttachment[];
+}
+
+export interface MessageAttachment {
+  id: string;
+  name: string;
+  file_path: string;
 }
 
 export enum MessageType {

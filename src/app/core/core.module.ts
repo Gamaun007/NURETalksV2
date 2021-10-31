@@ -1,3 +1,4 @@
+import { FileDownloadingHelperService } from './services/file-downloading-helper/file-downloading-helper.service';
 import { RootGuardService } from 'core/guards/root-guard/root-guard.service';
 import { UniversityModule } from './modules/university/university.module';
 import { DirectivesModule } from './modules/directives/directives.module';
@@ -87,6 +88,7 @@ export class CoreModule {
         LoggerService,
         FileStorageService,
         RootGuardService,
+        FileDownloadingHelperService,
         {
           provide: WINDOW,
           useFactory: () => window,

@@ -9,6 +9,7 @@ import { MessagerRouterParams } from '../../../models';
 import { FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FileFieldControl } from 'core/modules/form-controls';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-feed',
@@ -28,7 +29,8 @@ export class FeedComponent implements OnInit, OnDestroy {
     private router: Router,
     private roomFacade: RoomsFacadeService,
     private cd: ChangeDetectorRef,
-    private messagesFacade: MessagesFacadeService
+    private messagesFacade: MessagesFacadeService,
+    public datepipe: DatePipe
   ) {}
 
   ngOnDestroy(): void {
@@ -55,6 +57,18 @@ export class FeedComponent implements OnInit, OnDestroy {
       });
   }
 
+  viewSchedule(): void {
+    const currTime = new Date(Date.now());
+
+    const timeFrom = this.datepipe.transform(currTime, 'dd.MM.yyyy');
+    const timeTo = this.datepipe.transform(currTime.setMonth(currTime.getMonth() + 8), 'dd.MM.yyyy');
+
+    window.open(
+      `https://cist.nure.ua/ias/app/tt/f?p=778:201:3750290334261274:::201:P201_FIRST_DATE,P201_LAST_DATE,P201_GROUP,P201_POTOK:${timeFrom},${timeTo},${this.room.room_details.group_id},0:`,
+      '_blank'
+    );
+  }
+
   async sendMessage(): Promise<void> {
     this.sendingMessageLoader$.next(true);
     this.messageField.disable();
@@ -67,7 +81,7 @@ export class FeedComponent implements OnInit, OnDestroy {
 
       this.fileField.reset();
       this.messageField.reset();
-      
+
       this.messageField.enable();
       this.fileField.enable();
     }

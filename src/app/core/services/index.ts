@@ -4,3 +4,4 @@ export * from './message-bus/message-bus.service';
 export * from './translate-resolver/translate-resolver.service';
 export * from './window-helper/window-helper.service';
 export * from './logger/logger.service';
+export * from './file-downloading-helper/file-downloading-helper.service';

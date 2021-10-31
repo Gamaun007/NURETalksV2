@@ -1,6 +1,6 @@
 <ng-container *ngIf="room">
   <div class="flex w-full rounded-xl p-4 bg-navy-30 text-xl font-bold">
-    {{ room?.room_details?.name }}
+    <span class="cursor-pointer" (click)="viewSchedule()">{{ room?.room_details?.name }} </span>
   </div>
   <app-messages-renderer class="flex flex-grow" [room]="room"></app-messages-renderer>
   <!-- 
@@ -14,6 +14,7 @@ Seems to be separate component -->
       [formControl]="messageField"
       [resizable]="false"
       [rows]="3"
+      [maxLength]="600"
       [placeholder]="buildTranslationKey('writeMessage') | translate"
     >
       <app-icon-button

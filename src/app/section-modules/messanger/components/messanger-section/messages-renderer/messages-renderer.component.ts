@@ -70,13 +70,14 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
 
     this.messageFacade.setListenerForRoomMessages(this.room.id);
     this.messages$ = this.messageFacade.getMessages(this.room.id);
+    // .pipe(tap((m) => this.virtualScroller.scrollInto(m[m.length - 1])));
 
     const messages = await this.messageFacade.getLatestRoomMessages(this.room.id, this.bufferMessagesCount);
     if (!messages?.length) {
       this.noMessagesState = true;
     }
-
-    this.scrollToBottom();
+    // this.loading$.next(true);
+    // this.scrollToBottom();
   }
 
   ngOnDestroy(): void {
@@ -85,7 +86,12 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
 
   ngAfterViewInit(): void {
     this.loading$.next(true);
-    this.scrollToBottom();
+    // 
+    // this.scrollToBottom();
+  }
+
+  closeLoader(): void {
+    this.loading$.next(false)
   }
 
   fetchNextMessages(event: IPageInfo) {
@@ -105,17 +111,20 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
     return item?.id;
   }
 
-  scrollToBottom(): void {
-    setTimeout(() => {
-      console.log(this.parentScroller.directiveRef.elementRef.nativeElement.scrollHeight);
-      this.virtualScroller.scrollToPosition(
-        this.parentScroller.directiveRef.elementRef.nativeElement.scrollHeight,
-        0,
-        () => {
-          this.loading$.next(false);
-          this.cd.detectChanges();
-        }
-      );
-    }, 320);
+  async scrollToBottom(): Promise<void> {
+    const mess = await this.messages$.pipe(take(1)).toPromise();
+    this.virtualScroller.scrollInto(mess[mess.length - 1]);
+    this.loading$.next(false);
+    setTimeout(async () => {
+
+      // this.virtualScroller.scrollToPosition(
+      //   this.parentScroller.directiveRef.elementRef.nativeElement.scrollHeight,
+      //   0,
+      //   () => {
+      //     this.loading$.next(false);
+      //     this.cd.detectChanges();
+      //   }
+      // );
+    }, 420);
   }
 }
