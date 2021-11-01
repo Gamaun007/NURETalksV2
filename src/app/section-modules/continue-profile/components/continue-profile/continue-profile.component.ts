@@ -1,15 +1,16 @@
-import { UniversityStructureByIds } from './../../../../core/modules/university/models/university-structure.model';
+import { UniversityStructureByIds } from 'core/modules/university/models/university-structure.model';
 import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-facade/rooms-facade.service';
-import { UserFacadeService } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
 import { UniversityEntitiesName, UniversityStructureDynamicFormValuesMap } from 'core/modules/university/models';
 import { SelectUniversityGroupComponent } from 'core/modules/university/components';
 import { TranslateService } from '@ngx-translate/core';
 import { RoleEnum } from 'core/models/domain/roles.model';
 import { RadioButtonModel, RadioButtonsGroupControl } from 'core/modules/form-controls';
 import { DynamicFormGroup } from 'core/modules/dynamic-form';
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { AuthService } from 'core/modules/auth-core/services';
+import { Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
 export type RolesFormValuesMap = {
   roles: string;
@@ -30,13 +31,15 @@ export class ContinueProfileComponent implements OnInit {
   @ViewChild('selectUniversityStructure')
   private selectUniversityStructureRef: SelectUniversityGroupComponent;
 
+  requestProceeding$ = new Subject<boolean>();
+
   formGroup: DynamicFormGroup<any>;
 
   constructor(
-    private cd: ChangeDetectorRef,
     private translatService: TranslateService,
     private authService: AuthService,
-    private roomFacade: RoomsFacadeService
+    private roomFacade: RoomsFacadeService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,6 +47,7 @@ export class ContinueProfileComponent implements OnInit {
   }
 
   async sendUserPhaseTwoData(): Promise<void> {
+    this.requestProceeding$.next(true);
     const universityStructureFormValues = this.selectUniversityStructureRef.form
       .value as UniversityStructureDynamicFormValuesMap;
     const rolesFormValues = this.formGroup.value as RolesFormValuesMap;
@@ -62,6 +66,7 @@ export class ContinueProfileComponent implements OnInit {
     if (role === RoleEnum.Headman || role === RoleEnum.Student) {
       await this.roomFacade.createGroupRoom(universityStructure);
     }
+    this.router.navigate(['/']);
   }
 
   private setRoleRadiobuttonsForm(): void {

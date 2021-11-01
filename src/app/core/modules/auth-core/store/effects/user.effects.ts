@@ -1,20 +1,14 @@
-import {
-  FACULTY_NOT_FOUND,
-  DIRECTION_NOT_FOUND,
-  GROUP_NOT_FOUND,
-  SPECIALITY_NOT_FOUND,
-} from './../../../university/models/errors.constants';
+import { USER_ALREADY_EXISTS } from './../../services/http/errors.constants';
 import { UniversityFacadeService } from './../../../university/services/facades/university-facade/university-facade.service';
 import { AuthService } from './../../services/auth/auth.service';
 import { UploadUserProfileIconAction, UsersAdapterActions } from './../actions/user.actions';
 import { UserHttpService } from '../../services/http/user/user.service';
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
 // import { State } from 'core/modules/data/store';
 import { from, NEVER, Observable } from 'rxjs';
-import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap, switchMap, take } from 'rxjs/operators';
 import { User } from 'core/models/domain';
 import {
   CreateUserAction,
@@ -23,7 +17,6 @@ import {
   UserActionType,
   UserCreatedAction,
 } from '../actions';
-import { AuthState } from 'core/modules/auth-core/store/state';
 import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
 import { UniversityEntitiesName } from 'core/modules/university/models';
 import { UserLoadBy } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';

@@ -95,7 +95,10 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
   }
 
   fetchNextMessages(event: IPageInfo) {
+
     if (event.startIndex === 0) {
+      console.log(event);
+      console.log('fetchNextMessages');
     }
   }
 
@@ -115,16 +118,16 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
     const mess = await this.messages$.pipe(take(1)).toPromise();
     this.virtualScroller.scrollInto(mess[mess.length - 1]);
     this.loading$.next(false);
-    setTimeout(async () => {
+    // setTimeout(async () => {
 
-      // this.virtualScroller.scrollToPosition(
-      //   this.parentScroller.directiveRef.elementRef.nativeElement.scrollHeight,
-      //   0,
-      //   () => {
-      //     this.loading$.next(false);
-      //     this.cd.detectChanges();
-      //   }
-      // );
-    }, 420);
+    //   // this.virtualScroller.scrollToPosition(
+    //   //   this.parentScroller.directiveRef.elementRef.nativeElement.scrollHeight,
+    //   //   0,
+    //   //   () => {
+    //   //     this.loading$.next(false);
+    //   //     this.cd.detectChanges();
+    //   //   }
+    //   // );
+    // }, 420);
   }
 }

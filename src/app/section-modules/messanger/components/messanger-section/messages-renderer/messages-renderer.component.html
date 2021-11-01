@@ -15,6 +15,7 @@
       [scrollToNewlyAddedItem]="true"
       [scrollToFocusedItem]="true"
       (scrolledToBottom)="closeLoader()"
+      (scrollEnd)="fetchNextMessages($event)"
     >
       <ng-template #itemTemplate let-item="item">
         <div class="py-5" [ngClass]="(messageItemComp?.user$ | async) ? 'current-user-message-wrapper' : ''">

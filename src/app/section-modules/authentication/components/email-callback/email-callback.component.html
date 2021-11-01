@@ -1,4 +1,4 @@
-<ng-container *ngIf="isErrorScreenDisplayed">
+<ng-container *ngIf="isErrorScreenDisplayed; else loader">
   <section class="with-side-lines">
     <div></div>
   </section>
@@ -13,3 +13,8 @@
     </h1>
   </section>
 </ng-container>
+
+<ng-template #loader>
+  <span>{{ buildTranslationKey('ensureCreateDescription') | translate }}</span>
+  <app-loading-animation></app-loading-animation>
+</ng-template>

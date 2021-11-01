@@ -1,11 +1,11 @@
-import { MORE_THAN_ONE_USER_ERROR, NO_USERS_ERROR } from './../errors.constants';
+import { MORE_THAN_ONE_USER_ERROR, NO_USERS_ERROR, USER_ALREADY_EXISTS } from './../errors.constants';
 import { AuthService } from 'core/modules/auth-core/services';
 import { RoleEnum } from 'core/models/domain/roles.model';
 import { Injectable } from '@angular/core';
 import { Observable, of, from, throwError } from 'rxjs';
 import { User } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, QueryFn } from '@angular/fire/firestore';
-import { map, take, switchMap } from 'rxjs/operators';
+import { map, take, switchMap, catchError } from 'rxjs/operators';
 import { getNameByNureEmail } from 'core/utils/user-extensions.functions';
 import firebase from 'firebase/app';
 
@@ -50,32 +50,41 @@ export class UserHttpService {
   }
 
   createNewUser(email: string, user?: Partial<User>): Observable<User> {
-    const { first_name, last_name } = getNameByNureEmail(email);
-    const newUser: User = {
-      email: email,
-      first_name,
-      last_name,
-      // Setting student role by default
-      role: RoleEnum.Student,
-    };
+    return this.getSpecificUser(email).pipe(
+      switchMap((_) => {
+        return throwError(new Error(USER_ALREADY_EXISTS(email)));
+      }),
+      catchError((err) => {
+        if (err.message === NO_USERS_ERROR(email)) {
+          const { first_name, last_name } = getNameByNureEmail(email);
+          const newUser: User = {
+            email: email,
+            first_name,
+            last_name,
+            // Setting student role by default
+            role: RoleEnum.Student,
+          };
 
-    if (user) {
-      Object.keys(user).forEach((propName) => {
-        newUser[propName] = user[propName];
-      });
-    }
+          if (user) {
+            Object.keys(user).forEach((propName) => {
+              newUser[propName] = user[propName];
+            });
+          }
 
-    return this.authService.getAuthIdentity().pipe(
-      switchMap((fUser) => {
-        newUser.uid = fUser.uid;
-        return from(this.getUsersCollectionReference().doc(fUser.uid).set(newUser)).pipe(
-          switchMap(() => {
-            return this.getUsersCollectionReference()
-              .doc(fUser.uid)
-              .get()
-              .pipe(map((snap) => snap.data()));
-          })
-        );
+          return this.authService.getAuthIdentity().pipe(
+            switchMap((fUser) => {
+              newUser.uid = fUser.uid;
+              return from(this.getUsersCollectionReference().doc(fUser.uid).set(newUser)).pipe(
+                switchMap(() => {
+                  return this.getUsersCollectionReference()
+                    .doc(fUser.uid)
+                    .get()
+                    .pipe(map((snap) => snap.data()));
+                })
+              );
+            })
+          );
+        }
       })
     );
   }

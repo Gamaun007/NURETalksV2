@@ -1,4 +1,4 @@
-// @import 'variables/palette';
+@import 'variables/palette';
 
 :host {
   height: 100%;
@@ -9,7 +9,7 @@
 
   &.light {
     .loaderQuart:after {
-      // border-top: 2px solid $mc-white;
+      border-top: 2px solid $mc-white;
     }
     .loaderQuart {
       border: 2px solid rgba(255, 255, 255, 0.2);
@@ -18,7 +18,7 @@
 
   &.dark {
     .loaderQuart:after {
-      // border-top: 2px solid $mc-navy-90;
+      border-top: 2px solid $mc-navy-90;
     }
     .loaderQuart {
       border: 2px solid rgba(4, 41, 62, 0.2);

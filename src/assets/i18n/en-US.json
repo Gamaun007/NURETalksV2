@@ -20,6 +20,14 @@
       "description": "In order to confirm you in the system,\n please provide required information of you",
       "selectRole": "Please select who you are",
       "confirmationButton": "Save & Send"
+    },
+    "emailCallback": {
+      "linkExpiredText": "",
+      "signInAgainText": "",
+      "signInAgainSecondPartText": "",
+      "signInLink": "",
+      "ensureCreateDescription": "Please wait for a while, we are preparing environment for you!"
+
     }
   },
   "formControlErrors": {

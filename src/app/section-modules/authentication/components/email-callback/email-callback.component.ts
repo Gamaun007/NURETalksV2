@@ -1,3 +1,4 @@
+import { UserFacadeService } from './../../../../core/modules/auth-core/services/facades/user-facade/user-facade.service';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { LoaderManagerService, WindowHelperService } from 'core/services';
 import { AuthService } from 'core/modules/auth-core/services';
@@ -15,7 +16,8 @@ export class EmailCallbackComponent implements OnInit {
     private authService: AuthService,
     private windowHelper: WindowHelperService,
     private cd: ChangeDetectorRef,
-    private loaderManager: LoaderManagerService
+    private loaderManager: LoaderManagerService,
+    private userFacade: UserFacadeService
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class EmailCallbackComponent implements OnInit {
       if (this.authService.isSignInWithEmailLink()) {
         var email = window.localStorage.getItem('emailForSignIn');
         const user = await this.authService.signInWithEmailLinkAsync(email);
+        await this.userFacade.createUser(user.user.email);
         window.localStorage.removeItem('emailForSignIn');
         this.windowHelper.redirectToOrigin();
         return true;

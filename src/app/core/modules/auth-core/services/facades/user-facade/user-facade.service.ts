@@ -1,7 +1,7 @@
 import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UniversityStructureByIds } from './../../../../university/models/university-structure.model';
 import { RoleEnum } from 'core/models/domain/roles.model';
-import { NO_USERS_ERROR } from './../../http/errors.constants';
+import { NO_USERS_ERROR, USER_ALREADY_EXISTS } from './../../http/errors.constants';
 import { ActionDispatcherService, TrackOperations } from 'core/modules/data/services';
 import {
   LoadSpecificUserAction,
@@ -76,8 +76,12 @@ export class UserFacadeService {
 
   async createUser(email: string): Promise<void> {
     try {
-      await this.actionDispatcher.dispatchActionAsync(new CreateUserAction(email), TrackOperations.CREATE_USER);
-    } catch (error) {}
+      await this.actionDispatcher.dispatchActionAsync(new CreateUserAction(email), email, TrackOperations.CREATE_USER);
+    } catch (error) {
+      if (error.message === USER_ALREADY_EXISTS(email)) {
+        return;
+      }
+    }
   }
 
   getUserById(id: string): Observable<User> {
