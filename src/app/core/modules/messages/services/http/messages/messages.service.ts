@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of } from 'rxjs';
 import { Message, MessageAttachment, MessageType, MessageWithAttachments } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, QueryFn } from '@angular/fire/firestore';
-import { take, switchMap, mergeMap, map, filter } from 'rxjs/operators';
+import { take, switchMap, mergeMap, map, filter, distinctUntilChanged } from 'rxjs/operators';
 // import {UploadTaskSnapshot} from '@angular/fire/storage/interfaces';
 import { FileStorageService, ROOM_ATTACHMENTS_PATH_FACTORY } from 'core/modules/firebase';
 import firebase from 'firebase';
@@ -19,7 +19,13 @@ export class MessagesHttpService {
   ) {}
 
   getRoomMessagesChangesListener(room_id: string): Observable<DocumentChangeAction<Message>[]> {
-    return this.getMessagesCollectionReference(room_id).stateChanges();
+    // return this.getMessagesCollectionReference(room_id)
+    //   .stateChanges()
+    //   .pipe(distinctUntilChanged((prev: any, curr: any) => prev?.payload?.data() == curr?.payload?.data()));
+    return this.afs
+      .collection<Message>(this.messagesCollectionPathFactory(room_id), ref => ref.where('time', '>', new Date()).orderBy('time'))
+      .stateChanges();
+
   }
 
   getPreviousMessages(room_id: string, message_id: string, messages_amount: number = 1): Observable<Message[]> {
