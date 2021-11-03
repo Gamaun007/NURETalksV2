@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of } from 'rxjs';
 import { Message, MessageAttachment, MessageType, MessageWithAttachments } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, QueryFn } from '@angular/fire/firestore';
-import { take, switchMap, mergeMap, map, filter, distinctUntilChanged } from 'rxjs/operators';
+import { take, switchMap, mergeMap, map, filter, distinctUntilChanged, tap } from 'rxjs/operators';
 // import {UploadTaskSnapshot} from '@angular/fire/storage/interfaces';
 import { FileStorageService, ROOM_ATTACHMENTS_PATH_FACTORY } from 'core/modules/firebase';
 import firebase from 'firebase';
@@ -23,17 +23,28 @@ export class MessagesHttpService {
     //   .stateChanges()
     //   .pipe(distinctUntilChanged((prev: any, curr: any) => prev?.payload?.data() == curr?.payload?.data()));
     return this.afs
-      .collection<Message>(this.messagesCollectionPathFactory(room_id), ref => ref.where('time', '>', new Date()).orderBy('time'))
+      .collection<Message>(this.messagesCollectionPathFactory(room_id), (ref) =>
+        ref.where('lastOperationTime', '>', new Date()).orderBy('lastOperationTime')
+      )
       .stateChanges();
-
   }
 
   getPreviousMessages(room_id: string, message_id: string, messages_amount: number = 1): Observable<Message[]> {
-    return this.getMessagesByQuery(
-      room_id,
-      (col) => col.orderBy('time', 'desc').startAfter({ id: message_id }).limit(messages_amount),
-      false
-    );
+    debugger;
+    return this.getMessagesCollectionReference(room_id)
+      .doc(message_id)
+      .get()
+      .pipe(
+        take(1),
+        switchMap((snapshot) => {
+          return this.getMessagesByQuery(
+            room_id,
+            (col) => col.orderBy('time', 'desc').startAfter(snapshot).limit(messages_amount),
+            false
+          ).pipe(take(1));
+        })
+      );
+
     // const roomMessagesRef = this.getMessagesCollectionReference(room_id);
     // this.afs.collection<Message>(this.messagesCollectionPathFactory(room_id), (col) => col.orderBy('time', 'desc').startAfter().limit(messages_amount),)
 
@@ -104,6 +115,7 @@ export class MessagesHttpService {
           take(1),
           switchMap((user) => {
             const id = this.afs.createId();
+            const now = new Date() as any;
             const message: MessageWithAttachments = {
               id,
               room_id,
@@ -111,7 +123,8 @@ export class MessagesHttpService {
               sender_id: user.uid,
               attachments: attachmentsFiles,
               type: MessageType.ATTACHMENTS,
-              time: new Date() as any,
+              time: now,
+              lastOperationTime: now,
             };
             return from(this.getMessagesCollectionReference(room_id).doc(id).set(message)).pipe(
               switchMap(() => {
@@ -130,6 +143,7 @@ export class MessagesHttpService {
     return this.authService.getCurrentUserObservable().pipe(
       take(1),
       switchMap((user) => {
+        const now = new Date() as any;
         const id = this.afs.createId();
         const message: Message = {
           id,
@@ -137,7 +151,8 @@ export class MessagesHttpService {
           text: message_text,
           sender_id: user.uid,
           type: MessageType.REGULAR,
-          time: new Date() as any,
+          time: now,
+          lastOperationTime: now,
         };
         return from(this.getMessagesCollectionReference(room_id).doc(id).set(message)).pipe(
           switchMap(() => {

@@ -34,7 +34,6 @@ import { ActionDispatcherService, OperationsTrackerService } from './services';
         strictActionImmutability: false,
         strictStateSerializability: false,
         strictActionSerializability: false,
-        strictActionWithinNgZone: true,
         strictActionTypeUniqueness: true,
       },
     }),

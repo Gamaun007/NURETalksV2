@@ -9,6 +9,8 @@ export interface Message {
   type: MessageType;
   //Date type from Angular should be 'any' to has an oportunity to cast into this property
   time?: Timestamp;
+  /* This values is used to identify the time of any operation was made on the message, it helps to listen for changes on FE side*/
+  lastOperationTime?: Timestamp;
 }
 
 export interface MessageWithAttachments extends Message {

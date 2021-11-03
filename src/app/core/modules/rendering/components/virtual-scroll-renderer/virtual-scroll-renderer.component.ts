@@ -65,8 +65,8 @@ export class VirtualScrollRendererComponent extends BaseRenderer implements Afte
     }
   }
 
-  scrollInto(item: any): void {
-    this.virtualScroller.scrollInto(item, true, this.scrollOffset ?? SCROLL_OFFSET);
+  scrollInto(item: any, animationSpeed: number): void {
+    this.virtualScroller.scrollInto(item, true, this.scrollOffset ?? SCROLL_OFFSET, animationSpeed);
   }
 
   scrollToPosition(pos: number, animationSpeed?: number, animationCompletedCallback?: () => void): void {

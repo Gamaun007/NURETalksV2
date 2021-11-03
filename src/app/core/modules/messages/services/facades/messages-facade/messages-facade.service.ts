@@ -69,7 +69,7 @@ export class MessagesFacadeService {
     room_id: string,
     point_message_id: string,
     messages_amount: number = 50
-  ): Promise<Message> {
+  ): Promise<Message[]> {
     try {
       return await this.actionDispatcher.dispatchActionAsync(
         MessagesActions.loadRoomMessagesBeforeSpecific({

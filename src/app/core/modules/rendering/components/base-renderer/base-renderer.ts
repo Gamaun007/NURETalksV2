@@ -27,6 +27,7 @@ export abstract class BaseRenderer implements OnInit, OnDestroy {
   @Input() filteredItemsStream: Observable<any[]>;
   @Input() scrollToNewlyAddedItem: boolean;
   @Input() scrollToFocusedItem: boolean;
+  @Input() scrollToItemOnRendering: any;
 
   @ContentChild('itemTemplate', { static: true }) itemTemplate: TemplateRef<any>;
 
@@ -84,7 +85,7 @@ export abstract class BaseRenderer implements OnInit, OnDestroy {
     return item.id;
   }
 
-  abstract scrollInto(item: any): void;
+  abstract scrollInto(item: any, animationSpeed: number): void;
 
   protected abstract getItemsForRendering(): any[];
 
@@ -104,11 +105,11 @@ export abstract class BaseRenderer implements OnInit, OnDestroy {
 
     if (this.scrollToNewlyAddedItem) {
       await delayedPromise(500);
-      this.scrollInto(newItem);
+      this.scrollInto(newItem, 500);
     }
   }
 
-  private handleAllItemsChange(allItems: any[]): void {
+  private async handleAllItemsChange(allItems: any[]): Promise<void> {
     if (allItems) {
       this.allItems = allItems;
       this.allItemsDictionary = toDictionary(allItems, (item) => this.selectId(item) as string);
@@ -133,7 +134,7 @@ export abstract class BaseRenderer implements OnInit, OnDestroy {
     if (searchPaginator) {
       searchPaginator.dataFocusChange.pipe(this.detacher.takeUntilDetach()).subscribe(() => {
         if (this.scrollToFocusedItem) {
-          this.scrollInto(searchPaginator.currentRow);
+          this.scrollInto(searchPaginator.currentRow, 500);
         }
       });
     }
@@ -154,6 +155,13 @@ export abstract class BaseRenderer implements OnInit, OnDestroy {
     }
 
     this.cd.detectChanges();
+    
+    // It must be placed after change detaction
+    if (this.scrollToItemOnRendering) {
+
+      this.scrollInto(this.scrollToItemOnRendering,0);
+      this.scrollToItemOnRendering = null;
+    }
   }
 
   private itemTrackBy(index: number, item: any): any {

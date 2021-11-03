@@ -2,7 +2,7 @@
   class="absolute z-10 bg-navy-10"
   *ngIf="(loading$ | async) && !noMessagesState"
 ></app-loading-animation>
-<perfect-scrollbar #parentScroller class="p-5">
+<perfect-scrollbar #parentScroller class="p-5" (psYReachStart)="fetchNextMessages($event)">
   <ng-container *ngIf="(messages$ | async)?.length">
     <app-virtual-scroll-renderer
       #scroller
@@ -12,10 +12,8 @@
       [idSelector]="messageIdSelector"
       [buildRenderingItemsCallback]="buildRenderingItems"
       [scrollToLastItemOnInit]="true"
-      [scrollToNewlyAddedItem]="true"
-      [scrollToFocusedItem]="true"
+      [scrollToItemOnRendering]="tempCheckPointMessagePosition"
       (scrolledToBottom)="closeLoader()"
-      (scrollEnd)="fetchNextMessages($event)"
     >
       <ng-template #itemTemplate let-item="item">
         <div class="py-5" [ngClass]="(messageItemComp?.user$ | async) ? 'current-user-message-wrapper' : ''">

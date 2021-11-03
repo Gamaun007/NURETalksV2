@@ -1,6 +1,5 @@
 import { SubscriptionDetacher } from 'core/utils/subscription-detacher.class';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';
-import { IPageInfo } from 'ngx-virtual-scroller';
 import { VirtualScrollRendererComponent } from 'core/modules/rendering/components/virtual-scroll-renderer/virtual-scroll-renderer.component';
 import { OperationsTrackerService } from 'core/modules/data/services/operations-tracker/operations-tracker.service';
 import { UserFacadeService } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
@@ -8,10 +7,7 @@ import { MessagesFacadeService } from 'core/modules/messages/services/facades/me
 import { Room } from 'core/models/domain/room.model';
 import {
   Component,
-  HostBinding,
   Input,
-  OnChanges,
-  SimpleChanges,
   OnInit,
   ViewChild,
   AfterViewInit,
@@ -19,9 +15,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from '@angular/core';
-import { from, Observable, Subject } from 'rxjs';
-import { Message, User } from 'core/models/domain';
-import { map, tap, switchMap, take, filter } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { Message } from 'core/models/domain';
+import { tap, switchMap, take } from 'rxjs/operators';
 import { TrackOperations } from 'core/modules/data/services';
 
 @Component({
@@ -48,6 +44,8 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
 
   messages$: Observable<Message[]>;
 
+  tempCheckPointMessagePosition: Message;
+
   constructor(
     private messageFacade: MessagesFacadeService,
     private userFacade: UserFacadeService,
@@ -65,19 +63,18 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
         switchMap((message) => this.messageFacade.getMessageById(message.id))
       )
       .subscribe((data) => {
-        this.virtualScroller.scrollInto(data);
+        this.tempCheckPointMessagePosition = null;
+        this.parentScroller.directiveRef.scrollToBottom();
+        this.cd.detectChanges();
       });
 
     this.messageFacade.setListenerForRoomMessages(this.room.id);
     this.messages$ = this.messageFacade.getMessages(this.room.id);
-    // .pipe(tap((m) => this.virtualScroller.scrollInto(m[m.length - 1])));
 
     const messages = await this.messageFacade.getLatestRoomMessages(this.room.id, this.bufferMessagesCount);
     if (!messages?.length) {
       this.noMessagesState = true;
     }
-    // this.loading$.next(true);
-    // this.scrollToBottom();
   }
 
   ngOnDestroy(): void {
@@ -86,20 +83,22 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
 
   ngAfterViewInit(): void {
     this.loading$.next(true);
-    // 
-    // this.scrollToBottom();
   }
 
   closeLoader(): void {
-    this.loading$.next(false)
+    this.loading$.next(false);
+    this.cd.detectChanges();
   }
 
-  fetchNextMessages(event: IPageInfo) {
+  async fetchNextMessages(event: any): Promise<void> {
+    console.log(event);
+    const mess = await this.messages$.pipe(take(1)).toPromise();
+    this.tempCheckPointMessagePosition = mess[0];
 
-    if (event.startIndex === 0) {
-      console.log(event);
-      console.log('fetchNextMessages');
-    }
+    const messages = await this.messageFacade.getMessagesBeforeSpecific(
+      this.room.id,
+      this.tempCheckPointMessagePosition.id
+    );
   }
 
   buildRenderingItems(items: Message[]): Message[] {
@@ -116,18 +115,7 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
 
   async scrollToBottom(): Promise<void> {
     const mess = await this.messages$.pipe(take(1)).toPromise();
-    this.virtualScroller.scrollInto(mess[mess.length - 1]);
+    this.virtualScroller.scrollInto(mess[mess.length - 1], 0);
     this.loading$.next(false);
-    // setTimeout(async () => {
-
-    //   // this.virtualScroller.scrollToPosition(
-    //   //   this.parentScroller.directiveRef.elementRef.nativeElement.scrollHeight,
-    //   //   0,
-    //   //   () => {
-    //   //     this.loading$.next(false);
-    //   //     this.cd.detectChanges();
-    //   //   }
-    //   // );
-    // }, 420);
   }
 }
