@@ -1,9 +1,13 @@
-<div class="flex flex-row justify-between gap-3" *ngIf="user$ | async as user">
-  <span class="text-navy-70">{{ user.first_name }}&nbsp;{{ user.last_name }}</span>
-  <span class="text-navy-70"> {{ user.email }}</span>
+<div class="flex flex-row justify-between gap-3 text-navy-70 font-bold" *ngIf="user$ | async as user">
+  <span>{{ user.first_name }}&nbsp;{{ user.last_name }}</span>
+  <span> {{ user.email }}</span>
 </div>
 <div *ngIf="isMessageWithAttachments" class="flex flex-row gap-3 flex-wrap">
-  <div *ngFor="let attachment of castedMessageWithAttachments.attachments" class="border-navy-90 border rounded-xl p-1 file-item cursor-pointer" (click)="clickOnFile(attachment)">
+  <div
+    *ngFor="let attachment of castedMessageWithAttachments.attachments"
+    class="border-navy-90 border rounded-xl p-1 file-item cursor-pointer"
+    (click)="clickOnFile(attachment)"
+  >
     <svg-icon [src]="'attachment'"></svg-icon>
     <span> {{ attachment.name }}</span>
   </div>
@@ -11,4 +15,4 @@
 <span>
   {{ message.text }}
 </span>
-<span> {{ message.time.toDate() | date: 'dd.MM.yyyy HH:mm:ss' }} </span>
+<span class="text-navy-70 font-main font-thin"> {{ message.time.toDate() | date: 'dd.MM.yyyy HH:mm:ss' }} </span>

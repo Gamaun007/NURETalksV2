@@ -3,4 +3,8 @@
   .current-user-message-wrapper {
     @apply flex w-full justify-end;
   }
+
+  .another-user-message-wrapper{
+    @apply flex w-full justify-start;
+  }
 }

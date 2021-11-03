@@ -16,7 +16,7 @@
       (scrolledToBottom)="closeLoader()"
     >
       <ng-template #itemTemplate let-item="item">
-        <div class="py-5" [ngClass]="(messageItemComp?.user$ | async) ? 'current-user-message-wrapper' : ''">
+        <div class="py-5" [ngClass]="messageItemComp.isCurrentUser ? 'current-user-message-wrapper' : 'another-user-message-wrapper'">
           <app-message-item #messageItemComp [message]="item"></app-message-item>
         </div>
       </ng-template>

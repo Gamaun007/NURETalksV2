@@ -1,18 +1,21 @@
+import { SubscriptionDetacher } from 'core/utils/subscription-detacher.class';
 import { FileDownloadingHelperService } from 'core/services';
 import { FileStorageService } from 'core/modules/firebase';
 import { UserFacadeService } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
 import { Message, User, MessageWithAttachments, MessageType, MessageAttachment } from 'core/models/domain';
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
+import { AuthService } from 'core/modules/auth-core/services';
 
 @Component({
   selector: 'app-message-item',
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.scss'],
 })
-export class MessageItemComponent implements OnInit {
-  private _isCurrentUserMessage$: Observable<boolean>;
+export class MessageItemComponent implements OnInit, OnDestroy {
+  private detacher: SubscriptionDetacher = new SubscriptionDetacher();
+  private _isCurrentUserMessage: boolean;
   @Input()
   message: Message | MessageWithAttachments;
 
@@ -22,26 +25,41 @@ export class MessageItemComponent implements OnInit {
 
   user$: Observable<User>;
 
-  @HostBinding('class.messgae-with-attachments')
+  @HostBinding('class.message-with-attachments')
   get isMessageWithAttachments(): boolean {
     return this.message.type === MessageType.ATTACHMENTS;
   }
 
   @HostBinding('class.current-user-message')
-  get isCurrentUser(): Observable<boolean> {
-    return this._isCurrentUserMessage$;
+  get isCurrentUser(): boolean {
+    return this._isCurrentUserMessage;
   }
 
   constructor(
     private userService: UserFacadeService,
     private fileStorageService: FileStorageService,
-    private fileSaver: FileDownloadingHelperService
+    private fileSaver: FileDownloadingHelperService,
+    private authService: AuthService
   ) {}
+
+  ngOnDestroy(): void {
+    this.detacher.detach();
+  }
 
   ngOnInit(): void {
     (this.message as MessageWithAttachments).attachments;
     this.user$ = this.userService.getUserById(this.message.sender_id);
-    this._isCurrentUserMessage$ = this.user$.pipe(map((user) => user.uid === this.message.sender_id));
+    this.authService.getCurrentUserObservable();
+    this.user$
+      .pipe(
+        switchMap((senderUser) =>
+          this.authService.getCurrentUserObservable().pipe(map((currUser) => senderUser.uid === currUser.uid))
+        ),
+        this.detacher.takeUntilDetach()
+      )
+      .subscribe((isCurrentUserMessage) => {
+        this._isCurrentUserMessage = isCurrentUserMessage;
+      });
   }
 
   async clickOnFile(attachment: MessageAttachment): Promise<void> {
