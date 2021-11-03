@@ -2,7 +2,6 @@ import { SubscriptionDetacher } from 'core/utils/subscription-detacher.class';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';
 import { VirtualScrollRendererComponent } from 'core/modules/rendering/components/virtual-scroll-renderer/virtual-scroll-renderer.component';
 import { OperationsTrackerService } from 'core/modules/data/services/operations-tracker/operations-tracker.service';
-import { UserFacadeService } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
 import { MessagesFacadeService } from 'core/modules/messages/services/facades/messages-facade/messages-facade.service';
 import { Room } from 'core/models/domain/room.model';
 import {
@@ -17,7 +16,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Message } from 'core/models/domain';
-import { tap, switchMap, take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { TrackOperations } from 'core/modules/data/services';
 
 @Component({
@@ -48,7 +47,6 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
 
   constructor(
     private messageFacade: MessagesFacadeService,
-    private userFacade: UserFacadeService,
     private operationService: OperationsTrackerService,
     private cd: ChangeDetectorRef
   ) {}
@@ -62,10 +60,9 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
         this.detacher.takeUntilDetach(),
         switchMap((message) => this.messageFacade.getMessageById(message.id))
       )
-      .subscribe((data) => {
+      .subscribe((_) => {
         this.tempCheckPointMessagePosition = null;
         this.parentScroller.directiveRef.scrollToBottom();
-        this.cd.detectChanges();
       });
 
     this.messageFacade.setListenerForRoomMessages(this.room.id);
@@ -95,7 +92,7 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
     const mess = await this.messages$.pipe(take(1)).toPromise();
     this.tempCheckPointMessagePosition = mess[0];
 
-    const messages = await this.messageFacade.getMessagesBeforeSpecific(
+    this.messageFacade.getMessagesBeforeSpecific(
       this.room.id,
       this.tempCheckPointMessagePosition.id
     );
