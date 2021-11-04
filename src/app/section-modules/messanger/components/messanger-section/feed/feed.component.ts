@@ -57,6 +57,10 @@ export class FeedComponent implements OnInit, OnDestroy {
       });
   }
 
+  openPinModal(): void {
+    
+  }
+
   viewSchedule(): void {
     const currTime = new Date(Date.now());
 

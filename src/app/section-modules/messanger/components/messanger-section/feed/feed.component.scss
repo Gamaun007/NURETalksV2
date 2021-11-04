@@ -1,6 +1,28 @@
 :host {
   @apply flex w-full flex-col bg-navy-10 rounded-2xl p-4;
 
+  .group-room-name {
+    &:hover {
+      @apply bg-navy-90  text-white rounded-md stroke-white;
+
+      path {
+        @apply stroke-white;
+      }
+    }
+  }
+
+  .pin-block {
+    width: 40px;
+    height: 40px;
+    &:hover {
+      @apply bg-navy-90  text-white rounded-md stroke-white;
+
+      path {
+        @apply stroke-white;
+      }
+    }
+  }
+
   ::ng-deep {
     app-icon-button {
       &:hover {
@@ -11,7 +33,6 @@
     }
     app-text-area {
       .buttons {
-        
         width: 40px !important;
         height: 40px;
         position: absolute;
@@ -26,6 +47,5 @@
         @apply pr-14;
       }
     }
-
   }
 }

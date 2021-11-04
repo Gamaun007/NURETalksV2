@@ -4,6 +4,8 @@
     "emptyStateDescription": "Select a room to open a conversation"
   },
   "feed": {
+    "navigateToSchedule": "Open group scheduling",
+    "pinAttachment": "Open pinned attachments",
     "writeMessage": "Write message"
   },
   "auth": {
