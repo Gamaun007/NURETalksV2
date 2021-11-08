@@ -8,6 +8,6 @@
 ></app-dynamic-form-outlet>
 <app-select-university-group #selectUniversityStructure class="w-full"></app-select-university-group>
 
-<app-button [type]="'primary'" class="mt-5" [disabled]="selectUniversityStructure?.form?.invalid || formGroup?.invalid" [loading]="requestProceeding$ | async" (click)="sendUserPhaseTwoData()">
+<app-button [type]="'primary'" class="mt-5" [disabled]="submitButtonDisabled" [loading]="requestProceeding$ | async" (click)="sendUserPhaseTwoData()">
   <span>{{ buildTranslationKey('confirmationButton') | translate }}</span></app-button
 >

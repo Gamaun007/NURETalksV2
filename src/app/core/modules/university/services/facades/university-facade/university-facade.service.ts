@@ -4,7 +4,6 @@ import { universityStateSelector } from './../../../store/state';
 import { UniversityActions } from './../../../store/actions/university.actions';
 import { ActionDispatcherService, TrackOperations } from 'core/modules/data/services';
 import { UniversityState } from './../../../store/reducers/university.reducer';
-import { Room } from 'core/models/domain/room.model';
 import { Injectable } from '@angular/core';
 import { NEVER, Observable, throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -24,6 +23,21 @@ export class UniversityFacadeService {
     } catch (error) {
       // HANDLE critical error
     }
+  }
+
+  checkUniversityStructure(universityStructure: UniversityStructureByIds): Observable<void> {
+    return this.getFaculties().pipe(
+      tap((faculties) => {
+        try {
+          universityStructureChecker(universityStructure, faculties);
+        } catch (e) {
+          return throwError(e);
+        }
+      }),
+      map((_) => {
+        return;
+      })
+    );
   }
 
   getGroupByUniversityStructure(universityStructure: UniversityStructureByIds): Observable<Group> {

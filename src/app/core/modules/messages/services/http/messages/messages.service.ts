@@ -1,13 +1,13 @@
 import { AuthService } from 'core/modules/auth-core/services';
 import { Injectable } from '@angular/core';
-import { Observable, combineLatest, from, of } from 'rxjs';
+import { Observable, combineLatest, from } from 'rxjs';
 import { Message, MessageAttachment, MessageType, MessageWithAttachments } from 'core/models/domain';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, QueryFn } from '@angular/fire/firestore';
-import { take, switchMap, mergeMap, map, filter, distinctUntilChanged, tap } from 'rxjs/operators';
+import { take, switchMap, mergeMap, map } from 'rxjs/operators';
 // import {UploadTaskSnapshot} from '@angular/fire/storage/interfaces';
 import { FileStorageService, ROOM_ATTACHMENTS_PATH_FACTORY } from 'core/modules/firebase';
 import firebase from 'firebase';
-import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -19,9 +19,6 @@ export class MessagesHttpService {
   ) {}
 
   getRoomMessagesChangesListener(room_id: string): Observable<DocumentChangeAction<Message>[]> {
-    // return this.getMessagesCollectionReference(room_id)
-    //   .stateChanges()
-    //   .pipe(distinctUntilChanged((prev: any, curr: any) => prev?.payload?.data() == curr?.payload?.data()));
     return this.afs
       .collection<Message>(this.messagesCollectionPathFactory(room_id), (ref) =>
         ref.where('lastOperationTime', '>', new Date()).orderBy('lastOperationTime')
@@ -30,7 +27,6 @@ export class MessagesHttpService {
   }
 
   getPreviousMessages(room_id: string, message_id: string, messages_amount: number = 1): Observable<Message[]> {
-    debugger;
     return this.getMessagesCollectionReference(room_id)
       .doc(message_id)
       .get()
@@ -44,24 +40,6 @@ export class MessagesHttpService {
           ).pipe(take(1));
         })
       );
-
-    // const roomMessagesRef = this.getMessagesCollectionReference(room_id);
-    // this.afs.collection<Message>(this.messagesCollectionPathFactory(room_id), (col) => col.orderBy('time', 'desc').startAfter().limit(messages_amount),)
-
-    // roomMessagesRef.doc(message_id).get().pipe(switchMap(()));
-
-    // roomMessagesRef.
-
-    // const snapshot = await this.getMessageSnapshot(roomId, lastMessage.id);
-    // return this.db.collection<IMessage>(`rooms/${roomId}/messages`,
-    // opt => opt.orderBy('time', 'desc').startAfter(snapshot).limit(25))
-    //   .valueChanges();
-
-    // return this.getMessagesByQuery(
-    //   room_id,
-    //   (col) => col.orderBy('time', 'desc').limit(messages_amount),
-    //   listenRealTimeChanges
-    // );
   }
 
   getLatestMessagesListener(

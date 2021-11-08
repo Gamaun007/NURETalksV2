@@ -88,14 +88,10 @@ export class MessagesRendererComponent implements AfterViewInit, OnDestroy, OnIn
   }
 
   async fetchNextMessages(event: any): Promise<void> {
-    console.log(event);
     const mess = await this.messages$.pipe(take(1)).toPromise();
     this.tempCheckPointMessagePosition = mess[0];
 
-    this.messageFacade.getMessagesBeforeSpecific(
-      this.room.id,
-      this.tempCheckPointMessagePosition.id
-    );
+    this.messageFacade.getMessagesBeforeSpecific(this.room.id, this.tempCheckPointMessagePosition.id);
   }
 
   buildRenderingItems(items: Message[]): Message[] {

@@ -27,11 +27,8 @@ const adapterReducer = createReducer(
     messageAdapter.upsertMany(action.payload, { ...state })
   ),
   on(MessagesActions.latestMessagesGot, (state: MessagesState, action) => {
-    console.log('latestMessagesGot',action );
     return messageAdapter.upsertMany(action.messages, { ...state });
-  }
-
-  ),
+  }),
 
   // Firebase actions reducer handlers
   on(MessagesFirebaseActions.messagesAddedFirebaseAction, (state: MessagesState, action) => {

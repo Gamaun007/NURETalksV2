@@ -1,11 +1,10 @@
-import { RoomsFacadeService } from 'core/modules/rooms/services';
 import { RoleEnum } from 'core/models/domain/roles.model';
 import { UniversityStructureByIds } from './../../../university/models/university-structure.model';
 import { UserFacadeService } from './../facades/user-facade/user-facade.service';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { WindowHelperService } from 'core/services/window-helper/window-helper.service';
-import { Observable, NEVER, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { FirebaseWrapperService } from '../firebase-wrapper/firebase-wrapper.service';
 import firebase from 'firebase/app';
@@ -50,10 +49,8 @@ export class AuthService {
   ): Promise<void> {
     const currentUserId = (await this.getCurrentUserAsync()).uid;
     try {
-      await Promise.all([
-        this.userFacade.changeUserUniversityStructureAccessory(currentUserId, universityStructure),
-        this.userFacade.changeUserRole(currentUserId, role),
-      ]);
+      await this.userFacade.changeUserRole(currentUserId, role);
+      await this.userFacade.changeUserUniversityStructureAccessory(currentUserId, universityStructure);
     } catch (e) {
       // TODO
     }

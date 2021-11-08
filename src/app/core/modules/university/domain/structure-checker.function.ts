@@ -33,12 +33,14 @@ export function universityStructureChecker(universityStructure: UniversityStruct
       throw new Error(SPECIALITY_NOT_FOUND(speciality_name_to_find));
     }
 
-    const group_from_speciality = speciality.groups.find((g) => g.id === group_id_to_find);
+    if (group_id_to_find) {
+      const group_from_speciality = speciality.groups.find((g) => g.id === group_id_to_find);
 
-    if (!group_from_speciality) {
-      throw new Error(GROUP_NOT_FOUND(group_id_to_find));
+      if (!group_from_speciality) {
+        throw new Error(GROUP_NOT_FOUND(group_id_to_find));
+      }
     }
-  } else {
+  } else if (group_id_to_find) {
     const group_from_direction = direction.groups.find((g) => g.id === group_id_to_find);
 
     if (!group_from_direction) {

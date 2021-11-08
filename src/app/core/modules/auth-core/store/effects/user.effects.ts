@@ -1,4 +1,4 @@
-import { USER_ALREADY_EXISTS } from './../../services/http/errors.constants';
+import { RoomsFacadeService } from './../../../rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UniversityFacadeService } from './../../../university/services/facades/university-facade/university-facade.service';
 import { AuthService } from './../../services/auth/auth.service';
 import { UploadUserProfileIconAction, UsersAdapterActions } from './../actions/user.actions';
@@ -9,7 +9,7 @@ import { OperationsTrackerService, TrackOperations } from 'core/modules/data/ser
 // import { State } from 'core/modules/data/store';
 import { from, NEVER, Observable } from 'rxjs';
 import { catchError, map, mergeMap, tap, switchMap, take } from 'rxjs/operators';
-import { User } from 'core/models/domain';
+import { RoleEnum, User } from 'core/models/domain';
 import {
   CreateUserAction,
   LoadSpecificUserAction,
@@ -29,7 +29,8 @@ export class UserEffects {
     private usersHttpService: UserHttpService,
     private fileStorageService: FileStorageService,
     private authService: AuthService,
-    private universityFacade: UniversityFacadeService
+    private universityFacade: UniversityFacadeService,
+    private roomFacade: RoomsFacadeService
   ) {}
 
   uploadUserProfileIcon = createEffect(() =>
@@ -37,6 +38,7 @@ export class UserEffects {
       ofType(UserActionType.UploadUserProfileIcon),
       mergeMap((action: UploadUserProfileIconAction) =>
         this.authService.getCurrentUserObservable().pipe(
+          take(1),
           switchMap((user) => {
             return this.fileStorageService
               .uploadFileToStorage(USER_PROFILE_IMAGE_PATH, user.uid, action.file)
@@ -91,42 +93,58 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(UsersAdapterActions.changeUserUniversityStructure),
       mergeMap((action) =>
-        // getGroupByUniversityStructure is here because under the hood there is a structure checker!
-        this.universityFacade.getGroupByUniversityStructure(action.universityStructure).pipe(
-          map((_) => {
-            const parial: Partial<User> = {
-              faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
-              direction_id: action.universityStructure[UniversityEntitiesName.direction],
-              group_id: action.universityStructure[UniversityEntitiesName.group],
-              // Set user account approval immediately to true, in the future the Admin role will manage user approval
-              is_approved_account: true,
-            };
+        this.authService.getCurrentUserObservable().pipe(
+          take(1),
+          switchMap((user) => {
+            return this.universityFacade.checkUniversityStructure(action.universityStructure).pipe(
+              map((_) => {
+                const parial: Partial<User> = {
+                  faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
+                  direction_id: action.universityStructure[UniversityEntitiesName.direction],
+                  // Set user account approval immediately to true, in the future the Admin role will manage user approval
+                  is_approved_account: true,
+                };
 
-            if (action.universityStructure[UniversityEntitiesName.speciality]) {
-              parial.speciality_id = action.universityStructure[UniversityEntitiesName.speciality];
-            }
+                if (action.universityStructure[UniversityEntitiesName.group]) {
+                  parial.group_id = action.universityStructure[UniversityEntitiesName.group];
+                }
 
-            return parial;
-          }),
-          switchMap((parialUser) => {
-            return this.usersHttpService.updateUser(action.user_id, parialUser).pipe(
-              tap((_) =>
-                this.operationsTrackerService.trackSuccess(
+                if (action.universityStructure[UniversityEntitiesName.speciality]) {
+                  parial.speciality_id = action.universityStructure[UniversityEntitiesName.speciality];
+                }
+
+                return parial;
+              }),
+              switchMap((parialUser) => {
+                const updateUserStructure$ = this.usersHttpService.updateUser(action.user_id, parialUser).pipe(
+                  tap((_) =>
+                    this.operationsTrackerService.trackSuccess(
+                      TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+                      action.user_id
+                    )
+                  ),
+                  map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user }))
+                );
+
+                if (user.role === RoleEnum.Headman || user.role === RoleEnum.Student) {
+                  return from(this.roomFacade.createGroupRoom(action.universityStructure)).pipe(
+                    switchMap((_) => updateUserStructure$)
+                  );
+                }
+
+                return updateUserStructure$;
+              }),
+              catchError((error) => {
+                this.operationsTrackerService.trackError(
                   TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+                  error,
                   action.user_id
-                )
-              ),
-              map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user }))
+                );
+                return NEVER;
+              })
             );
-          }),
-          catchError((error) => {
-            this.operationsTrackerService.trackError(
-              TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
-              error,
-              action.user_id
-            );
-            return NEVER;
           })
+          // getGroupByUniversityStructure is here because under the hood there is a structure checker!
         )
       )
     )
