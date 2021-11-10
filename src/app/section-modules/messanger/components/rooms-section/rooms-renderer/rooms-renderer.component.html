@@ -4,12 +4,19 @@
     [allItemsStream]="allRooms$"
     [filteredItemsStream]="allRooms$"
     [idSelector]="roomIdSelector"
-    [buildRenderingItemsCallback]="buildRenderingItems"
+    [buildRenderingItemsCallback]="buildItemsBinded"
     [scrollToNewlyAddedItem]="true"
     [scrollToFocusedItem]="true"
   >
     <ng-template #itemTemplate let-item="item">
-      <app-room-item #roomItemComp [room]="item" [relatedScopeKey]="roomsBarSectionKey"></app-room-item>
+      <app-room-item
+        #roomItemComp
+        [ngbTooltip]="isRoomAvailable(item) ? null : ('roomItem.notAllowedRoomText' | translate)"
+        [placement]="'top'"
+        [class.disabled]="!isRoomAvailable(item)"
+        [room]="item"
+        [relatedScopeKey]="roomsBarSectionKey"
+      ></app-room-item>
     </ng-template>
   </app-virtual-scroll-renderer>
 </ng-container>

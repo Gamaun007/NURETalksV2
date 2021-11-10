@@ -1,3 +1,5 @@
+import { MessagerRouterParams } from './../../../../../section-modules/messanger/models/router-params.constant';
+import { Router } from '@angular/router';
 import { SubscriptionDetacher } from 'core/utils';
 import {
   RoomItemEventPayloadMapper,
@@ -17,9 +19,7 @@ import {
   HostListener,
   ChangeDetectorRef,
   OnDestroy,
-  Renderer2,
 } from '@angular/core';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-room-item',
@@ -43,10 +43,15 @@ export class RoomItemComponent implements OnInit, OnChanges, OnDestroy, OnInit {
 
   @HostListener('click', ['$event'])
   private hostClick(event: MouseEvent): void {
-    this.selectItem();
+    this.router.navigate([], {
+      queryParams: {
+        ...this.router.routerState.snapshot.root.queryParams,
+        [MessagerRouterParams.roomId]: this.room.id,
+      },
+    });
   }
 
-  constructor(private roomItemManager: RoomItemManagerService, private cd: ChangeDetectorRef) {}
+  constructor(private roomItemManager: RoomItemManagerService, private cd: ChangeDetectorRef, private router: Router) {}
 
   ngOnDestroy(): void {
     this.detacher.detach();

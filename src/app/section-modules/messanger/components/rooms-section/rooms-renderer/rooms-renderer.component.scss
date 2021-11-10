@@ -1,8 +1,9 @@
-// :host {
-//   @apply flex w-full flex-col;
-// }
-:host {
+
+:host::ng-deep {
   app-room-item {
+    &.disabled {
+      opacity: 0.5;
+    }
     @apply mb-4 mr-3;
     &:not(:first-child) {
       @apply mt-4;

@@ -1,3 +1,4 @@
+import { MessangerGuardService } from './guards';
 import { FileDownloadingHelperService } from './services/file-downloading-helper/file-downloading-helper.service';
 import { RootGuardService } from 'core/guards/root-guard/root-guard.service';
 import { UniversityModule } from './modules/university/university.module';
@@ -88,6 +89,7 @@ export class CoreModule {
         LoggerService,
         FileStorageService,
         RootGuardService,
+        MessangerGuardService,
         FileDownloadingHelperService,
         {
           provide: WINDOW,

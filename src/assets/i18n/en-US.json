@@ -1,5 +1,4 @@
 {
-  "app-component": "App component text",
   "messanger": {
     "emptyStateDescription": "Select a room to open a conversation"
   },
@@ -7,6 +6,9 @@
     "navigateToSchedule": "Open group scheduling",
     "pinAttachment": "Open pinned attachments",
     "writeMessage": "Write message"
+  },
+  "roomItem": {
+    "notAllowedRoomText": "Room is not allowed to enter"
   },
   "auth": {
     "loginPage": {
@@ -29,7 +31,6 @@
       "signInAgainSecondPartText": "",
       "signInLink": "",
       "ensureCreateDescription": "Please wait for a while, we are preparing environment for you!"
-
     }
   },
   "formControlErrors": {

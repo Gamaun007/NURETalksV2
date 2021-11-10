@@ -1,12 +1,12 @@
-import { MessagesModule } from './../../core/modules/messages/messages.module';
-import { SearchModule } from './../../core/modules/data-manipulation/search/search.module';
-import { RenderingModule } from './../../core/modules/rendering/rendering.module';
+import { MessangerGuardService } from 'core/guards/messanger-guard/messanger-guard.service';
+import { MessagesModule } from 'core/modules/messages/messages.module';
+import { SearchModule } from 'core/modules/data-manipulation/search/search.module';
+import { RenderingModule } from 'core/modules/rendering/rendering.module';
 import { RoomsModule } from 'core/modules/rooms';
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Route, RouterModule } from '@angular/router';
 import { CoreModule } from 'core';
-// import { DynamicFormModule } from 'core/modules/dynamic-form';
 import { TranslateModule } from '@ngx-translate/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DynamicFormModule } from 'core/modules/dynamic-form';
@@ -21,6 +21,8 @@ import { FeedComponent } from './components/messanger-section/feed/feed.componen
 const routes: Route[] = [
   {
     path: '',
+    canActivate: [MessangerGuardService],
+    runGuardsAndResolvers: 'always',
     component: MessangerComponent,
   },
 ];

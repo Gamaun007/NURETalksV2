@@ -1,13 +1,10 @@
-import { ContinueProfileComponent } from './section-modules/continue-profile/components';
-import { EmailLoginComponent } from './section-modules/authentication/components/email-login/email-login.component';
 import { TranslateResolverService } from './core/services/translate-resolver/translate-resolver.service';
 import { RootComponent } from 'src/app/components';
 import { WildCardComponent } from './components/wild-card/wild-card.component';
 import { AuthGuardService } from './core/modules/auth-core/services';
 import { AppRoutes, AuthRoutes } from './core/constants/routes';
 import { NgModule } from '@angular/core';
-import { RouterModule, CanActivate } from '@angular/router';
-import { UserMenuBarComponent } from 'core/components';
+import { RouterModule } from '@angular/router';
 import { RootGuardService } from 'core/guards/root-guard/root-guard.service';
 
 const routes = [
@@ -31,7 +28,6 @@ const routes = [
                   // Orederence of children routes must not be changed! 
                   {
                     path: '',
-                    // canActivate: [RootGuardService],
                     loadChildren: () =>
                       import('./section-modules/messanger/messanger.module').then((m) => m.MessangerModule),
                   },
