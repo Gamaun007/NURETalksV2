@@ -1,3 +1,4 @@
+import { UserHttpService } from './../../../../auth-core/services/http/user/user.service';
 import { SPECIFIC_GOUP_ROOM_NOT_FOUND, SPECIFIC_ROOM_NOT_FOUND } from '../errors.constants';
 import { AuthService } from 'core/modules/auth-core/services';
 import { Injectable } from '@angular/core';
@@ -19,7 +20,11 @@ export interface CreateGroupRoomEntity {
   providedIn: 'root',
 })
 export class RoomsHttpService {
-  constructor(private afs: AngularFirestore, private authService: AuthService) {}
+  constructor(
+    private afs: AngularFirestore,
+    private authService: AuthService,
+    private usersHttpService: UserHttpService
+  ) {}
 
   getAllRoomsChangesListener(): Observable<DocumentChangeAction<Room>[]> {
     return this.getRoomsCollectionReference().stateChanges();
@@ -27,6 +32,44 @@ export class RoomsHttpService {
 
   getAllRooms(): Observable<Room[]> {
     return this.getRoomsCollectionReference().valueChanges().pipe(take(1));
+  }
+
+  joinCurrentUserToRoom(room_id: string): Observable<Room> {
+    return this.authService
+      .getCurrentUserObservable()
+      .pipe(take(1))
+      .pipe(
+        switchMap((user) => {
+          if (user.rooms?.length) {
+            const roomIdAlreadyIncluded = user.rooms.includes(room_id);
+
+            if (!roomIdAlreadyIncluded) {
+              user.rooms.push(room_id);
+            }
+          } else {
+            user.rooms = [room_id];
+          }
+
+          return this.usersHttpService.updateUser(user.uid, user).pipe(
+            switchMap((_) => {
+              return this.getSpecificRoomById(room_id).pipe(
+                switchMap((room) => {
+                  if (room.users?.length) {
+                    const userIdAlreadyIncluded = room.users.includes(user.uid);
+
+                    if (!userIdAlreadyIncluded) {
+                      room.users.push(user.uid);
+                    }
+                  } else {
+                    room.users = [user.uid];
+                  }
+                  return this.updateRoom(room_id, { users: room.users });
+                })
+              );
+            })
+          );
+        })
+      );
   }
 
   getSpecificGroupRoom(group_id: number): Observable<Room> {

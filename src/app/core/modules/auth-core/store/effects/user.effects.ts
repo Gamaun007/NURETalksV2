@@ -80,36 +80,7 @@ export class UserEffects {
         return this.authService.getCurrentUserObservable().pipe(
           take(1),
           switchMap((user) => {
-            if (user.rooms?.length) {
-              const roomIdAlreadyIncluded = user.rooms.includes(action.room_id);
-
-              if (!roomIdAlreadyIncluded) {
-                user.rooms.push(action.room_id);
-              }
-            } else {
-              user.rooms = [action.room_id];
-            }
-
-            return this.usersHttpService.updateUser(user.uid, user).pipe(
-              switchMap((updatedUser) => {
-                return this.roomService.getSpecificRoomById(action.room_id).pipe(
-                  switchMap((room) => {
-                    if (room.users?.length) {
-                      const userIdAlreadyIncluded = room.users.includes(user.uid);
-
-                      if (!userIdAlreadyIncluded) {
-                        room.users.push(user.uid);
-                      }
-                    } else {
-                      room.users = [user.uid];
-                    }
-                    return this.roomService
-                      .updateRoom(action.room_id, { users: room.users })
-                      .pipe(map(() => updatedUser));
-                  })
-                );
-              })
-            );
+            return this.roomService.joinCurrentUserToRoom(action.room_id).pipe(map((_) => user));
           }),
           map((user) => UsersAdapterActions.userUpdated({ user_id: user.uid, user })),
           tap(() => {
