@@ -1,7 +1,6 @@
-import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UniversityStructureByIds } from './../../../../university/models/university-structure.model';
 import { RoleEnum } from 'core/models/domain/roles.model';
-import { NO_USERS_ERROR, USER_ALREADY_EXISTS } from './../../http/errors.constants';
+import { USER_ALREADY_EXISTS } from './../../http/errors.constants';
 import { ActionDispatcherService, TrackOperations } from 'core/modules/data/services';
 import {
   LoadSpecificUserAction,
@@ -44,6 +43,18 @@ export class UserFacadeService {
         UsersAdapterActions.changeUserUniversityStructure({ user_id, universityStructure }),
         TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
         user_id
+      );
+    } catch (error) {
+      // TODO
+    }
+  }
+
+  async joinUserToRoom(room_id: string): Promise<void> {
+    try {
+      await this.actionDispatcher.dispatchActionAsync(
+        UsersAdapterActions.addCurrentUserToRoom({ room_id }),
+        TrackOperations.JOIN_USER_TO_ROOM,
+        room_id
       );
     } catch (error) {
       // TODO

@@ -1,4 +1,3 @@
-import { MessagerRouterParams } from './../../../../../section-modules/messanger/models/router-params.constant';
 import { Router } from '@angular/router';
 import { SubscriptionDetacher } from 'core/utils';
 import {
@@ -16,7 +15,6 @@ import {
   OnChanges,
   SimpleChanges,
   HostBinding,
-  HostListener,
   ChangeDetectorRef,
   OnDestroy,
 } from '@angular/core';
@@ -41,15 +39,6 @@ export class RoomItemComponent implements OnInit, OnChanges, OnDestroy, OnInit {
 
   roomIcon: string;
 
-  @HostListener('click', ['$event'])
-  private hostClick(event: MouseEvent): void {
-    this.router.navigate([], {
-      queryParams: {
-        ...this.router.routerState.snapshot.root.queryParams,
-        [MessagerRouterParams.roomId]: this.room.id,
-      },
-    });
-  }
 
   constructor(private roomItemManager: RoomItemManagerService, private cd: ChangeDetectorRef, private router: Router) {}
 

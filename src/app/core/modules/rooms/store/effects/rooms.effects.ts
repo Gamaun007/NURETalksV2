@@ -4,7 +4,7 @@ import { RoomsActions } from './../actions/rooms.actions';
 import { AuthService } from 'core/modules/auth-core/services/auth/auth.service';
 import { RoomsHttpService } from '../../services/http/rooms/rooms.service';
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { OperationsTrackerService, TrackOperations } from 'core/modules/data/services';
 import { NEVER } from 'rxjs';
@@ -81,12 +81,14 @@ export class RoomsEffects {
             }),
 
             switchMap((createRoomEntity) => {
-              return this.roomsHttpService.createRoom(createRoomEntity);
-            }),
-            tap(() => {
-              this.operationsTrackerService.trackSuccess(
-                TrackOperations.CREATE_GROUP_ROOM,
-                action.universityStructure.group.toString()
+              return this.roomsHttpService.createRoom(createRoomEntity).pipe(
+                tap((data) => {
+                  this.operationsTrackerService.trackSuccessWithData(
+                    TrackOperations.CREATE_GROUP_ROOM,
+                    data,
+                    action.universityStructure.group.toString()
+                  );
+                })
               );
             }),
             catchError((e) => {

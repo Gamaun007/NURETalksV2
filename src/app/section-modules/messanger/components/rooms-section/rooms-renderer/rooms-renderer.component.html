@@ -1,4 +1,4 @@
-<ng-container *ngIf="(allRooms$ | async)?.length">
+<ng-container *ngIf="(allRooms$ | async)?.length && currentUser">
   <app-virtual-scroll-renderer
     [parentScroller]="parentScroller"
     [allItemsStream]="allRooms$"
@@ -15,6 +15,7 @@
         [placement]="'top'"
         [class.disabled]="!isRoomAvailable(item)"
         [room]="item"
+        (click)="specificRoomClicked(item)"
         [relatedScopeKey]="roomsBarSectionKey"
       ></app-room-item>
     </ng-template>

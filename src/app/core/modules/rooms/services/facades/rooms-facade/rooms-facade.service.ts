@@ -21,7 +21,8 @@ export class RoomsFacadeService {
     this.store.dispatch(RoomsFirebaseActions.queryRoomsChanges());
   }
 
-  async createGroupRoom(universityStructure: UniversityStructureByIds): Promise<any> {
+  /* Creates a room if doesn't exist or returns existing */
+  async ensureCreateGroupRoom(universityStructure: UniversityStructureByIds): Promise<Room> {
     try {
       return await this.actionDispatcher.dispatchActionAsync(
         RoomsActions.createRoom({ universityStructure }),

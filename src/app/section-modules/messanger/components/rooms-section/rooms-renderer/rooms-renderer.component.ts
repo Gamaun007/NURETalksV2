@@ -8,9 +8,9 @@ import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-fa
 import { Room } from 'core/models/domain/room.model';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';
-import { Observable, pipe } from 'rxjs';
-import { createSortCallback, groupBy, SubscriptionDetacher } from 'core/utils';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { createSortCallback, SubscriptionDetacher } from 'core/utils';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rooms-renderer',
@@ -45,7 +45,6 @@ export class RoomsRendererComponent implements OnInit {
       .listenRequestChangesByScope(this.roomsBarSectionKey)
       .pipe(this.detacher.takeUntilDetach())
       .subscribe((data) => {
-        debugger;
         if (this.selectedRoomId) {
           this.roomItemManagerService.unselected(this.selectedRoomId, this.roomsBarSectionKey);
         }
@@ -56,7 +55,6 @@ export class RoomsRendererComponent implements OnInit {
     this.allRooms$ = this.roomsFacade.getAllRooms().pipe(map((rooms) => rooms.filter((r) => r.room_details)));
     this.currentUser = await this.authService.getCurrentUserAsync();
     this.cd.detectChanges();
-    debugger;
   }
 
   ngAfterViewInit(): void {
@@ -94,6 +92,15 @@ export class RoomsRendererComponent implements OnInit {
         r.users.includes(this.currentUser.uid) ? `A${r.room_details.name}` : r.room_details.name
       )
     );
+  }
+
+  specificRoomClicked(room: Room): void {
+    this.router.navigate([], {
+      queryParams: {
+        ...this.router.routerState.snapshot.root.queryParams,
+        [MessagerRouterParams.roomId]: room.id,
+      },
+    });
   }
 
   private setQueryParam(roomId: string): void {

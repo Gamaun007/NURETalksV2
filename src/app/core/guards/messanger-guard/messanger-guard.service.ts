@@ -27,7 +27,7 @@ export class MessangerGuardService implements CanActivate {
     if (activatedRoute.queryParams[MessagerRouterParams.roomId]) {
       const isAllowed = await this.isUserAllowdToAccessRoom(currUser, activatedRoute.queryParams[MessagerRouterParams.roomId]);
 
-      return isAllowed || this.router.navigate(['/']);
+      return isAllowed;
     }
 
     return true;

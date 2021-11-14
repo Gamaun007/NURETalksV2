@@ -1,3 +1,6 @@
+import { AuthState } from './../state';
+import { Store } from '@ngrx/store';
+import { RoomsHttpService } from './../../../rooms/services/http/rooms/rooms.service';
 import { RoomsFacadeService } from './../../../rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UniversityFacadeService } from './../../../university/services/facades/university-facade/university-facade.service';
 import { AuthService } from './../../services/auth/auth.service';
@@ -19,7 +22,7 @@ import {
 } from '../actions';
 import { FileStorageService, USER_PROFILE_IMAGE_PATH } from 'core/modules/firebase';
 import { UniversityEntitiesName } from 'core/modules/university/models';
-import { UserLoadBy } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
+import { UserLoadBy, UserFacadeService } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
 
 @Injectable()
 export class UserEffects {
@@ -27,10 +30,13 @@ export class UserEffects {
     private actions$: Actions,
     private operationsTrackerService: OperationsTrackerService,
     private usersHttpService: UserHttpService,
+    private roomService: RoomsHttpService,
     private fileStorageService: FileStorageService,
     private authService: AuthService,
     private universityFacade: UniversityFacadeService,
-    private roomFacade: RoomsFacadeService
+    private roomFacade: RoomsFacadeService,
+    private userFacadeService: UserFacadeService,
+    private store: Store<AuthState>
   ) {}
 
   uploadUserProfileIcon = createEffect(() =>
@@ -67,6 +73,57 @@ export class UserEffects {
     )
   );
 
+  addUserToRoom$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UsersAdapterActions.addCurrentUserToRoom),
+      mergeMap((action) => {
+        return this.authService.getCurrentUserObservable().pipe(
+          take(1),
+          switchMap((user) => {
+            if (user.rooms?.length) {
+              const roomIdAlreadyIncluded = user.rooms.includes(action.room_id);
+
+              if (!roomIdAlreadyIncluded) {
+                user.rooms.push(action.room_id);
+              }
+            } else {
+              user.rooms = [action.room_id];
+            }
+
+            return this.usersHttpService.updateUser(user.uid, user).pipe(
+              switchMap((updatedUser) => {
+                return this.roomService.getSpecificRoomById(action.room_id).pipe(
+                  switchMap((room) => {
+                    if (room.users?.length) {
+                      const userIdAlreadyIncluded = room.users.includes(user.uid);
+
+                      if (!userIdAlreadyIncluded) {
+                        room.users.push(user.uid);
+                      }
+                    } else {
+                      room.users = [user.uid];
+                    }
+                    return this.roomService
+                      .updateRoom(action.room_id, { users: room.users })
+                      .pipe(map(() => updatedUser));
+                  })
+                );
+              })
+            );
+          }),
+          map((user) => UsersAdapterActions.userUpdated({ user_id: user.uid, user })),
+          tap(() => {
+            this.operationsTrackerService.trackSuccess(TrackOperations.JOIN_USER_TO_ROOM, action.room_id);
+          }),
+          catchError((err) => {
+            this.operationsTrackerService.trackError(TrackOperations.JOIN_USER_TO_ROOM, err, action.room_id);
+            return NEVER;
+          })
+        );
+      })
+    )
+  );
+
   loadSpecificUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActionType.LoadSpecificUser),
@@ -89,65 +146,77 @@ export class UserEffects {
     )
   );
 
-  changeUserUniversityStructure$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(UsersAdapterActions.changeUserUniversityStructure),
-      mergeMap((action) =>
-        this.authService.getCurrentUserObservable().pipe(
-          take(1),
-          switchMap((user) => {
-            return this.universityFacade.checkUniversityStructure(action.universityStructure).pipe(
-              map((_) => {
-                const parial: Partial<User> = {
-                  faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
-                  direction_id: action.universityStructure[UniversityEntitiesName.direction],
-                  // Set user account approval immediately to true, in the future the Admin role will manage user approval
-                  is_approved_account: true,
-                };
+  changeUserUniversityStructure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(UsersAdapterActions.changeUserUniversityStructure),
+        mergeMap((action) =>
+          this.authService.getCurrentUserObservable().pipe(
+            take(1),
+            switchMap((user) => {
+              return this.universityFacade.checkUniversityStructure(action.universityStructure).pipe(
+                map((_) => {
+                  const parial: Partial<User> = {
+                    faculty_id: action.universityStructure[UniversityEntitiesName.faculty],
+                    direction_id: action.universityStructure[UniversityEntitiesName.direction],
+                    // Set user account approval immediately to true, in the future the Admin role will manage user approval
+                    is_approved_account: true,
+                  };
 
-                if (action.universityStructure[UniversityEntitiesName.group]) {
-                  parial.group_id = action.universityStructure[UniversityEntitiesName.group];
-                }
+                  if (action.universityStructure[UniversityEntitiesName.group]) {
+                    parial.group_id = action.universityStructure[UniversityEntitiesName.group];
+                  }
 
-                if (action.universityStructure[UniversityEntitiesName.speciality]) {
-                  parial.speciality_id = action.universityStructure[UniversityEntitiesName.speciality];
-                }
+                  if (action.universityStructure[UniversityEntitiesName.speciality]) {
+                    parial.speciality_id = action.universityStructure[UniversityEntitiesName.speciality];
+                  }
 
-                return parial;
-              }),
-              switchMap((parialUser) => {
-                const updateUserStructure$ = this.usersHttpService.updateUser(action.user_id, parialUser).pipe(
-                  tap((_) =>
-                    this.operationsTrackerService.trackSuccess(
-                      TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
-                      action.user_id
+                  return parial;
+                }),
+                switchMap((parialUser) => {
+                  const updateUserStructure$ = this.usersHttpService.updateUser(action.user_id, parialUser).pipe(
+                    tap((_) =>
+                      this.operationsTrackerService.trackSuccess(
+                        TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+                        action.user_id
+                      )
+                    ),
+                    map((user) =>
+                      this.store.dispatch(UsersAdapterActions.userUpdated({ user_id: action.user_id, user }))
                     )
-                  ),
-                  map((user) => UsersAdapterActions.userUpdated({ user_id: action.user_id, user }))
-                );
-
-                if (user.role === RoleEnum.Headman || user.role === RoleEnum.Student) {
-                  return from(this.roomFacade.createGroupRoom(action.universityStructure)).pipe(
-                    switchMap((_) => updateUserStructure$)
                   );
-                }
 
-                return updateUserStructure$;
-              }),
-              catchError((error) => {
-                this.operationsTrackerService.trackError(
-                  TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
-                  error,
-                  action.user_id
-                );
-                return NEVER;
-              })
-            );
-          })
-          // getGroupByUniversityStructure is here because under the hood there is a structure checker!
+                  if (user.role === RoleEnum.Headman || user.role === RoleEnum.Student) {
+                    return from(this.roomFacade.ensureCreateGroupRoom(action.universityStructure)).pipe(
+                      switchMap((res) => {
+                        return from(this.userFacadeService.joinUserToRoom(res.id)).pipe(
+                          tap((_) => {
+                            this.operationsTrackerService.trackSuccess(
+                              TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+                              action.user_id
+                            );
+                          })
+                        );
+                      })
+                    );
+                  }
+
+                  return updateUserStructure$;
+                }),
+                catchError((error) => {
+                  this.operationsTrackerService.trackError(
+                    TrackOperations.CHANGE_USER_UNIVERSITY_STRUCTURE,
+                    error,
+                    action.user_id
+                  );
+                  return NEVER;
+                })
+              );
+            })
+          )
         )
-      )
-    )
+      ),
+    { dispatch: false }
   );
 
   createUserRole$ = createEffect(() =>

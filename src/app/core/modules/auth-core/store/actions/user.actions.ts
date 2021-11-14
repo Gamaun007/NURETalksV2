@@ -24,6 +24,8 @@ export const UserActionType = {
   ChangeUserUniversityStructure: '[User] Change user university structure ',
 
   ChangeUserRole: '[User] Change user role',
+
+  AddCurrentUserToRoom: '[User] Add current user to room',
 };
 
 export class LoadUsersAction implements Action {
@@ -94,4 +96,5 @@ export const UsersAdapterActions = {
     props<{ user_id: string; universityStructure: UniversityStructureByIds }>()
   ),
   changeUserRole: createAction(UserActionType.ChangeUserRole, props<{ user_id: string; role: RoleEnum }>()),
+  addCurrentUserToRoom: createAction(UserActionType.AddCurrentUserToRoom, props<{ room_id: string }>()),
 };
