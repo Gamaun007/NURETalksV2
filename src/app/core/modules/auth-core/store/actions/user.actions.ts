@@ -82,6 +82,14 @@ export class UserUpdatedAction implements Action {
 //   constructor(public payload: { email: string; changes: User }) {}
 // }
 
+export const UsersRoomsActionType = {
+  UserJoinedRoomSuccessfully: '[User/Room] User joined room successfully'
+}
+
+export const UsersRoomsActions = {
+  userJoinedRoomSuccessfully: createAction(UsersRoomsActionType.UserJoinedRoomSuccessfully, props<{ room_id: string, user_id: string }>()),
+}
+
 export const UsersAdapterActions = {
   specificUserLoaded: createAction(UserActionType.SpecificUserLoaded, props<{ user: User }>()),
   usersLoaded: createAction(UserActionType.UsersLoaded, props<{ payload: User[] }>()),

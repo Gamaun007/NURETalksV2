@@ -8,7 +8,14 @@
     "writeMessage": "Write message"
   },
   "roomItem": {
-    "notAllowedRoomText": "Room is not allowed to enter"
+    "notAllowedRoomText": "Room is not allowed to enter",
+    "modals": {
+      "joinRoom": {
+        "join": "Join",
+        "question": "You want to join the {{room_name}} room ?",
+        "cancel": "Cancel"
+      }
+    }
   },
   "auth": {
     "loginPage": {

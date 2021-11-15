@@ -1,0 +1,32 @@
+<section class="main-content">
+  <div class="icon" *ngIf="icon">
+    <svg-icon [src]="icon" [stretch]="true"></svg-icon>
+  </div>
+  <div class="question" *ngIf="questionTranslationKey">
+    <app-text [text]="questionTranslationKey" [textParameters]="questionTranslationParams"></app-text>
+  </div>
+  <div class="aftermath" *ngIf="aftermathTranslationKey"><app-text [text]="aftermathTranslationKey"></app-text></div>
+  <div class="aftermath" *ngIf="aftermathTemplate">
+    <ng-container *ngTemplateOutlet="aftermathTemplate"></ng-container>
+  </div>
+</section>
+<section class="footer">
+  <app-button
+    *ngIf="confirmTranslationKey"
+    [type]="'primary'"
+    [size]="'medium'"
+    [loading]="isLoading"
+    (click)="confirm()"
+    class="mulish"
+  >
+    {{ confirmTranslationKey | translate }}
+  </app-button>
+  <app-button
+    *ngIf="dismissTranslationKey"
+    (click)="dismiss()"
+    [type]="'secondary'"
+    [size]="'medium'"
+    class="mulish"
+    >{{ dismissTranslationKey | translate }}</app-button
+  >
+</section>

@@ -1,3 +1,5 @@
+import { UsersState } from './../../../auth-core/store/reducers/user.reducer';
+import { UsersRoomsActions } from './../../../auth-core/store/actions/user.actions';
 import { MessagesActions } from './../../../messages/store/actions/messages.actions';
 import { RoomsFirebaseActions } from './../actions/rooms.actions';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
@@ -60,6 +62,28 @@ const adapterReducer = createReducer(
 
   on(RoomsFirebaseActions.roomsRemovedFirebaseAction, (state: RoomsState, action) => {
     return roomsAdapter.removeOne(action.payload.id, state);
+  }),
+
+  // Users Rooms related actions handling
+  on(UsersRoomsActions.userJoinedRoomSuccessfully, (state, action) => {
+    const room = state.entities[action.room_id];
+    if (room?.room) {
+      let updatedUsersList = [] as string[];
+      if (room.room?.users) {
+        const userIdAlreadyIncluded = room.room.users.includes(action.user_id);
+        if (userIdAlreadyIncluded) {
+          return state;
+        } else {
+          updatedUsersList = [...room.room.users, action.user_id];
+        }
+      } else {
+        updatedUsersList = [action.user_id];
+      }
+
+      const updatedRoomObj: Room = { ...room.room, users: updatedUsersList };
+      return roomsAdapter.updateOne({ id: action.room_id, changes: { room: updatedRoomObj } }, state);
+    }
+    return state;
   })
 );
 

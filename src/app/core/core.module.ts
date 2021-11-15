@@ -1,3 +1,6 @@
+import { UtilsModule } from 'core/modules/utils';
+import { ModalsModule } from './modules/modals/modals.module';
+import { ComponentSwitcherModule } from './modules/component-switcher/component-switcher.module';
 import { MessangerGuardService } from './guards';
 import { FileDownloadingHelperService } from './services/file-downloading-helper/file-downloading-helper.service';
 import { RootGuardService } from 'core/guards/root-guard/root-guard.service';
@@ -19,7 +22,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AppConfigService, LoaderManagerService, MessageBusService } from './services';
 import { LoggerService } from 'core/services';
-import { GlobalLoaderComponent, TextComponent, UserMenuBarComponent } from 'core/components';
+import { GlobalLoaderComponent, UserMenuBarComponent } from 'core/components';
 import { RoomsModule } from 'core/modules/rooms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { NgbPopoverModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -27,7 +30,7 @@ import { NgbPopoverModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 export const WINDOW = new InjectionToken<Window>('window');
 
 @NgModule({
-  declarations: [GlobalLoaderComponent, UserMenuBarComponent, TextComponent],
+  declarations: [GlobalLoaderComponent, UserMenuBarComponent],
   imports: [
     OverlayModule,
     CommonModule,
@@ -44,6 +47,9 @@ export const WINDOW = new InjectionToken<Window>('window');
     LoadersModule,
     ButtonsModule,
     DirectivesModule,
+    ComponentSwitcherModule,
+    ModalsModule,
+    UtilsModule,
 
     // Structural entities modules
     RoomsModule,
@@ -64,6 +70,8 @@ export const WINDOW = new InjectionToken<Window>('window');
     LoadersModule,
     ButtonsModule,
     DirectivesModule,
+    ModalsModule,
+    UtilsModule,
 
     // Structural entities modules
     RoomsModule,
@@ -75,7 +83,6 @@ export const WINDOW = new InjectionToken<Window>('window');
     // Component
     GlobalLoaderComponent,
     UserMenuBarComponent,
-    TextComponent,
   ],
 })
 export class CoreModule {

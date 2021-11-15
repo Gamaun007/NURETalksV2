@@ -1,3 +1,4 @@
+import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UniversityStructureByIds } from './../../../../university/models/university-structure.model';
 import { RoleEnum } from 'core/models/domain/roles.model';
 import { USER_ALREADY_EXISTS } from './../../http/errors.constants';
@@ -13,7 +14,7 @@ import { User } from 'core/models/domain';
 import { NEVER, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AuthState, userStateSelector } from '../../../store/state';
-import { map, switchMap, shareReplay } from 'rxjs/operators';
+import { map, switchMap, shareReplay, take } from 'rxjs/operators';
 
 export enum UserLoadBy {
   Email,
@@ -22,11 +23,15 @@ export enum UserLoadBy {
 
 @Injectable()
 export class UserFacadeService {
-  constructor(private store: Store<AuthState>, private actionDispatcher: ActionDispatcherService) {}
+  constructor(
+    private store: Store<AuthState>,
+    private actionDispatcher: ActionDispatcherService,
+    private roomFacade: RoomsFacadeService
+  ) {}
 
-  private async loadSpecificUser(key: string, loadBy: UserLoadBy): Promise<void> {
+  private async loadSpecificUser(key: string, loadBy: UserLoadBy): Promise<User> {
     try {
-      await this.actionDispatcher.dispatchActionAsync(
+      return await this.actionDispatcher.dispatchActionAsync(
         new LoadSpecificUserAction(key, loadBy),
         TrackOperations.LOAD_SPECIFIC_USER,
         key
@@ -47,6 +52,18 @@ export class UserFacadeService {
     } catch (error) {
       // TODO
     }
+  }
+
+  async isUserRoomMember(user_id: string, room_id: string): Promise<boolean> {
+    const selectedRoom = await this.roomFacade
+      .getAllRooms()
+      .pipe(
+        map((r) => r.find((r) => r.id === room_id)),
+        take(1)
+      )
+      .toPromise();
+    const user = await this.loadSpecificUser(user_id, UserLoadBy.Id);
+    return selectedRoom?.users?.includes(user_id) && user?.rooms?.includes(room_id)
   }
 
   async joinUserToRoom(room_id: string): Promise<void> {

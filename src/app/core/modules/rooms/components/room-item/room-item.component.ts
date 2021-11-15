@@ -17,6 +17,8 @@ import {
   HostBinding,
   ChangeDetectorRef,
   OnDestroy,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 
 @Component({
@@ -39,6 +41,8 @@ export class RoomItemComponent implements OnInit, OnChanges, OnDestroy, OnInit {
 
   roomIcon: string;
 
+  @Output()
+  selection = new EventEmitter<boolean>()
 
   constructor(private roomItemManager: RoomItemManagerService, private cd: ChangeDetectorRef, private router: Router) {}
 
@@ -79,6 +83,8 @@ export class RoomItemComponent implements OnInit, OnChanges, OnDestroy, OnInit {
                   RoomItemEventPayloadMapper
                 >
               ).payload;
+
+              this.selection.next(this.selected);
             }
           }
           this.cd.markForCheck();

@@ -4,7 +4,7 @@ import { RoomsHttpService } from './../../../rooms/services/http/rooms/rooms.ser
 import { RoomsFacadeService } from './../../../rooms/services/facades/rooms-facade/rooms-facade.service';
 import { UniversityFacadeService } from './../../../university/services/facades/university-facade/university-facade.service';
 import { AuthService } from './../../services/auth/auth.service';
-import { UploadUserProfileIconAction, UsersAdapterActions } from './../actions/user.actions';
+import { UploadUserProfileIconAction, UsersAdapterActions, UsersRoomsActions } from './../actions/user.actions';
 import { UserHttpService } from '../../services/http/user/user.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -82,7 +82,7 @@ export class UserEffects {
           switchMap((user) => {
             return this.roomService.joinCurrentUserToRoom(action.room_id).pipe(map((_) => user));
           }),
-          map((user) => UsersAdapterActions.userUpdated({ user_id: user.uid, user })),
+          map((user) => UsersRoomsActions.userJoinedRoomSuccessfully({ user_id: user.uid, room_id: action.room_id })),
           tap(() => {
             this.operationsTrackerService.trackSuccess(TrackOperations.JOIN_USER_TO_ROOM, action.room_id);
           }),
@@ -104,7 +104,7 @@ export class UserEffects {
             ? this.usersHttpService.getSpecificUserById(action.key)
             : this.usersHttpService.getSpecificUser(action.key);
         return requestTo.pipe(
-          tap(() => this.operationsTrackerService.trackSuccess(TrackOperations.LOAD_SPECIFIC_USER, action.key)),
+          tap((user) => this.operationsTrackerService.trackSuccessWithData(TrackOperations.LOAD_SPECIFIC_USER, user, action.key)),
           map((response: User) => {
             return new SpecificUserLoadedAction(response);
           }),

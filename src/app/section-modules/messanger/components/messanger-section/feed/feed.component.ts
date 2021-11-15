@@ -1,6 +1,6 @@
 import { MessagesFacadeService } from 'core/modules/messages/services/facades/messages-facade/messages-facade.service';
 import { Room } from 'core/models/domain/room.model';
-import { RoomsFacadeService } from 'core/modules/rooms/services';
+import { RoomItemManagerService, RoomsFacadeService } from 'core/modules/rooms/services';
 import { SubscriptionDetacher } from 'core/utils/subscription-detacher.class';
 import { filter, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FileFieldControl } from 'core/modules/form-controls';
 import { DatePipe } from '@angular/common';
+import { roomsBarSectionKey } from '../../rooms-section/rooms-renderer/rooms-renderer.component';
 
 @Component({
   selector: 'app-feed',
@@ -19,8 +20,10 @@ import { DatePipe } from '@angular/common';
 })
 export class FeedComponent implements OnInit, OnDestroy {
   private detacher: SubscriptionDetacher = new SubscriptionDetacher();
+  private;
   readonly messageField = new FormControl('');
   readonly fileField = new FileFieldControl({});
+  readonly roomsBarSectionKey = roomsBarSectionKey;
   sendingMessageLoader$ = new Subject<boolean>();
 
   room: Room;
@@ -30,6 +33,7 @@ export class FeedComponent implements OnInit, OnDestroy {
     private roomFacade: RoomsFacadeService,
     private cd: ChangeDetectorRef,
     private messagesFacade: MessagesFacadeService,
+    private roomItemManagerService: RoomItemManagerService,
     public datepipe: DatePipe
   ) {}
 
@@ -38,14 +42,12 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.router.routerState.root.queryParams
+    this.roomItemManagerService
+      .listenRequestChangesByScope(this.roomsBarSectionKey)
       .pipe(
         this.detacher.takeUntilDetach(),
-        map((params) => params[MessagerRouterParams.roomId] as string),
-        filter((roomId) => !!roomId),
-        distinctUntilChanged((prev, curr) => prev === curr),
-        switchMap((roomId) => {
-          return this.roomFacade.getAllRooms().pipe(map((rooms) => rooms.find((r) => r.id === roomId)));
+        switchMap((data) => {
+          return this.roomFacade.getAllRooms().pipe(map((rooms) => rooms.find((r) => r.id === data.payload.room_id)));
         }),
         distinctUntilChanged((prev, curr) => prev === curr)
       )
@@ -55,11 +57,27 @@ export class FeedComponent implements OnInit, OnDestroy {
         this.room = room;
         this.cd.detectChanges();
       });
+
+    // this.router.routerState.root.queryParams
+    //   .pipe(
+    //     this.detacher.takeUntilDetach(),
+    //     map((params) => params[MessagerRouterParams.roomId] as string),
+    //     filter((roomId) => !!roomId),
+    //     distinctUntilChanged((prev, curr) => prev === curr),
+    //     switchMap((roomId) => {
+    //       return this.roomFacade.getAllRooms().pipe(map((rooms) => rooms.find((r) => r.id === roomId)));
+    //     }),
+    //     distinctUntilChanged((prev, curr) => prev === curr)
+    //   )
+    //   .subscribe((room) => {
+    //     this.room = undefined;
+    //     this.cd.detectChanges();
+    //     this.room = room;
+    //     this.cd.detectChanges();
+    //   });
   }
 
-  openPinModal(): void {
-    
-  }
+  openPinModal(): void {}
 
   viewSchedule(): void {
     const currTime = new Date(Date.now());

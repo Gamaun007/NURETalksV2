@@ -1,3 +1,5 @@
+import { RoomsModalsServiceService } from './../../../services/rooms-modals-service.service';
+import { UserFacadeService } from 'core/modules/auth-core/services/facades/user-facade/user-facade.service';
 import { RoleEnum } from './../../../../../core/models/domain/roles.model';
 import { User } from 'core/models/domain/user.model';
 import { AuthService } from 'core/modules/auth-core/services';
@@ -8,9 +10,11 @@ import { RoomsFacadeService } from 'core/modules/rooms/services/facades/rooms-fa
 import { Room } from 'core/models/domain/room.model';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { createSortCallback, SubscriptionDetacher } from 'core/utils';
-import { map } from 'rxjs/operators';
+import { filter, map, switchMap, take } from 'rxjs/operators';
+
+export const roomsBarSectionKey = 'tooms-bar-main-section';
 
 @Component({
   selector: 'app-rooms-renderer',
@@ -23,7 +27,7 @@ export class RoomsRendererComponent implements OnInit {
   private selectedRoomId: string;
   currentUser: User;
 
-  readonly roomsBarSectionKey = 'tooms-bar-main-section';
+  readonly roomsBarSectionKey = roomsBarSectionKey;
   allRooms$: Observable<Room[]>;
 
   @Input() parentScroller: PerfectScrollbarComponent;
@@ -37,6 +41,8 @@ export class RoomsRendererComponent implements OnInit {
     private roomItemManagerService: RoomItemManagerService,
     private router: Router,
     private authService: AuthService,
+    private userFacade: UserFacadeService,
+    private roomsModalsService: RoomsModalsServiceService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -52,18 +58,31 @@ export class RoomsRendererComponent implements OnInit {
         this.roomItemManagerService.selected(this.selectedRoomId, this.roomsBarSectionKey);
         this.setQueryParam(this.selectedRoomId);
       });
-    this.allRooms$ = this.roomsFacade.getAllRooms().pipe(map((rooms) => rooms.filter((r) => r.room_details)));
+    this.allRooms$ = this.roomsFacade.getAllRooms();
     this.currentUser = await this.authService.getCurrentUserAsync();
     this.cd.detectChanges();
   }
 
   ngAfterViewInit(): void {
-    this.router.routerState.root.queryParams.subscribe((params) => {
-      const roomIdFromParams = params[MessagerRouterParams.roomId];
-      if (roomIdFromParams) {
+    let roomIdFromParams: string;
+    this.router.routerState.root.queryParams
+      .pipe(
+        filter((params) => !!params[MessagerRouterParams.roomId]),
+        switchMap((params) => {
+          roomIdFromParams = params[MessagerRouterParams.roomId];
+          return this.allRooms$.pipe(
+            map((rooms) => rooms.find((r) => r.id === roomIdFromParams)),
+            switchMap((room) => {
+              return from(this.checkIfUserGroupMember(room));
+            })
+          );
+        }),
+        filter((r) => r)
+      )
+      .subscribe((isRoomMember) => {
+        console.log('checkIfUserGroupMember, ', isRoomMember, roomIdFromParams);
         this.roomItemManagerService.selectRequest(roomIdFromParams, this.roomsBarSectionKey);
-      }
-    });
+      });
   }
 
   roomIdSelector(item: Room): string {
@@ -94,13 +113,25 @@ export class RoomsRendererComponent implements OnInit {
     );
   }
 
-  specificRoomClicked(room: Room): void {
-    this.router.navigate([], {
-      queryParams: {
-        ...this.router.routerState.snapshot.root.queryParams,
-        [MessagerRouterParams.roomId]: room.id,
-      },
-    });
+  private async checkIfUserGroupMember(room: Room): Promise<boolean> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (await this.userFacade.isUserRoomMember(user.uid, room.id)) {
+      return true;
+    }
+
+    this.roomsModalsService.openJoinRoomModal(room.id, room.room_details.name);
+    return false;
+  }
+
+  async specificRoomClicked(room: Room): Promise<void> {
+    if (await this.checkIfUserGroupMember(room)) {
+      this.router.navigate([], {
+        queryParams: {
+          ...this.router.routerState.snapshot.root.queryParams,
+          [MessagerRouterParams.roomId]: room.id,
+        },
+      });
+    }
   }
 
   private setQueryParam(roomId: string): void {

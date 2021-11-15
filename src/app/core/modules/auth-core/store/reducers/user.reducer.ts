@@ -5,6 +5,7 @@ import {
   UserCreatedAction,
   UsersAdapterActions,
   UsersLoadedAction,
+  UsersRoomsActions,
   UserUpdatedAction,
 } from '../actions';
 import { User } from 'core/models/domain';
@@ -36,6 +37,27 @@ const adapterReducer = createReducer(
   }),
   on(UsersAdapterActions.userCreated, (state: UsersState, action: UserCreatedAction) => {
     return usersAdapter.addOne(action.payload, state);
+  }),
+  on(UsersRoomsActions.userJoinedRoomSuccessfully, (state: UsersState, action) => {
+    const user = state.entities[action.user_id];
+    if (user) {
+      let updatedRoomsList = [] as string[];
+      if(user.rooms) {
+        const roomIdAlreadyIncluded = user.rooms.includes(action.room_id); 
+        if(roomIdAlreadyIncluded) {
+          return state;
+        } else {
+          updatedRoomsList = [...user.rooms, action.room_id];
+        }
+      } else {
+        updatedRoomsList = [action.room_id];
+      }
+
+
+      
+    return usersAdapter.updateOne({ id: action.user_id, changes: { rooms: updatedRoomsList} }, state);
+    } 
+    return state;
   })
 );
 

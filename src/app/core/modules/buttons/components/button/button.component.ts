@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, HostListener, Input } from '@angular/core';
 import { ButtonType, ButtonSize } from '../../types';
 
 @Component({
@@ -24,9 +24,16 @@ export class ButtonComponent {
   @Input()
   size: ButtonSize = 'medium';
 
+  @Input()
+  clickOnEnter: boolean;
+
   @HostBinding('class.disabled')
   @Input()
   disabled: boolean;
+
+  @HostBinding('class.focused')
+  @Input()
+  focused: boolean;
 
   @HostBinding('attr.role')
   private role = 'button';
@@ -35,4 +42,15 @@ export class ButtonComponent {
   private get classes(): string {
     return `btn ${this.size}`;
   }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  private onEnterHandler(event: any): void {
+    const buttonElement = (this.hostElement.nativeElement as HTMLElement);
+    const isButtonHidden = buttonElement.offsetParent === null;
+    if (this.clickOnEnter && !buttonElement.classList.contains('disabled') && !this.loading && !isButtonHidden) {
+      this.hostElement.nativeElement.click();
+    }
+  }
+
+  constructor(private hostElement: ElementRef) { }
 }
